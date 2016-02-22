@@ -1,11 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import sys
 sys.path.append('.local/share/gedit/plugins/')
 import setlog
 logger=setlog.logger
 logger.debug('Start Plugin')
-import string
-from gi.repository import GObject, Gtk,Gdk, Gedit
+
+from gi.repository import GObject, Gtk, Gedit
 ui_str = """
 <ui>
   <menubar name="MenuBar">

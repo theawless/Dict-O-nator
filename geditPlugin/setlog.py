@@ -1,5 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf8 -*-
+#!/usr/bin/python3
 
 import logging
 logger = logging.getLogger()
