@@ -2,18 +2,20 @@
 import sys
 sys.path.append('.local/share/gedit/plugins/')
 import setlog
+import recogSpeech
+import threading
+import statesMod
+#import time
+states=statesMod.states
 logger=setlog.logger
 logger.debug('Start Plugin')
-import speech_recognition as sr
-import threading
-import time
 from gi.repository import GObject, Gtk, Gedit
 ui_str = """
 <ui>
   <menubar name="MenuBar">
     <menu name="ToolsMenu" action="Tools">
       <placeholder name="ToolsOps_2">
-        <menu name="PyDictator" action="PyDictator">
+        <menu name="DicNator" action="DicNator">
           <menuitem name="Clear" action="Clear"/>
           <menuitem name="Logit" action="Logit"/>
         </menu>
@@ -23,8 +25,8 @@ ui_str = """
 </ui>
 """
 
-class PyDictatorPlugin(GObject.Object,Gedit.WindowActivatable):
-    __gtype_name__= "PyDictator"
+class DicNatorPlugin(GObject.Object,Gedit.WindowActivatable):
+    __gtype_name__= "DicNator"
     window = GObject.property(type=Gedit.Window)
 
     def __init__(self):
@@ -44,14 +46,14 @@ class PyDictatorPlugin(GObject.Object,Gedit.WindowActivatable):
         
     def _insert_menu(self):
         actions = [
-            ('PyDictator',None,'PyDictator'),
+            ('DicNator',None,'DicNator'),
             ("Clear", None, "Clear document",'<Control><Alt>1', "Clear the document",self.on_clear_document_activate),
             ("Logit", None, "Log now",'<Control><Alt>2', "Log now ",self.on_logit_activate)
         ]
         # Get the Gtk.UIManager
         manager = self.window.get_ui_manager()
         # Create a new action group
-        self._action_group = Gtk.ActionGroup("PyDictatorPluginActions")
+        self._action_group = Gtk.ActionGroup("DicNatorPluginActions")
         self._action_group.add_actions(actions)
         # Insert the action group
         manager.insert_action_group(self._action_group)
@@ -83,6 +85,7 @@ class PyDictatorPlugin(GObject.Object,Gedit.WindowActivatable):
 
     # Menu activate handlers
     def on_clear_document_activate(self, action):
+        logger.debug("cleared doc")
         doc = self.window.get_active_document()
         if not doc:
             return
@@ -90,39 +93,29 @@ class PyDictatorPlugin(GObject.Object,Gedit.WindowActivatable):
 
     def on_logit_activate(self, action):
         self.do_log('Executing my action')
-        #self.some_func()
-        thread=threading.Thread(target=self.always, args=())
+        #self.always()
+        thread=threading.Thread(target=self.bgCallHandler, args=())
         thread.daemon=True;
         thread.start()
+        self.do_log('Thread Started')
         
-    def always(self):
-        while True:
-            self.do_log("Debug Infinite Background Function")
-
-    def callback(recognizer, audio):
-        # received audio data, now we'll recognize it using Google Speech Recognition
-        logger.debug("In Callback function")
-        try:
-            text_out=recognizer.recognize_sphinx(audio)
-            print("Sphinx Speech Recognition thinks you said " +text_out )
-            if text_out=='hello':
-                logger.debug('something')
-        except sr.UnknownValueError:
-            print("Sphinx Speech Recognition could not understand audio")
-        except sr.RequestError as e:
-            print("Could not request results from Sphinx Speech Recognition service; {0}".format(e))
-    
-    def recognize_(self):
-        r = sr.Recognizer()
-        m = sr.Microphone()
-        with m as source:
-            r.adjust_for_ambient_noise(source) # we only need to calibrate once, before we start listening
-        # start listening in the background (note that we don't have to do this inside a `with` statement)
-        stop_listening = r.listen_in_background(m, self.callback)
-        # `stop_listening` is now a function that, when called, stops background listening
-
-        # do some other computation for 5 seconds, then stop listening and keep doing other computations
-        for _ in range(5): time.sleep(0.1) # we're still listening even though the main thread is doing other things
-        stop_listening() # calling this function requests that the background listener stop listening
-        while True: time.sleep(0.1)
+    def bgCallHandler(self):
+        (text,currState)=self.callRecog()
+        if currState==states[0]:
+            self.insertText(text)
+            self.bgCallHandler()
+        else:
+            logger.debug("End bgCall")
+            return
+        
+    def callRecog(self):
+        textOut=recogSpeech.recog()
+        _state=statesMod.decideState(textOut)
+        return (textOut,_state)
+        
+    def insertText(self,text="Default insertText"):
+        doc = self.window.get_active_document()
+        doc.begin_user_action()
+        doc.insert_at_cursor(text)
+        doc.end_user_action()
 
