@@ -2,16 +2,20 @@
 import sys
 sys.path.append('.local/share/gedit/plugins/')
 import setlog
+import recogSpeech
+import threading
+import statesMod
+#import time
+states=statesMod.states
 logger=setlog.logger
 logger.debug('Start Plugin')
-
 from gi.repository import GObject, Gtk, Gedit
 ui_str = """
 <ui>
   <menubar name="MenuBar">
     <menu name="ToolsMenu" action="Tools">
       <placeholder name="ToolsOps_2">
-        <menu name="PyDictator" action="PyDictator">
+        <menu name="DicNator" action="DicNator">
           <menuitem name="Clear" action="Clear"/>
           <menuitem name="Logit" action="Logit"/>
         </menu>
@@ -21,8 +25,8 @@ ui_str = """
 </ui>
 """
 
-class PyDictatorPlugin(GObject.Object,Gedit.WindowActivatable):
-    __gtype_name__= "PyDictator"
+class DicNatorPlugin(GObject.Object,Gedit.WindowActivatable):
+    __gtype_name__= "DicNator"
     window = GObject.property(type=Gedit.Window)
 
     def __init__(self):
@@ -39,27 +43,21 @@ class PyDictatorPlugin(GObject.Object,Gedit.WindowActivatable):
         self._remove_menu()
         self._action_group = None
         logger.debug("Finished inserting menu")
-        #('6paragraph',None, 'Log it','<Control><Alt>6','Log-it',self.log_action)
-
+        
     def _insert_menu(self):
-        #logger.debug("inside insert menu")
         actions = [
-            ('PyDictator',None,'PyDictator'),
+            ('DicNator',None,'DicNator'),
             ("Clear", None, "Clear document",'<Control><Alt>1', "Clear the document",self.on_clear_document_activate),
             ("Logit", None, "Log now",'<Control><Alt>2', "Log now ",self.on_logit_activate)
         ]
         # Get the Gtk.UIManager
         manager = self.window.get_ui_manager()
         # Create a new action group
-        self._action_group = Gtk.ActionGroup("PyDictatorPluginActions")
-        #logger.debug("putting actions")        
+        self._action_group = Gtk.ActionGroup("DicNatorPluginActions")
         self._action_group.add_actions(actions)
-        #logger.debug("put done")
         # Insert the action group
-        #logger.debug("adding into actions group")
         manager.insert_action_group(self._action_group)
         # Merge the UI
-        #logger.debug("merge into ui")
         self._ui_id = manager.add_ui_from_string(ui_str)        
         
         #oldmethod        
@@ -87,6 +85,7 @@ class PyDictatorPlugin(GObject.Object,Gedit.WindowActivatable):
 
     # Menu activate handlers
     def on_clear_document_activate(self, action):
+        logger.debug("cleared doc")
         doc = self.window.get_active_document()
         if not doc:
             return
@@ -94,4 +93,29 @@ class PyDictatorPlugin(GObject.Object,Gedit.WindowActivatable):
 
     def on_logit_activate(self, action):
         self.do_log('Executing my action')
+        #self.always()
+        thread=threading.Thread(target=self.bgCallHandler, args=())
+        thread.daemon=True;
+        thread.start()
+        self.do_log('Thread Started')
+        
+    def bgCallHandler(self):
+        (text,currState)=self.callRecog()
+        if currState==states[0]:
+            self.insertText(text)
+            self.bgCallHandler()
+        else:
+            logger.debug("End bgCall")
+            return
+        
+    def callRecog(self):
+        textOut=recogSpeech.recog()
+        _state=statesMod.decideState(textOut)
+        return (textOut,_state)
+        
+    def insertText(self,text="Default insertText"):
+        doc = self.window.get_active_document()
+        doc.begin_user_action()
+        doc.insert_at_cursor(text)
+        doc.end_user_action()
 
