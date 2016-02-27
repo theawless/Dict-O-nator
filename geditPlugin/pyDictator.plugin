@@ -6,4 +6,3 @@ Name=DicNator
 Description=A Python based plugin to dicate. Uses Sphinx as the voice to text library.
 Authors=Abhinav Singh <abhiabhiabhiabhinav@gmail.com>
 Copyright=Copyright © 2016 Abhinav Singh <abhiabhiabhiabhinav@gmail.com>
-Website=http://www.gedit.org
