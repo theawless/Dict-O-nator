@@ -4,12 +4,16 @@ sys.path.append('.local/share/gedit/plugins/')
 import setlog
 import recogSpeech
 import threading
+
 import statesMod
-#import time
+# Getting the states
 states=statesMod.states
+# Setting up logger
 logger=setlog.logger
 logger.debug('Start Plugin')
+
 from gi.repository import GObject, Gtk, Gedit
+# Defining the UI string that is to be added
 ui_str = """
 <ui>
   <menubar name="MenuBar">
@@ -30,11 +34,12 @@ class DicNatorPlugin(GObject.Object,Gedit.WindowActivatable):
     window = GObject.property(type=Gedit.Window)
 
     def __init__(self):
+        # Constructor
         GObject.Object.__init__(self)
         logger.debug('Init end')
 
     def do_activate(self):
-        # Insert menu items
+        # Insert menu to gui
         self._insert_menu()
         logger.debug("Finished inserting menu")
 
@@ -42,7 +47,7 @@ class DicNatorPlugin(GObject.Object,Gedit.WindowActivatable):
         # Remove any installed menu items
         self._remove_menu()
         self._action_group = None
-        logger.debug("Finished inserting menu")
+        logger.debug("Finished removing menu")
         
     def _insert_menu(self):
         actions = [
@@ -50,6 +55,7 @@ class DicNatorPlugin(GObject.Object,Gedit.WindowActivatable):
             ("Clear", None, "Clear document",'<Control><Alt>1', "Clear the document",self.on_clear_document_activate),
             ("Logit", None, "Log now",'<Control><Alt>2', "Log now ",self.on_logit_activate)
         ]
+        
         # Get the Gtk.UIManager
         manager = self.window.get_ui_manager()
         # Create a new action group
@@ -59,12 +65,8 @@ class DicNatorPlugin(GObject.Object,Gedit.WindowActivatable):
         manager.insert_action_group(self._action_group)
         # Merge the UI
         self._ui_id = manager.add_ui_from_string(ui_str)        
-        
-        #oldmethod        
-        #self._ui_merge_id = manager.add_ui_from_string(ui_str)
-        #manager.ensure_update()
-        
-    def _remove_menu(self):
+                
+    def _remove_menu(self):        
         # Get the Gtk.UIManager
         manager = self.window.get_ui_manager()
 
@@ -82,38 +84,41 @@ class DicNatorPlugin(GObject.Object,Gedit.WindowActivatable):
     
     def do_update_state(self):
         self._action_group.set_sensitive(self.window.get_active_document() != None)
-
-    # Menu activate handlers
+    
     def on_clear_document_activate(self, action):
-        logger.debug("cleared doc")
+        # Clears the document
+        logger.debug("cleared the doc")
         doc = self.window.get_active_document()
         if not doc:
             return
         doc.set_text('')
 
     def on_logit_activate(self, action):
-        self.do_log('Executing my action')
-        #self.always()
+        # For debugging purposes we will start dictator on call only
+        self.do_log('Thread Started')
+        # Calling the background handler in a different thread
         thread=threading.Thread(target=self.bgCallHandler, args=())
         thread.daemon=True;
         thread.start()
-        self.do_log('Thread Started')
         
     def bgCallHandler(self):
-        (text,currState)=self.callRecog()
+        # Based on output by the callRecog we proceed further
+        (text,currState)=self._callRecog()
         if currState==states[0]:
             self.insertText(text)
             self.bgCallHandler()
         else:
-            logger.debug("End bgCall")
+            logger.debug("End Background Call Handler")
             return
         
-    def callRecog(self):
+    def _callRecog(self):
+        # Calls recognizer and gets the text output
         textOut=recogSpeech.recog()
         _state=statesMod.decideState(textOut)
         return (textOut,_state)
         
     def insertText(self,text="Default insertText"):
+        # Inserts the text in the document
         doc = self.window.get_active_document()
         doc.begin_user_action()
         doc.insert_at_cursor(text)
