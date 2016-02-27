@@ -1,0 +1,27 @@
+Dependencies
+
+Zhang, A.(2016) Speech Recognition (Version 3.2)
+License: BSD
+https://github.com/Uberi/speech_recognition#readme
+
+CMU Sphinx (Version 4 and higher)
+License: BSD
+http://cmusphinx.sourceforge.net/
+
+Gedit (Version 3.8 and higher)
+License: GPL v2
+https://wiki.gnome.org/Apps/Gedit
+
+Swig( Version 3.0.6 and higher)
+License: GPL
+http://www.swig.org/Release/LICENSE
+
+Attributes
+
+Gedit Wiki
+License: GPl v2
+https://wiki.gnome.org/Apps/Gedit/PythonPluginHowTo
+
+Uberi Speech Recognition Examples
+License: BSD
+https://github.com/Uberi/speech_recognition/tree/master/examples

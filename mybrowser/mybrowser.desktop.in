@@ -1,8 +1,0 @@
-[Desktop Entry]
-_Name=Mybrowser
-_Comment=Mybrowser application
-Categories=GNOME;Utility;
-Exec=mybrowser
-Icon=mybrowser
-Terminal=false
-Type=Application
