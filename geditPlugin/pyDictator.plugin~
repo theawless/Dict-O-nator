@@ -1,0 +1,8 @@
+[Plugin]
+Loader=python3
+Module=pyDictator
+IAge=3
+Name=DicNator
+Description=A Python3 based plugin to dicate. Uses Sphinx/Google to convert speech to text.
+Authors=Abhinav Singh <abhiabhiabhiabhinav@gmail.com>
+Copyright=Copyright © 2016 Abhinav Singh <abhiabhiabhiabhinav@gmail.com>
