@@ -2,7 +2,7 @@
 
 import logging
 
-logger = logging.getLogger()
+logger = logging.getLogger('DicNator')
 path = '.local/share/gedit/plugins/'
 
 

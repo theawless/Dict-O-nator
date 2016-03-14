@@ -3,6 +3,6 @@ Loader=python3
 Module=pyDictator
 IAge=3
 Name=DicNator
-Description=A Python based plugin to dicate. Uses Sphinx as the voice to text library.
+Description=A plugin to dictate text into gedit. Uses Sphinx/Google to convert speech to text.
 Authors=Abhinav Singh <abhiabhiabhiabhinav@gmail.com>
 Copyright=Copyright © 2016 Abhinav Singh <abhiabhiabhiabhinav@gmail.com>

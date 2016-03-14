@@ -3,6 +3,7 @@
 import speech_recognition as sr
 # Setting up logger
 import setlog
+from pyDictator import status
 
 logger = setlog.logger
 
@@ -21,13 +22,14 @@ class SpeechRecogniser:
         with sr.Microphone() as source:
             logger.debug("Say something!")
 
-            audio = r.listen(source)
+            audio = self.r.listen(source)
             recognized_text = ""
             logger.debug("Got it!")
         if sel == "Sphinx":
             logger.debug("recognize speech using Sphinx")
+            status = "Processing"
             try:
-                recognized_text = r.recognize_sphinx(audio)
+                recognized_text = self.r.recognize_sphinx(audio)
                 logger.debug("From recogSpeech module S : " + recognized_text)
             except sr.UnknownValueError:
                 logger.debug("Sphinx could not understand audio")
@@ -41,7 +43,7 @@ class SpeechRecogniser:
                 # for testing purposes, we're just using the default API key
                 # to use another API key, use `r.recognize_google(audio, key="GOOGLE_SPEECH_RECOGNITION_API_KEY")`
                 # instead of `r.recognize_google(audio)`
-                recognized_text = r.recognize_google(audio)
+                recognized_text = self.r.recognize_google(audio)
                 logger.debug("From recogSpeech module G : " + recognized_text)
             except sr.UnknownValueError:
                 logger.debug("Google Speech Recognition could not understand audio")
