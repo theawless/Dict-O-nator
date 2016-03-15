@@ -3,7 +3,7 @@
 import logging
 
 logger = logging.getLogger('DicNator')
-path = '.local/share/gedit/plugins/'
+path = '.local/share/gedit/plugins/DicNator/Logs/'
 
 
 def setup_logger():
