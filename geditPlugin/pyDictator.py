@@ -1,12 +1,12 @@
 #!/usr/bin/python3
 
 import sys
-import configparser
-from gi.repository import GObject, Gtk, Gedit, PeasGtk, GdkPixbuf
 
 gedit_plugin_path = '.local/share/gedit/plugins'
 sys.path.append(gedit_plugin_path)
 import DicNator.setlog as setlog
+import configparser
+from gi.repository import GObject, Gtk, Gedit, PeasGtk, GdkPixbuf
 import DicNator.recogSpeech as recogSpeech
 import threading
 import DicNator.statesMod as statesMod
@@ -36,8 +36,9 @@ class BackgroundThread(threading.Thread):
 
 
 class ConfigurableWidgetSettings:
+    settings = dict()
+
     def __init__(self):
-        self.settings = dict()
         self.full_box = Gtk.VBox()
         self.radio_box = Gtk.HBox()
         self.input_box = Gtk.VBox()
@@ -94,7 +95,7 @@ class ConfigurableWidgetSettings:
         self.input_box.pack_start(self.att_box, False, False, 6)
 
     def _get_input_saved_text_boxes(self):
-        _settings = self.settings
+        _settings = ConfigurableWidgetSettings.settings
         self.google_api_key.set_text(_settings['Google']['api_key'])
         self.witai_api_key.set_text(_settings['WITAI']['api_key'])
         self.ibm_username.set_text(_settings['IBM']['username'])
@@ -131,7 +132,7 @@ class ConfigurableWidgetSettings:
         # Saving settings
         logger.debug("Saving settings")
         config = self._default_settings()
-        _settings = self.settings
+        _settings = ConfigurableWidgetSettings.settings
         config['Main'] = {'recogniser': _settings['Main']['recogniser']}
         config['Google'] = {'api_key': _settings['Google']['api_key']}
         config['WITAI'] = {'api_key': _settings['WITAI']['api_key']}
@@ -144,7 +145,7 @@ class ConfigurableWidgetSettings:
 
     def _get_configured_radio_buttons(self):
         # Load the radio buttons with settings
-        _settings = self.settings
+        _settings = ConfigurableWidgetSettings.settings
         # initialising all radio buttons
         sphinx_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=None, label="Sphinx")
         google_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=sphinx_radio, label="Google")
@@ -182,7 +183,7 @@ class ConfigurableWidgetSettings:
         # All radio_callback are called simultaneously, checking which one went active
 
         if widget.get_active():
-            self.settings['Main']['recogniser'] = data
+            ConfigurableWidgetSettings.settings['Main']['recogniser'] = data
             self._choose_labelled_input_boxes()
             self.save_settings()
 
@@ -194,7 +195,7 @@ class ConfigurableWidgetSettings:
         self.att_box.set_sensitive(False)
         self.witai_box.set_sensitive(False)
         logger.debug("Hidden everything")
-        data = self.settings['Main']['recogniser']
+        data = ConfigurableWidgetSettings.settings['Main']['recogniser']
         logger.debug(data)
         if data == 'Google':
             self.google_box.set_sensitive(True)
@@ -211,17 +212,17 @@ class ConfigurableWidgetSettings:
         self.input_box.pack_start(confirm_api_button, False, False, 6)
 
     def _confirm_configuration(self, button):
-        self.settings['Google']['api_key'] = self.google_api_key.get_text()
-        self.settings['WITAI']['api_key'] = self.witai_api_key.get_text()
-        self.settings['IBM']['username'] = self.ibm_username.get_text()
-        self.settings['IBM']['password'] = self.ibm_password.get_text()
-        self.settings['ATT']['app_key'] = self.att_app_key.get_text()
-        self.settings['ATT']['app_secret'] = self.att_app_secret.get_text()
+        ConfigurableWidgetSettings.settings['Google']['api_key'] = self.google_api_key.get_text()
+        ConfigurableWidgetSettings.settings['WITAI']['api_key'] = self.witai_api_key.get_text()
+        ConfigurableWidgetSettings.settings['IBM']['username'] = self.ibm_username.get_text()
+        ConfigurableWidgetSettings.settings['IBM']['password'] = self.ibm_password.get_text()
+        ConfigurableWidgetSettings.settings['ATT']['app_key'] = self.att_app_key.get_text()
+        ConfigurableWidgetSettings.settings['ATT']['app_secret'] = self.att_app_secret.get_text()
         self.save_settings()
 
     def get_configure_box(self):
         logger.debug("Got in get_configure_box")
-        self.settings = self.load_settings()
+        ConfigurableWidgetSettings.settings = self.load_settings()
         self._get_labeled_boxes()
         self._get_configured_radio_buttons()
         self._get_input_saved_text_boxes()
@@ -324,12 +325,52 @@ class DicNatorPlugin:
 
             return
 
-        if currstate == states[0]:
+        if currstate == "start_dictation":
             self.inserttext(text)
             self.bgcallhandler()
-        elif currstate == states[12]:
+        elif currstate == "stop_dictation":
             logger.debug("End Background Call Handler")
+            self.bottom_bar_text_set("Turned OFF")
             return
+        elif currstate == "hold_dictation":
+            pass
+        elif currstate == "scroll_to_cursor":
+            pass
+        elif currstate == "goto_line":
+            pass
+        elif currstate == "cut_clipboard":
+            pass
+        elif currstate == "copy_clipboard":
+            pass
+        elif currstate == "paste_clipboard":
+            pass
+        elif currstate == "delete_selection":
+            pass
+        elif currstate == "select_all":
+            pass
+        elif currstate == "spacebar_input":
+            self.inserttext(' ')
+            self.bgcallhandler()
+        elif currstate == "sentence_end":
+            self.inserttext('.')
+            self.bgcallhandler()
+        elif currstate == "delete_line":
+            pass
+        elif currstate == "delete_word":
+            pass
+        elif currstate == "delete_sentence":
+            pass
+        elif currstate == "clear_document":
+            self.on_clear_document_activate(None)
+        elif currstate == "new_document":
+            pass
+        elif currstate == "save_document":
+            pass
+        elif currstate == "close_document":
+            pass
+        elif currstate == "error_state":
+            logger.debug("Some Error ######")
+            self.bottom_bar_text_set("Some Error")
         else:
             logger.debug("End Background Call Handler")
             self.bottom_bar_text_set("Turned OFF")
@@ -408,6 +449,7 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
             icon.set_from_pixbuf(scaled_ico)
             return icon
         except:
+            # We don't care what error came up, just use someother icon
             # Icon not found on disk, using default
             icon = Gtk.Image.new_from_icon_name("Nothing", 4)
             return icon

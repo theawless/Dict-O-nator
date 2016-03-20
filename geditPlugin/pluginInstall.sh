@@ -14,12 +14,16 @@ sudo pip3 install pocketsphinx
 
 echo "Making Directory"
 sudo mkdir ~/.local/share/gedit/plugins/
+sudo mkdir ~/.local/share/gedit/plugins/DicNator/
+sudo mkdir ~/.local/share/gedit/plugins/DicNator/Logs/
 
 echo "Moving Files"
 cp pyDictator.plugin ~/.local/share/gedit/plugins/
 cp pyDictator.py ~/.local/share/gedit/plugins/
-cp recogSpeech.py ~/.local/share/gedit/plugins/
-cp setlog.py ~/.local/share/gedit/plugins/
-cp statesMod.py ~/.local/share/gedit/plugins/
+cp DicNator/recogSpeech.py ~/.local/share/gedit/plugins/DicNator/
+cp DicNator/setlog.py ~/.local/share/gedit/plugins/DicNator/
+cp DicNator/statesMod.py ~/.local/share/gedit/plugins/DicNator/
+cp DicNator/recogSpeechBG.py ~/.local/share/gedit/plugins/DicNator/
+cp DicNator/DicNator_Icon.png ~/.local/share/gedit/plugins/DicNator/
 
 echo "Finished"
