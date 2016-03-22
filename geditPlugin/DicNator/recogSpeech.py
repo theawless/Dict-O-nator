@@ -13,7 +13,7 @@ class SpeechRecogniser:
         # initialising this global function
         self.bottom_bar_text_set = f_bottom_bar_changer
         self.plugin_is_thread_running = p_is_thread_running
-        logger.debug("Speech Recogniser initialised")
+        # logger.debug("Speech Recogniser initialised")
 
     def fix_ambient_noise(self):
         # Set threshold to ignore noises

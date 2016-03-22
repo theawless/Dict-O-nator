@@ -4,7 +4,7 @@
 import DicNator.setlog as setlog
 
 logger = setlog.logger
-logger.debug("Started States Mod")
+# logger.debug("Started States Mod")
 # defining the states
 states = {"start_dictation": {"start dictation", "start dictator", "start speaking"},
           "stop_dictation": {"stop dictation", "stop dictator", "stop dictation"},
@@ -12,7 +12,8 @@ states = {"start_dictation": {"start dictation", "start dictator", "start speaki
 
           "scroll_to_cursor": {"scroll to cursor"},
           "goto_line": {"go to line"},
-
+          "undo": {"undo", "do undo"},
+          "redo": {"redo", "do redo"},
           "cut_clipboard": {"cut clipboard", "cut to clipboard"},
           "copy_clipboard": {"copy clipboard", "copy to clipboard"},
           "paste_clipboard": {"paste clipboard", "paste from clipboard"},
@@ -22,12 +23,15 @@ states = {"start_dictation": {"start dictation", "start dictator", "start speaki
           "spacebar_input": {"spacebar", "input spacebar", "word end", "end word"},
           "sentence_end": {"sentence end", "end sentence", "full stop"},
 
-          "delete_line": {"delete line", "delete this line", "delete current line"},
-          "delete_word": {"delete word", "delete this word", "delete current word"},
+          "delete_line": {"delete line", "delete last line"},
+          "delete_word": {"delete word", "delete last word"},
           "delete_sentence": {"delete sentence", "delete this sentence", "delete current sentence", },
 
-          "clear_document": {"clear document", "empty document", "clean document", "clear file", "empty file",
-                             "clean file"},
+          "delete_line2": {""},
+          "delete_word2": {""},
+          "delete_sentence2": {""},
+
+          "clear_document": {"clear document", "empty document", "clear file", "empty file"},
           "new_document": {"new document", "new file"},
           "save_document": {"save document", "save file"},
           "close_document": {"close document", "close file"},

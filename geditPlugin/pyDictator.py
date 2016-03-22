@@ -16,7 +16,9 @@ import DicNator.statesMod as statesMod
 states = statesMod.states
 # Setting up logger
 logger = setlog.logger
-logger.debug('Start Plugin')
+
+
+##logger.debug('Start Plugin')
 
 
 class BackgroundThread(threading.Thread):
@@ -24,16 +26,19 @@ class BackgroundThread(threading.Thread):
         threading.Thread.__init__(self)
         # getting the plugin instance so we can call its functions
         self.plugin_instance = instance
+        logger.debug("BG INIT")
 
     def run(self):
         # call the bgcallhandler in this thread
-        logger.debug(self.name + " run thread")
+        ##logger.debug(self.name + " run thread")
         self.plugin_instance.bgcallhandler()
 
     def stop(self):
-        # not implemented
-        logger.debug(self.name + " stop thread")
-        pass
+        del self.plugin_instance
+        # logger.debug(self.name + " stop thread")
+
+    def __del__(self):
+        logger.debug("BG DEL")
 
 
 class ConfigurableWidgetSettings:
@@ -65,8 +70,16 @@ class ConfigurableWidgetSettings:
         self.att_app_secret_label = Gtk.Label("AT&T app secret")
         self.ibm_username_label = Gtk.Label("IBM Username")
         self.ibm_password_label = Gtk.Label("IBM Password")
+        # initialising all radio buttons
+        self.sphinx_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=None, label="Sphinx")
+        self.google_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=self.sphinx_radio,
+                                                                       label="Google")
+        self.wit_ai_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=self.sphinx_radio,
+                                                                       label="WIT AI")
+        self.att_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=self.sphinx_radio, label="ATT&T")
+        self.ibm_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=self.sphinx_radio, label="IBM")
 
-        logger.debug("Configurable Widget Init end")
+        logger.debug("Settings INIT")
 
     def _get_labeled_boxes(self):
         self.google_box.pack_start(self.google_api_key_label, True, False, 6)
@@ -103,7 +116,7 @@ class ConfigurableWidgetSettings:
         self.ibm_password.set_text(_settings['IBM']['password'])
         self.att_app_key.set_text(_settings['ATT']['app_key'])
         self.att_app_secret.set_text(_settings['ATT']['app_secret'])
-        logger.debug("Got save text boxes")
+        # logger.debug("Got save text boxes")
 
     def _default_settings(self):
         # Default settings
@@ -121,17 +134,17 @@ class ConfigurableWidgetSettings:
         config = self._default_settings()
         config.read(gedit_plugin_path + '/DicNator/DicNator_Settings.ini')
         dictionary = {}
-        logger.debug("Loading settings")
+        # logger.debug("Loading settings")
         for section in config.sections():
             dictionary[section] = {}
             for option in config.options(section):
                 dictionary[section][option] = config.get(section, option)
-        logger.debug("loaded settings")
+        # logger.debug("loaded settings")
         return dictionary
 
     def save_settings(self):
         # Saving settings
-        logger.debug("Saving settings")
+        # logger.debug("Saving settings")
         config = self._default_settings()
         _settings = ConfigurableWidgetSettings.settings
         config['Main'] = {'recogniser': _settings['Main']['recogniser']}
@@ -142,62 +155,57 @@ class ConfigurableWidgetSettings:
         # Write new values to the configuration file
         with open(gedit_plugin_path + '/DicNator/DicNator_Settings.ini', 'w+') as configfile:
             config.write(configfile)
-        logger.debug("Saved settings")
+            # logger.debug("Saved settings")
 
-    def _get_configured_radio_buttons(self):
+    def _get_radio_buttons(self):
+        # Connecting all buttons to the callback function
+        self.sphinx_radio.connect("toggled", self._radio_callback, "Sphinx")
+        self.google_radio.connect("toggled", self._radio_callback, "Google")
+        self.wit_ai_radio.connect("toggled", self._radio_callback, "WITAI")
+        self.att_radio.connect("toggled", self._radio_callback, "ATT")
+        self.ibm_radio.connect("toggled", self._radio_callback, "IBM")
+        self.configure_radios()
+        # packing all radios
+        self.radio_box.pack_start(self.sphinx_radio, True, False, 6)
+        self.radio_box.pack_start(self.google_radio, True, False, 6)
+        self.radio_box.pack_start(self.wit_ai_radio, True, False, 6)
+        self.radio_box.pack_start(self.att_radio, True, False, 6)
+        self.radio_box.pack_start(self.ibm_radio, True, False, 6)
+        # logger.debug("Finished packing radioboxes")
+
+    def configure_radios(self):
         # Load the radio buttons with settings
         _settings = ConfigurableWidgetSettings.settings
-        # initialising all radio buttons
-        sphinx_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=None, label="Sphinx")
-        google_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=sphinx_radio, label="Google")
-        wit_ai_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=sphinx_radio, label="WIT AI")
-        att_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=sphinx_radio, label="ATT&T")
-        ibm_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=sphinx_radio, label="IBM")
-        # Connecting all buttons to the callback function
-        sphinx_radio.connect("toggled", self._radio_callback, "Sphinx")
-        google_radio.connect("toggled", self._radio_callback, "Google")
-        wit_ai_radio.connect("toggled", self._radio_callback, "WITAI")
-        att_radio.connect("toggled", self._radio_callback, "ATT")
-        ibm_radio.connect("toggled", self._radio_callback, "IBM")
-        # setting the correct value
+
         if _settings['Main']['recogniser'] == "Sphinx":
-            sphinx_radio.set_active(True)
+            self.sphinx_radio.set_active(True)
         elif _settings['Main']['recogniser'] == "Google":
-            google_radio.set_active(True)
+            self.google_radio.set_active(True)
         elif _settings['Main']['recogniser'] == "WITAI":
-            wit_ai_radio.set_active(True)
+            self.wit_ai_radio.set_active(True)
         elif _settings['Main']['recogniser'] == "IBM":
-            ibm_radio.set_active(True)
+            self.ibm_radio.set_active(True)
         elif _settings['Main']['recogniser'] == "ATT":
-            att_radio.set_active(True)
-        # packing all radios
-        self.radio_box.pack_start(sphinx_radio, True, False, 6)
-        self.radio_box.pack_start(google_radio, True, False, 6)
-        self.radio_box.pack_start(wit_ai_radio, True, False, 6)
-        self.radio_box.pack_start(att_radio, True, False, 6)
-        self.radio_box.pack_start(ibm_radio, True, False, 6)
-        logger.debug("Finished packing radioboxes")
+            self.att_radio.set_active(True)
 
     def _radio_callback(self, widget, data):
         # Define what happens when Radio options are selected
-        logger.debug("%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()]))
+        # logger.debug("%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()]))
         # All radio_callback are called simultaneously, checking which one went active
-
         if widget.get_active():
             ConfigurableWidgetSettings.settings['Main']['recogniser'] = data
             self._choose_labelled_input_boxes()
             self.save_settings()
 
     def _choose_labelled_input_boxes(self):
-        logger.debug("choosing input box")
-        # hiding everything
+        # choosing input box
         self.google_box.set_sensitive(False)
         self.ibm_box.set_sensitive(False)
         self.att_box.set_sensitive(False)
         self.witai_box.set_sensitive(False)
-        logger.debug("Hidden everything")
+        # logger.debug("Hidden everything")
         data = ConfigurableWidgetSettings.settings['Main']['recogniser']
-        logger.debug(data)
+        # logger.debug(data)
         if data == 'Google':
             self.google_box.set_sensitive(True)
         elif data == 'WITAI':
@@ -211,6 +219,15 @@ class ConfigurableWidgetSettings:
         confirm_api_button = Gtk.Button.new_with_label("Save these values")
         confirm_api_button.connect("clicked", self._confirm_configuration)
         self.input_box.pack_start(confirm_api_button, False, False, 6)
+        default_api_button = Gtk.Button.new_with_label("Load Default Values")
+        default_api_button.connect("clicked", self._default_configuration)
+        self.input_box.pack_start(default_api_button, False, False, 6)
+
+    def _default_configuration(self, button):
+        ConfigurableWidgetSettings.settings = self._default_settings()
+        self.save_settings()
+        self._get_input_saved_text_boxes()
+        self.configure_radios()
 
     def _confirm_configuration(self, button):
         ConfigurableWidgetSettings.settings['Google']['api_key'] = self.google_api_key.get_text()
@@ -222,10 +239,10 @@ class ConfigurableWidgetSettings:
         self.save_settings()
 
     def get_configure_box(self):
-        logger.debug("Got in get_configure_box")
+        # logger.debug("Got in get_configure_box")
         ConfigurableWidgetSettings.settings = self.load_settings()
         self._get_labeled_boxes()
-        self._get_configured_radio_buttons()
+        self._get_radio_buttons()
         self._get_input_saved_text_boxes()
         self._pack_in_input_box()
         self._setup_confirm_button()
@@ -234,13 +251,41 @@ class ConfigurableWidgetSettings:
         self.full_box.pack_start(self.input_box, False, False, 6)
         return self.full_box
 
+    def stop(self):
+        del self.full_box
+        del self.radio_box
+        del self.input_box
+        del self.google_box
+        del self.witai_box
+        del self.ibm_box
+        del self.att_box
+        del self.att_app_key_box
+        del self.att_app_secret_box
+        del self.ibm_username_box
+        del self.ibm_password_box
+        del self.google_api_key
+        del self.witai_api_key
+        del self.att_app_key
+        del self.att_app_secret
+        del self.ibm_username
+        del self.ibm_password
+        del self.google_api_key_label
+        del self.witai_api_key_label
+        del self.att_app_key_label
+        del self.att_app_secret_label
+        del self.ibm_username_label
+        del self.ibm_password_label
+
+    def __del__(self):
+        logger.debug("Settings DEL")
+
 
 class DicNatorPlugin:
     def __init__(self, f_bottom_bar_changer):
         # Constructor
         # Will update window from UIClass
         self.window = None
-        # A dictionary to hold settings
+        # A manager to handle settings
         self.setting_manager = ConfigurableWidgetSettings()
         # Using like a global function
         self.bottom_bar_text_set = f_bottom_bar_changer
@@ -249,6 +294,7 @@ class DicNatorPlugin:
         self._thread_is_running = False
         self.demand_fix_ambient_noise = True
         self.s_recogniser = recogSpeech.SpeechRecogniser(f_bottom_bar_changer, self.thread_run_get)
+        logger.debug("Actions INIT")
 
     def thread_run_get(self):
         return self._thread_is_running
@@ -256,20 +302,12 @@ class DicNatorPlugin:
     def thread_run_set(self, bool_state):
         self._thread_is_running = bool_state
 
-    def on_clear_document_activate(self, action):
-        # Clears the document
-        doc = self.window.get_active_document()
-        if not doc:
-            return
-        doc.set_text('')
-        logger.debug("cleared the doc")
-
     def on_logit_activate(self, action):
-        pass
+        self.inserttext("Logit")
 
     def on_setup_activate(self, action):
         # Demanding noise fix
-        logger.debug("Demand noise variable set to True")
+        # logger.debug("Demand noise variable set to True")
         self.on_stop_activate(action)
         self.demand_fix_ambient_noise = True
 
@@ -277,20 +315,20 @@ class DicNatorPlugin:
         # For debugging purposes start recogniser thread
         if self.thread_run_get():
             self.on_stop_activate(action)
-        logger.debug('Thread Started')
+        # logger.debug('Thread Started')
         self.thread_run_set(True)
         self.thread.start()
 
     def on_stop_activate(self, action):
         # For debugging purposes stop recogniser thread
         if self.thread_run_get():
-            logger.debug('Thread Stopping')
+            # logger.debug('Thread Stopping')
             self.thread_run_set(False)
             self.thread.stop()
             self.thread.join()
             self.bottom_bar_text_set("Turned OFF")
             self.thread = BackgroundThread(self)
-            logger.debug('Stopped')
+            # logger.debug('Stopped')
 
     def inserttext(self, text="Default insertText"):
         # Inserts the text in the document
@@ -298,7 +336,7 @@ class DicNatorPlugin:
         doc.begin_user_action()
         doc.insert_at_cursor(text)
         doc.end_user_action()
-        logger.debug("Inserted Text")
+        # logger.debug("Inserted Text")
 
     def _callrecog(self):
         # Calls recognizer and gets the text output
@@ -308,32 +346,31 @@ class DicNatorPlugin:
 
     def bgcallhandler(self):
         # Based on output by the callRecog we proceed further
-        logger.debug("Inside bgcallhandler")
+        # logger.debug("Inside bgcallhandler")
         # Check if ambient noise fix was called for
         if self.demand_fix_ambient_noise:
-            logger.debug("Demanding noise fix")
+            # logger.debug("Demanding noise fix")
             self.bottom_bar_text_set("Setting up Dictator, Please wait for a few seconds")
             self.s_recogniser.fix_ambient_noise()
             self.bottom_bar_text_set("Dict0Nator has been setup")
             self.demand_fix_ambient_noise = False
-            logger.debug("Noise Fix Done")
+            # logger.debug("Noise Fix Done")
 
         self.bottom_bar_text_set("Speak Now!")
         (text, currstate) = self._callrecog()
-        logger.debug("received text is " + text)
+        # logger.debug("received text is " + text)
 
         if not self.thread_run_get():
-            logger.debug("Thread not running")
+            # logger.debug("Thread not running")
             self.thread.join()
             self.bottom_bar_text_set("Turned OFF")
-
             return
 
         if currstate == "start_dictation":
             self.inserttext(text)
             self.bgcallhandler()
         elif currstate == "stop_dictation":
-            logger.debug("End Background Call Handler")
+            # logger.debug("End Background Call Handler")
             self.bottom_bar_text_set("Turned OFF")
             return
         elif currstate == "hold_dictation":
@@ -343,6 +380,14 @@ class DicNatorPlugin:
             vi.scroll_to_cursor()
         elif currstate == "goto_line":
             pass
+        elif currstate == "undo":
+            doc = self.window.get_active_document()
+            if doc.can_undo():
+                doc.undo()
+        elif currstate == "redo":
+            doc = self.window.get_active_document()
+            if doc.can_redo():
+                doc.redo()
         elif currstate == "cut_clipboard":
             vi = self.window.get_active_view()
             vi.cut_clipboard()
@@ -365,15 +410,30 @@ class DicNatorPlugin:
             self.inserttext('.')
             self.bgcallhandler()
         elif currstate == "delete_line":
-            pass
-        elif currstate == "delete_word":
-            pass
+            doc = self.window.get_active_document()
+            ei = doc.get_end_iter()
+            nei = doc.get_end_iter()
+            nei.backward_line()
+            doc.delete(nei, ei)
         elif currstate == "delete_sentence":
-            pass
+            doc = self.window.get_active_document()
+            ei = doc.get_end_iter()
+            nei = doc.get_end_iter()
+            nei.backward_sentence_start()
+            doc.delete(nei, ei)
+        elif currstate == "delete_word":
+            doc = self.window.get_active_document()
+            ei = doc.get_end_iter()
+            nei = doc.get_end_iter()
+            nei.backward_word_start()
+            doc.delete(nei, ei)
         elif currstate == "clear_document":
-            self.on_clear_document_activate(None)
+            doc = self.window.get_active_document()
+            if not doc:
+                return
+            doc.set_text('')
         elif currstate == "new_document":
-            pass
+            self.window.create_tab(True)
         elif currstate == "save_document":
             doc = self.window.get_active_document()
             if doc.is_untitled():
@@ -381,14 +441,29 @@ class DicNatorPlugin:
             else:
                 doc.save(Gedit.DocumentSaveFlags(15))
         elif currstate == "close_document":
-            pass
+            if self.window.get_active_document.is_untouched():
+                self.window.close_tab(self.window.get_active_tab())
+            else:
+                self.bottom_bar_text_set("You might wanna save the document before quitting.")
         elif currstate == "error_state":
-            logger.debug("Some Error ######")
+            # logger.debug("Some Error ######")
             self.bottom_bar_text_set("Some Error")
         else:
-            logger.debug("End Background Call Handler")
+            # logger.debug("End Background Call Handler")
             self.bottom_bar_text_set("Turned OFF")
             return
+
+    def stop(self):
+        del self.window
+        del self.setting_manager
+        del self.bottom_bar_text_set
+        del self.thread
+        del self._thread_is_running
+        del self.demand_fix_ambient_noise
+        del self.s_recogniser
+
+    def __del__(self):
+        logger.debug("Actions DEL")
 
 
 class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
@@ -402,7 +477,6 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
                     <menu name="ToolsMenu" action="Tools">
                       <placeholder name="ToolsOps_2">
                         <menu name="DicNator" action="DicNator">
-                          <menuitem name="Clear" action="Clear"/>
                           <menuitem name="Listen" action="Listen"/>
                           <menuitem name="Stop" action="Stop"/>
                           <menuitem name="Setup Dictator" action="Setup Dictator"/>
@@ -421,9 +495,10 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
         self._bottom_widget = None
         # Get the plugin manager
         self.plugin_manager = DicNatorPlugin(self.bottom_bar_text_changer)
-        logger.debug('Init end')
+        logger.debug('UI INIT')
 
     def do_update_state(self):
+        self.plugin_manager.window = self.window
         self._action_group.set_sensitive(self.window.get_active_document() is not None)
 
     def do_activate(self):
@@ -437,8 +512,6 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
         # Define actions and merge into UImanager
         actions = [
             ('DicNator', None, 'DicNator'),
-            ("Clear", None, "Clear Document", '<Control><Alt>1', "Clear the document",
-             self.plugin_manager.on_clear_document_activate),
             ("Listen", None, "Start Listening", '<Control><Alt>2', "Start Listening",
              self.plugin_manager.on_listen_activate),
             ("Stop", None, "Stop Listening", '<Control><Alt>3', "Stop Listening",
@@ -461,7 +534,7 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
         icon = Gtk.Image()
         try:
             buf = GdkPixbuf.Pixbuf.new_from_file(gedit_plugin_path + '/DicNator/DicNator_Icon.png')
-            logger.debug("Icon file found")
+            # logger.debug("Icon file found")
             scaled_ico = buf.scale_simple(size_x, size_y, GdkPixbuf.InterpType.BILINEAR)
             icon.set_from_pixbuf(scaled_ico)
             return icon
@@ -482,9 +555,11 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
 
     def do_deactivate(self):
         # Remove menu items and bottom bar
+        logger.debug("DEACTIVATING")
         self._remove_menu()
         self._remove_bottom_panel()
         self._action_group = None
+        self.stop()
 
     def _remove_menu(self):
         manager = self.window.get_ui_manager()
@@ -496,7 +571,7 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
     def _remove_bottom_panel(self):
         panel = self.window.get_bottom_panel()
         panel.remove_item(self._bottom_widget)
-        logger.debug("Removed bottom bar")
+        # logger.debug("Removed bottom bar")
 
     def do_create_configure_widget(self):
         # Implement the configuration box in plugin preferences
@@ -504,7 +579,7 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
         widget_vbox.set_border_width(6)
         widget_vbox.set_spacing(10)
         label = Gtk.Label("Select Speech Recogniser")
-        logger.debug("Inserted label")
+        # logger.debug("Inserted label")
         settings_box = self.plugin_manager.setting_manager.get_configure_box()
         # Get icon
         icon = self.get_icon(50, 50)
@@ -519,4 +594,13 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
         if self._bottom_widget is not None:
             self._bottom_widget.set_text(txt)
         else:
-            logger.debug("Tried to set bottom text after disabling plugin")
+            # logger.debug("Tried to set bottom text after disabling plugin")
+            pass
+
+    def stop(self):
+        self.plugin_manager.setting_manager.stop()
+        self.plugin_manager.stop()
+        del self.plugin_manager
+
+    def __del__(self):
+        logger.debug("UI DEL")

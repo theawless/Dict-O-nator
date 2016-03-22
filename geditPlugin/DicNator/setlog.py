@@ -23,7 +23,7 @@ def setup_logger():
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 
-    logger.debug('Setlog logger setup done')
+    # logger.debug('Setlog logger setup done')
 
 
 setup_logger()

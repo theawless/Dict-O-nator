@@ -118,13 +118,13 @@ def callback(r, audio, settings):
             return recognized_text
 
 
-r = sr.Recognizer()
+re = sr.Recognizer()
 m = sr.Microphone()
 with m as source:
-    r.adjust_for_ambient_noise(source)  # we only need to calibrate once, before we start listening
+    re.adjust_for_ambient_noise(source)  # we only need to calibrate once, before we start listening
 
 # start listening in the background (note that we don't have to do this inside a `with` statement)
-stop_listening = r.listen_in_background(m, callback)
+stop_listening = re.listen_in_background(m, callback)
 # `stop_listening` is now a function that, when called, stops background listening
 
 # do some other computation for 5 seconds, then stop listening and keep doing other computations
