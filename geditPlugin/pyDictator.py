@@ -3,6 +3,7 @@
 import sys
 
 gedit_plugin_path = '.local/share/gedit/plugins'
+gedit_default_save_as_path = 'Desktop/'
 sys.path.append(gedit_plugin_path)
 import DicNator.setlog as setlog
 import configparser
@@ -263,6 +264,9 @@ class DicNatorPlugin:
         doc.set_text('')
         logger.debug("cleared the doc")
 
+    def on_logit_activate(self, action):
+        pass
+
     def on_setup_activate(self, action):
         # Demanding noise fix
         logger.debug("Demand noise variable set to True")
@@ -298,7 +302,7 @@ class DicNatorPlugin:
 
     def _callrecog(self):
         # Calls recognizer and gets the text output
-        _textout = self.s_recogniser.recog(self.setting_manager.load_settings())
+        _textout = self.s_recogniser.recog(ConfigurableWidgetSettings.settings)
         _state = statesMod.decide_state(_textout)
         return _textout, _state
 
@@ -310,7 +314,7 @@ class DicNatorPlugin:
             logger.debug("Demanding noise fix")
             self.bottom_bar_text_set("Setting up Dictator, Please wait for a few seconds")
             self.s_recogniser.fix_ambient_noise()
-            self.bottom_bar_text_set("DicNator has been setup")
+            self.bottom_bar_text_set("Dict0Nator has been setup")
             self.demand_fix_ambient_noise = False
             logger.debug("Noise Fix Done")
 
@@ -335,19 +339,25 @@ class DicNatorPlugin:
         elif currstate == "hold_dictation":
             pass
         elif currstate == "scroll_to_cursor":
-            pass
+            vi = self.window.get_active_view()
+            vi.scroll_to_cursor()
         elif currstate == "goto_line":
             pass
         elif currstate == "cut_clipboard":
-            pass
+            vi = self.window.get_active_view()
+            vi.cut_clipboard()
         elif currstate == "copy_clipboard":
-            pass
+            vi = self.window.get_active_view()
+            vi.copy_clipboard()
         elif currstate == "paste_clipboard":
-            pass
+            vi = self.window.get_active_view()
+            vi.paste_clipboard()
         elif currstate == "delete_selection":
-            pass
+            vi = self.window.get_active_view()
+            vi.delete_selection()
         elif currstate == "select_all":
-            pass
+            vi = self.window.get_active_view()
+            vi.select_all()
         elif currstate == "spacebar_input":
             self.inserttext(' ')
             self.bgcallhandler()
@@ -365,7 +375,11 @@ class DicNatorPlugin:
         elif currstate == "new_document":
             pass
         elif currstate == "save_document":
-            pass
+            doc = self.window.get_active_document()
+            if doc.is_untitled():
+                self.bottom_bar_text_set("Can't save. First save should be Save as")
+            else:
+                doc.save(Gedit.DocumentSaveFlags(15))
         elif currstate == "close_document":
             pass
         elif currstate == "error_state":
@@ -392,6 +406,7 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
                           <menuitem name="Listen" action="Listen"/>
                           <menuitem name="Stop" action="Stop"/>
                           <menuitem name="Setup Dictator" action="Setup Dictator"/>
+                          <menuitem name="Logit" action="Logit"/>
                         </menu>
                       </placeholder>
                     </menu>
@@ -429,7 +444,9 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
             ("Stop", None, "Stop Listening", '<Control><Alt>3', "Stop Listening",
              self.plugin_manager.on_stop_activate),
             ("Setup Dictator", None, "Setup Dictator", '<Control><Alt>4', "Setup Dicatator",
-             self.plugin_manager.on_setup_activate)
+             self.plugin_manager.on_setup_activate),
+            ("Logit", None, "Logit", '<Control><Alt>5', "Logit",
+             self.plugin_manager.on_logit_activate),
         ]
 
         # Get the Gtk.UIManager
