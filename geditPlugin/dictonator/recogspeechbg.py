@@ -1,5 +1,5 @@
 import speech_recognition as sr
-import DicNator.setlog
+import dictonator.setlog
 
 # setting up logger
 logger = DicNator.setlog.logger

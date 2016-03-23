@@ -2,9 +2,7 @@
 
 import speech_recognition as sr
 # Setting up logger
-import DicNator.setlog as setlog
-
-logger = setlog.logger
+from dictonator.setlog import logger
 
 
 class SpeechRecogniser:
@@ -13,21 +11,20 @@ class SpeechRecogniser:
         # initialising this global function
         self.bottom_bar_text_set = f_bottom_bar_changer
         self.plugin_is_thread_running = p_is_thread_running
-        # logger.debug("Speech Recogniser initialised")
+        logger.debug("Speech Recogniser initialised")
 
     def fix_ambient_noise(self):
         # Set threshold to ignore noises
-        logger.debug("Ignore noises")
         with sr.Microphone() as source:
             try:
                 self.r.adjust_for_ambient_noise(source, 2)
             except Exception as e:
                 logger.debug(str(e))
                 self.bottom_bar_text_set(str(e))
-        logger.debug("done")
 
     def recog(self, settings):
         sel = settings['Main']['recogniser']
+        logger.debug("Entered recog")
         # The main recognizer function that inputs audio and returns texts
         if not self.plugin_is_thread_running():
             # Check if the thread is running or it got cancelled

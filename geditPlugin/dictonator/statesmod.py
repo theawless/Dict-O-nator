@@ -1,10 +1,8 @@
 # !/usr/bin/python3
 
 # setting up logger
-import DicNator.setlog as setlog
+from dictonator.setlog import logger
 
-logger = setlog.logger
-# logger.debug("Started States Mod")
 # defining the states
 states = {"start_dictation": {"start dictation", "start dictator", "start speaking"},
           "stop_dictation": {"stop dictation", "stop dictator", "stop dictation"},
@@ -43,7 +41,7 @@ states = {"start_dictation": {"start dictation", "start dictator", "start speaki
 
 
 def decide_state(txt):
-    # Deciding states
+    # Deciding states from the dictionary
     cstate = "start_dictation"
     for state in states:
         if txt in states[state]:

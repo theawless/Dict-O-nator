@@ -1,24 +1,15 @@
 #!/usr/bin/python3
 
-import sys
+from gi.repository import GObject, Gtk, Gedit, PeasGtk, GdkPixbuf
+from .setlog import logger
+from .configurablesettings import ConfigurableDialogBox, PluginSettings
+import threading
+from .recogspeech import SpeechRecogniser
+from .saveasdialog import FileSaver
+from .setlog import logger
+from .statesmod import states
 
 gedit_plugin_path = '.local/share/gedit/plugins'
-sys.path.append(gedit_plugin_path)
-import DicNator.setlog as setlog
-import DicNator.SaveAsDialog as SaveAsDialog
-from gi.repository import GObject, Gtk, Gedit, PeasGtk, GdkPixbuf
-import DicNator.recogSpeech as recogSpeech
-import threading
-import DicNator.statesMod as statesMod
-import DicNator.ConfigurableSettings as configurableSettings
-
-# Getting the states
-states = statesMod.states
-# Setting up logger
-logger = setlog.logger
-
-
-##logger.debug('Start Plugin')
 
 
 class BackgroundThread(threading.Thread):
@@ -41,20 +32,20 @@ class BackgroundThread(threading.Thread):
         logger.debug("BG DEL")
 
 
-class DicNatorPlugin:
+class DictonatorPluginActions:
     def __init__(self, f_bottom_bar_changer):
         # Constructor
         # Will update window from UIClass
         self.window = None
         # A manager to handle settings
-        self.setting_manager = configurableSettings.ConfigurableWidgetSettings()
+        self.setting_manager = PluginSettings()
         # Using like a global function
         self.bottom_bar_text_set = f_bottom_bar_changer
         # each class has its own recogniser thread
         self.thread = BackgroundThread(self)
         self._thread_is_running = False
         self.demand_fix_ambient_noise = True
-        self.s_recogniser = recogSpeech.SpeechRecogniser(f_bottom_bar_changer, self.thread_run_get)
+        self.s_recogniser = SpeechRecogniser(f_bottom_bar_changer, self.thread_run_get)
         logger.debug("Actions INIT")
 
     def thread_run_get(self):
@@ -70,7 +61,7 @@ class DicNatorPlugin:
         self.demand_fix_ambient_noise = True
 
     def on_listen_activate(self, action):
-        # For debugging purposes start recogniser thread
+        # Start recogniser thread
         if self.thread_run_get():
             self.on_stop_activate(action)
         # logger.debug('Thread Started')
@@ -78,7 +69,7 @@ class DicNatorPlugin:
         self.thread.start()
 
     def on_stop_activate(self, action):
-        # For debugging purposes stop recogniser thread
+        # Stop recogniser thread
         if self.thread_run_get():
             # logger.debug('Thread Stopping')
             self.thread_run_set(False)
@@ -90,8 +81,9 @@ class DicNatorPlugin:
 
     def _callrecog(self):
         # Calls recognizer and gets the text output
-        _textout = self.s_recogniser.recog(configurableSettings.ConfigurableWidgetSettings.settings)
-        _state = statesMod.decide_state(_textout)
+        _textout = self.s_recogniser.recog(PluginSettings.settings)
+        logger.debug("Getting States")
+        _state = states.decide_state(_textout)
         return _textout, _state
 
     def inserttext(self, text):
@@ -102,12 +94,15 @@ class DicNatorPlugin:
         doc.end_user_action()
         # logger.debug("Inserted Text")
 
-    def _get_cursor_position(self, doc):
+    @staticmethod
+    def _get_cursor_position(doc):
+        # gets the current cursor position, Gtk+ 2.1 has this inbuilt
         c_mark = doc.get_insert()
-        iter = doc.get_iter_at_mark(c_mark)
-        return iter
+        i = doc.get_iter_at_mark(c_mark)
+        return i
 
     def on_logit_activate(self, action):
+        # a fuction to test other functions
         logger.debug("logit")
         doc = self.window.get_active_document()
         ei = self._get_cursor_position(doc)
@@ -120,6 +115,7 @@ class DicNatorPlugin:
     def bgcallhandler(self):
         # Based on output by the callRecog we proceed further
         # logger.debug("Inside bgcallhandler")
+
         # Check if ambient noise fix was called for
         if self.demand_fix_ambient_noise:
             # logger.debug("Demanding noise fix")
@@ -227,23 +223,24 @@ class DicNatorPlugin:
             self.window.create_tab(True)
         elif currstate == "save_document":
             doc = self.window.get_active_document()
+            # checking if the document is a new document
             if doc.is_untitled():
                 self.bottom_bar_text_set("First save should be Save As...")
-                SaveAsDialog.FileSaver(self.window)
+                FileSaver(self.window)
             else:
                 doc.save(Gedit.DocumentSaveFlags(15))
         elif currstate == "save_as_document":
-            SaveAsDialog.FileSaver(self.window)
+            FileSaver(self.window)
         elif currstate == "close_document":
             if self.window.get_active_document.is_untouched():
                 self.window.close_tab(self.window.get_active_tab())
             else:
+                # to prevent data loss
                 self.bottom_bar_text_set("You might wanna save the document before quitting.")
         elif currstate == "force_close_document":
             self.window.close_tab(self.window.get_active_tab())
         elif currstate == "error_state":
-            # logger.debug("Some Error ######")
-            self.bottom_bar_text_set("Some Error")
+            logger.debug("Some Error ######")
         else:
             # logger.debug("End Background Call Handler")
             self.bottom_bar_text_set("Turned OFF")
@@ -262,8 +259,8 @@ class DicNatorPlugin:
         logger.debug("Actions DEL")
 
 
-class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
-    __gtype_name__ = "DicNator"
+class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
+    __gtype_name__ = "Dictonator"
     window = GObject.property(type=Gedit.Window)
 
     # Defining the UI string that is to be added
@@ -272,7 +269,7 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
                   <menubar name="MenuBar">
                     <menu name="ToolsMenu" action="Tools">
                       <placeholder name="ToolsOps_2">
-                        <menu name="DicNator" action="DicNator">
+                        <menu name="Dictonator" action="Dictonator">
                           <menuitem name="Listen" action="Listen"/>
                           <menuitem name="Stop" action="Stop"/>
                           <menuitem name="Setup Dictator" action="Setup Dictator"/>
@@ -287,10 +284,10 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
     def __init__(self):
         # Main plugin Constructor
         GObject.Object.__init__(self)
-        self._action_group = Gtk.ActionGroup("DicNatorPluginActions")
+        self._action_group = Gtk.ActionGroup("DictonatorPluginActions")
         self._bottom_widget = None
         # Get the plugin manager
-        self.plugin_manager = DicNatorPlugin(self.bottom_bar_text_changer)
+        self.plugin_manager = DictonatorPluginActions(self.bottom_bar_text_changer)
         logger.debug('UI INIT')
 
     def do_update_state(self):
@@ -307,7 +304,7 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
     def _insert_menu(self):
         # Define actions and merge into UImanager
         actions = [
-            ('DicNator', None, 'DicNator'),
+            ('Dictonator', None, 'Dictonator'),
             ("Listen", None, "Start Listening", '<Control><Alt>2', "Start Listening",
              self.plugin_manager.on_listen_activate),
             ("Stop", None, "Stop Listening", '<Control><Alt>3', "Stop Listening",
@@ -325,26 +322,28 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
         # Merge the UI
         self._ui_id = manager.add_ui_from_string(self.ui_str)
 
-    def get_icon(self, size_x, size_y):
-        # Get icon from disk and scale it basec on parameters given
+    @staticmethod
+    def get_icon(size_x, size_y):
+        # Get icon from disk and scale it based on parameters given
         icon = Gtk.Image()
         try:
-            buf = GdkPixbuf.Pixbuf.new_from_file(gedit_plugin_path + '/DicNator/DicNator_Icon.png')
+            buf = GdkPixbuf.Pixbuf.new_from_file(gedit_plugin_path + '/dictonator/logo.png')
             # logger.debug("Icon file found")
             scaled_ico = buf.scale_simple(size_x, size_y, GdkPixbuf.InterpType.BILINEAR)
             icon.set_from_pixbuf(scaled_ico)
             return icon
-        except:
-            # We don't care what error came up, just use someother icon
-            # Icon not found on disk, using default
+        except Exception as e:
+            # We don't care what error came up, just use some other icon from stock
+            logger.debug(str(e))
             icon = Gtk.Image.new_from_icon_name("Nothing", 4)
             return icon
 
     def _insert_bottom_panel(self):
+        # Implement the Plugin into bottom bar
         icon = self.get_icon(20, 20)
-        self._bottom_widget = Gtk.Label("Welcome to DicNator!  Start by speaking \"Start Dictation\"")
+        self._bottom_widget = Gtk.Label("Welcome to Dict'O'nator!  Start by speaking \"Start Dictation\"")
         panel = self.window.get_bottom_panel()
-        panel.add_item(self._bottom_widget, "DicNator", "DicNator", icon)
+        panel.add_item(self._bottom_widget, "Dictonator", "Dict'O'nator", icon)
         panel.activate_item(self._bottom_widget)
         # Make sure that the bottom bar shows up
         panel.show()
@@ -376,7 +375,7 @@ class DicNatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
         widget_vbox.set_spacing(10)
         label = Gtk.Label("Select Speech Recogniser")
         # logger.debug("Inserted label")
-        settings_box = self.plugin_manager.setting_manager.get_configure_box()
+        settings_box = ConfigurableDialogBox().get_configure_box()
         # Get icon
         icon = self.get_icon(50, 50)
         # Pack everything

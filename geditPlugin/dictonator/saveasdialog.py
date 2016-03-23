@@ -1,26 +1,24 @@
 import os
 from gi.repository import Gtk, Gio, Gedit
-import DicNator.setlog
-
-logger = DicNator.setlog.logger
+from dictonator.setlog import logger
 
 
 class FileSaver:
     def __init__(self, window):
-        logger.debug("in init")
         self.dialog = Gtk.FileChooserDialog("Save file", None, Gtk.FileChooserAction.SAVE, (
             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
         self.can_save = False
-        logger.debug("SUPER ERROR")
         self.handle_file_dialog(self.dialog, window)
 
     def handle_file_dialog(self, dialog, window):
-        logger.debug("Yo")
         response = dialog.run()
-        if response == Gtk.ResponseType.OK:  # OK button was pressed or existing file was double clicked
+        if response == Gtk.ResponseType.OK:
+            # OK button was pressed or existing file was double clicked
             self.can_save = False
-            if os.path.exists(dialog.get_filename()):  # does file already exists?
-                dialog2 = DialogSaveFile(window, dialog.get_filename())  # ask to confirm overwrite
+            if os.path.exists(dialog.get_filename()):
+                # does file already exists?
+                dialog2 = DialogSaveFile(window, dialog.get_filename())
+                # ask to confirm overwrite
                 response = dialog2.run()
                 if response == Gtk.ResponseType.OK:
                     self.can_save = True
@@ -32,9 +30,9 @@ class FileSaver:
                     return
             else:
                 self.can_save = True
-            if self.can_save:  # save new file
-                # open(dialog.get_filename(), "w").close()
+            if self.can_save:
                 doc = window.get_active_document()
+                # save the document with Gedit's save as function
                 gfile_path = Gio.File.new_for_path(dialog.get_filename())
                 doc.save_as(gfile_path, doc.get_encoding(), doc.get_newline_type(), doc.get_compression_type(),
                             Gedit.DocumentSaveFlags(15))
@@ -52,6 +50,6 @@ class DialogSaveFile(Gtk.Dialog):
                             (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                              Gtk.STOCK_OK, Gtk.ResponseType.OK))
         self.box = self.get_content_area()
-        self.label = Gtk.Label("The file `" + db + "` exists.\nDo you want it to be overwritten?")
+        self.label = Gtk.Label("The file `" + db + "` already exists!\nDo you want it to be overwritten?")
         self.box.add(self.label)
         self.show_all()
