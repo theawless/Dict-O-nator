@@ -17,8 +17,14 @@ class SpeechRecogniser:
 
     def fix_ambient_noise(self):
         # Set threshold to ignore noises
+        logger.debug("Ignore noises")
         with sr.Microphone() as source:
-            self.r.adjust_for_ambient_noise(source, 3)
+            try:
+                self.r.adjust_for_ambient_noise(source, 2)
+            except Exception as e:
+                logger.debug(str(e))
+                self.bottom_bar_text_set(str(e))
+        logger.debug("done")
 
     def recog(self, settings):
         sel = settings['Main']['recogniser']

@@ -34,7 +34,9 @@ states = {"start_dictation": {"start dictation", "start dictator", "start speaki
           "clear_document": {"clear document", "empty document", "clear file", "empty file"},
           "new_document": {"new document", "new file"},
           "save_document": {"save document", "save file"},
+          "Save_as_document": {"save as document", "save document as", "save as file", "save file as"},
           "close_document": {"close document", "close file"},
+          "force_close_document": {"force close document", "force close file"},
 
           "error_state": {"######"},
           }

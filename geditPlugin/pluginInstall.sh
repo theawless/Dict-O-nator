@@ -24,6 +24,10 @@ cp DicNator/recogSpeech.py ~/.local/share/gedit/plugins/DicNator/
 cp DicNator/setlog.py ~/.local/share/gedit/plugins/DicNator/
 cp DicNator/statesMod.py ~/.local/share/gedit/plugins/DicNator/
 cp DicNator/recogSpeechBG.py ~/.local/share/gedit/plugins/DicNator/
+cp DicNator/SaveAsDialog.py ~/.local/share/gedit/plugins/DicNator/
+cp DicNator/wordsToNumbers.py ~/.local/share/gedit/plugins/DicNator/
+cp DicNator/ConfigurableSettings.py ~/.local/share/gedit/plugins/DicNator/
+
 cp DicNator/DicNator_Icon.png ~/.local/share/gedit/plugins/DicNator/
 
 echo "Finished"

@@ -3,14 +3,14 @@
 import sys
 
 gedit_plugin_path = '.local/share/gedit/plugins'
-gedit_default_save_as_path = 'Desktop/'
 sys.path.append(gedit_plugin_path)
 import DicNator.setlog as setlog
-import configparser
+import DicNator.SaveAsDialog as SaveAsDialog
 from gi.repository import GObject, Gtk, Gedit, PeasGtk, GdkPixbuf
 import DicNator.recogSpeech as recogSpeech
 import threading
 import DicNator.statesMod as statesMod
+import DicNator.ConfigurableSettings as configurableSettings
 
 # Getting the states
 states = statesMod.states
@@ -30,7 +30,7 @@ class BackgroundThread(threading.Thread):
 
     def run(self):
         # call the bgcallhandler in this thread
-        ##logger.debug(self.name + " run thread")
+        # logger.debug(self.name + " run thread")
         self.plugin_instance.bgcallhandler()
 
     def stop(self):
@@ -41,252 +41,13 @@ class BackgroundThread(threading.Thread):
         logger.debug("BG DEL")
 
 
-class ConfigurableWidgetSettings:
-    settings = dict()
-
-    def __init__(self):
-        self.full_box = Gtk.VBox()
-        self.radio_box = Gtk.HBox()
-        self.input_box = Gtk.VBox()
-
-        self.google_box = Gtk.HBox()
-        self.witai_box = Gtk.HBox()
-        self.ibm_box = Gtk.VBox()
-        self.att_box = Gtk.VBox()
-        self.att_app_key_box = Gtk.HBox()
-        self.att_app_secret_box = Gtk.HBox()
-        self.ibm_username_box = Gtk.HBox()
-        self.ibm_password_box = Gtk.HBox()
-
-        self.google_api_key = Gtk.Entry()
-        self.witai_api_key = Gtk.Entry()
-        self.att_app_key = Gtk.Entry()
-        self.att_app_secret = Gtk.Entry()
-        self.ibm_username = Gtk.Entry()
-        self.ibm_password = Gtk.Entry()
-        self.google_api_key_label = Gtk.Label("Google API Key")
-        self.witai_api_key_label = Gtk.Label("WITai API Key")
-        self.att_app_key_label = Gtk.Label("ATT&T API Key")
-        self.att_app_secret_label = Gtk.Label("AT&T app secret")
-        self.ibm_username_label = Gtk.Label("IBM Username")
-        self.ibm_password_label = Gtk.Label("IBM Password")
-        # initialising all radio buttons
-        self.sphinx_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=None, label="Sphinx")
-        self.google_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=self.sphinx_radio,
-                                                                       label="Google")
-        self.wit_ai_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=self.sphinx_radio,
-                                                                       label="WIT AI")
-        self.att_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=self.sphinx_radio, label="ATT&T")
-        self.ibm_radio = Gtk.RadioButton.new_with_label_from_widget(radio_group_member=self.sphinx_radio, label="IBM")
-
-        logger.debug("Settings INIT")
-
-    def _get_labeled_boxes(self):
-        self.google_box.pack_start(self.google_api_key_label, True, False, 6)
-        self.google_box.pack_start(self.google_api_key, True, True, 6)
-
-        self.witai_box.pack_start(self.witai_api_key_label, True, False, 6)
-        self.witai_box.pack_start(self.witai_api_key, True, True, 6)
-
-        self.ibm_username_box.pack_start(self.ibm_username_label, True, False, 6)
-        self.ibm_username_box.pack_start(self.ibm_username, True, True, 6)
-        self.ibm_password_box.pack_start(self.ibm_password_label, True, False, 6)
-        self.ibm_password_box.pack_start(self.ibm_password, True, True, 6)
-        self.ibm_box.pack_start(self.ibm_username_box, True, False, 6)
-        self.ibm_box.pack_start(self.ibm_password_box, True, True, 6)
-
-        self.att_app_key_box.pack_start(self.att_app_key_label, True, False, 6)
-        self.att_app_key_box.pack_start(self.att_app_key, True, True, 6)
-        self.att_app_secret_box.pack_start(self.att_app_secret_label, True, False, 6)
-        self.att_app_secret_box.pack_start(self.att_app_secret, True, True, 6)
-        self.att_box.pack_start(self.att_app_key_box, True, False, 6)
-        self.att_box.pack_start(self.att_app_secret_box, True, True, 6)
-
-    def _pack_in_input_box(self):
-        self.input_box.pack_start(self.google_box, False, False, 6)
-        self.input_box.pack_start(self.witai_box, False, False, 6)
-        self.input_box.pack_start(self.ibm_box, False, False, 6)
-        self.input_box.pack_start(self.att_box, False, False, 6)
-
-    def _get_input_saved_text_boxes(self):
-        _settings = ConfigurableWidgetSettings.settings
-        self.google_api_key.set_text(_settings['Google']['api_key'])
-        self.witai_api_key.set_text(_settings['WITAI']['api_key'])
-        self.ibm_username.set_text(_settings['IBM']['username'])
-        self.ibm_password.set_text(_settings['IBM']['password'])
-        self.att_app_key.set_text(_settings['ATT']['app_key'])
-        self.att_app_secret.set_text(_settings['ATT']['app_secret'])
-        # logger.debug("Got save text boxes")
-
-    def _default_settings(self):
-        # Default settings
-        config = configparser.ConfigParser()
-        config['Main'] = {'recogniser': 'Sphinx'}
-        config['Sphinx'] = {'version': 'pocketsphinx'}
-        config['Google'] = {'api_key': ''}
-        config['WITAI'] = {'api_key': ''}
-        config['IBM'] = {'username': '', 'password': ''}
-        config['ATT'] = {'app_key': '', 'app_secret': ''}
-        return config
-
-    def load_settings(self):
-        # Get the configuration from file
-        config = self._default_settings()
-        config.read(gedit_plugin_path + '/DicNator/DicNator_Settings.ini')
-        dictionary = {}
-        # logger.debug("Loading settings")
-        for section in config.sections():
-            dictionary[section] = {}
-            for option in config.options(section):
-                dictionary[section][option] = config.get(section, option)
-        # logger.debug("loaded settings")
-        return dictionary
-
-    def save_settings(self):
-        # Saving settings
-        # logger.debug("Saving settings")
-        config = self._default_settings()
-        _settings = ConfigurableWidgetSettings.settings
-        config['Main'] = {'recogniser': _settings['Main']['recogniser']}
-        config['Google'] = {'api_key': _settings['Google']['api_key']}
-        config['WITAI'] = {'api_key': _settings['WITAI']['api_key']}
-        config['IBM'] = {'username': _settings['IBM']['username'], 'password': _settings['IBM']['password']}
-        config['ATT'] = {'app_key': _settings['ATT']['app_key'], 'app_secret': _settings['ATT']['app_secret']}
-        # Write new values to the configuration file
-        with open(gedit_plugin_path + '/DicNator/DicNator_Settings.ini', 'w+') as configfile:
-            config.write(configfile)
-            # logger.debug("Saved settings")
-
-    def _get_radio_buttons(self):
-        # Connecting all buttons to the callback function
-        self.sphinx_radio.connect("toggled", self._radio_callback, "Sphinx")
-        self.google_radio.connect("toggled", self._radio_callback, "Google")
-        self.wit_ai_radio.connect("toggled", self._radio_callback, "WITAI")
-        self.att_radio.connect("toggled", self._radio_callback, "ATT")
-        self.ibm_radio.connect("toggled", self._radio_callback, "IBM")
-        self.configure_radios()
-        # packing all radios
-        self.radio_box.pack_start(self.sphinx_radio, True, False, 6)
-        self.radio_box.pack_start(self.google_radio, True, False, 6)
-        self.radio_box.pack_start(self.wit_ai_radio, True, False, 6)
-        self.radio_box.pack_start(self.att_radio, True, False, 6)
-        self.radio_box.pack_start(self.ibm_radio, True, False, 6)
-        # logger.debug("Finished packing radioboxes")
-
-    def configure_radios(self):
-        # Load the radio buttons with settings
-        _settings = ConfigurableWidgetSettings.settings
-
-        if _settings['Main']['recogniser'] == "Sphinx":
-            self.sphinx_radio.set_active(True)
-        elif _settings['Main']['recogniser'] == "Google":
-            self.google_radio.set_active(True)
-        elif _settings['Main']['recogniser'] == "WITAI":
-            self.wit_ai_radio.set_active(True)
-        elif _settings['Main']['recogniser'] == "IBM":
-            self.ibm_radio.set_active(True)
-        elif _settings['Main']['recogniser'] == "ATT":
-            self.att_radio.set_active(True)
-
-    def _radio_callback(self, widget, data):
-        # Define what happens when Radio options are selected
-        # logger.debug("%s was toggled %s" % (data, ("OFF", "ON")[widget.get_active()]))
-        # All radio_callback are called simultaneously, checking which one went active
-        if widget.get_active():
-            ConfigurableWidgetSettings.settings['Main']['recogniser'] = data
-            self._choose_labelled_input_boxes()
-            self.save_settings()
-
-    def _choose_labelled_input_boxes(self):
-        # choosing input box
-        self.google_box.set_sensitive(False)
-        self.ibm_box.set_sensitive(False)
-        self.att_box.set_sensitive(False)
-        self.witai_box.set_sensitive(False)
-        # logger.debug("Hidden everything")
-        data = ConfigurableWidgetSettings.settings['Main']['recogniser']
-        # logger.debug(data)
-        if data == 'Google':
-            self.google_box.set_sensitive(True)
-        elif data == 'WITAI':
-            self.witai_box.set_sensitive(True)
-        elif data == 'ATT':
-            self.att_box.set_sensitive(True)
-        elif data == 'IBM':
-            self.ibm_box.set_sensitive(True)
-
-    def _setup_confirm_button(self):
-        confirm_api_button = Gtk.Button.new_with_label("Save these values")
-        confirm_api_button.connect("clicked", self._confirm_configuration)
-        self.input_box.pack_start(confirm_api_button, False, False, 6)
-        default_api_button = Gtk.Button.new_with_label("Load Default Values")
-        default_api_button.connect("clicked", self._default_configuration)
-        self.input_box.pack_start(default_api_button, False, False, 6)
-
-    def _default_configuration(self, button):
-        ConfigurableWidgetSettings.settings = self._default_settings()
-        self.save_settings()
-        self._get_input_saved_text_boxes()
-        self.configure_radios()
-
-    def _confirm_configuration(self, button):
-        ConfigurableWidgetSettings.settings['Google']['api_key'] = self.google_api_key.get_text()
-        ConfigurableWidgetSettings.settings['WITAI']['api_key'] = self.witai_api_key.get_text()
-        ConfigurableWidgetSettings.settings['IBM']['username'] = self.ibm_username.get_text()
-        ConfigurableWidgetSettings.settings['IBM']['password'] = self.ibm_password.get_text()
-        ConfigurableWidgetSettings.settings['ATT']['app_key'] = self.att_app_key.get_text()
-        ConfigurableWidgetSettings.settings['ATT']['app_secret'] = self.att_app_secret.get_text()
-        self.save_settings()
-
-    def get_configure_box(self):
-        # logger.debug("Got in get_configure_box")
-        ConfigurableWidgetSettings.settings = self.load_settings()
-        self._get_labeled_boxes()
-        self._get_radio_buttons()
-        self._get_input_saved_text_boxes()
-        self._pack_in_input_box()
-        self._setup_confirm_button()
-        self._choose_labelled_input_boxes()
-        self.full_box.pack_start(self.radio_box, True, False, 6)
-        self.full_box.pack_start(self.input_box, False, False, 6)
-        return self.full_box
-
-    def stop(self):
-        del self.full_box
-        del self.radio_box
-        del self.input_box
-        del self.google_box
-        del self.witai_box
-        del self.ibm_box
-        del self.att_box
-        del self.att_app_key_box
-        del self.att_app_secret_box
-        del self.ibm_username_box
-        del self.ibm_password_box
-        del self.google_api_key
-        del self.witai_api_key
-        del self.att_app_key
-        del self.att_app_secret
-        del self.ibm_username
-        del self.ibm_password
-        del self.google_api_key_label
-        del self.witai_api_key_label
-        del self.att_app_key_label
-        del self.att_app_secret_label
-        del self.ibm_username_label
-        del self.ibm_password_label
-
-    def __del__(self):
-        logger.debug("Settings DEL")
-
-
 class DicNatorPlugin:
     def __init__(self, f_bottom_bar_changer):
         # Constructor
         # Will update window from UIClass
         self.window = None
         # A manager to handle settings
-        self.setting_manager = ConfigurableWidgetSettings()
+        self.setting_manager = configurableSettings.ConfigurableWidgetSettings()
         # Using like a global function
         self.bottom_bar_text_set = f_bottom_bar_changer
         # each class has its own recogniser thread
@@ -301,9 +62,6 @@ class DicNatorPlugin:
 
     def thread_run_set(self, bool_state):
         self._thread_is_running = bool_state
-
-    def on_logit_activate(self, action):
-        self.inserttext("Logit")
 
     def on_setup_activate(self, action):
         # Demanding noise fix
@@ -330,7 +88,13 @@ class DicNatorPlugin:
             self.thread = BackgroundThread(self)
             # logger.debug('Stopped')
 
-    def inserttext(self, text="Default insertText"):
+    def _callrecog(self):
+        # Calls recognizer and gets the text output
+        _textout = self.s_recogniser.recog(configurableSettings.ConfigurableWidgetSettings.settings)
+        _state = statesMod.decide_state(_textout)
+        return _textout, _state
+
+    def inserttext(self, text):
         # Inserts the text in the document
         doc = self.window.get_active_document()
         doc.begin_user_action()
@@ -338,11 +102,20 @@ class DicNatorPlugin:
         doc.end_user_action()
         # logger.debug("Inserted Text")
 
-    def _callrecog(self):
-        # Calls recognizer and gets the text output
-        _textout = self.s_recogniser.recog(ConfigurableWidgetSettings.settings)
-        _state = statesMod.decide_state(_textout)
-        return _textout, _state
+    def _get_cursor_position(self, doc):
+        c_mark = doc.get_insert()
+        iter = doc.get_iter_at_mark(c_mark)
+        return iter
+
+    def on_logit_activate(self, action):
+        logger.debug("logit")
+        doc = self.window.get_active_document()
+        ei = self._get_cursor_position(doc)
+        si = self._get_cursor_position(doc)
+        si.backward_word_start()
+        si.backward_char()
+        ei.forward_word_end()
+        doc.delete(si, ei)
 
     def bgcallhandler(self):
         # Based on output by the callRecog we proceed further
@@ -352,7 +125,7 @@ class DicNatorPlugin:
             # logger.debug("Demanding noise fix")
             self.bottom_bar_text_set("Setting up Dictator, Please wait for a few seconds")
             self.s_recogniser.fix_ambient_noise()
-            self.bottom_bar_text_set("Dict0Nator has been setup")
+            self.bottom_bar_text_set("Dict'O'nator has been setup")
             self.demand_fix_ambient_noise = False
             # logger.debug("Noise Fix Done")
 
@@ -383,11 +156,15 @@ class DicNatorPlugin:
         elif currstate == "undo":
             doc = self.window.get_active_document()
             if doc.can_undo():
+                doc.begin_user_action()
                 doc.undo()
+                doc.end_user_action()
         elif currstate == "redo":
             doc = self.window.get_active_document()
             if doc.can_redo():
+                doc.begin_user_action()
                 doc.redo()
+                doc.end_user_action()
         elif currstate == "cut_clipboard":
             vi = self.window.get_active_view()
             vi.cut_clipboard()
@@ -411,40 +188,59 @@ class DicNatorPlugin:
             self.bgcallhandler()
         elif currstate == "delete_line":
             doc = self.window.get_active_document()
-            ei = doc.get_end_iter()
-            nei = doc.get_end_iter()
-            nei.backward_line()
-            doc.delete(nei, ei)
+            doc.begin_user_action()
+            ei = self._get_cursor_position(doc)
+            si = self._get_cursor_position(doc)
+            si.set_line(ei.get_line())
+            ei.forward_to_line_end()
+            doc.delete(si, ei)
+            doc.end_user_action()
         elif currstate == "delete_sentence":
             doc = self.window.get_active_document()
-            ei = doc.get_end_iter()
-            nei = doc.get_end_iter()
-            nei.backward_sentence_start()
-            doc.delete(nei, ei)
+            doc.begin_user_action()
+            ei = self._get_cursor_position(doc)
+            si = self._get_cursor_position(doc)
+            if not si.starts_sentence():
+                si.backward_sentence_start()
+            si.backward_char()
+            ei.forward_sentence_end()
+            doc.delete(si, ei)
+            doc.end_user_action()
         elif currstate == "delete_word":
             doc = self.window.get_active_document()
-            ei = doc.get_end_iter()
-            nei = doc.get_end_iter()
-            nei.backward_word_start()
-            doc.delete(nei, ei)
+            doc.begin_user_action()
+            ei = self._get_cursor_position(doc)
+            si = self._get_cursor_position(doc)
+            si.backward_word_start()
+            si.backward_char()
+            ei.forward_word_end()
+            doc.delete(si, ei)
+            doc.end_user_action()
         elif currstate == "clear_document":
             doc = self.window.get_active_document()
             if not doc:
                 return
+            doc.begin_user_action()
             doc.set_text('')
+            doc.end_user_action()
         elif currstate == "new_document":
             self.window.create_tab(True)
         elif currstate == "save_document":
             doc = self.window.get_active_document()
             if doc.is_untitled():
-                self.bottom_bar_text_set("Can't save. First save should be Save as")
+                self.bottom_bar_text_set("First save should be Save As...")
+                SaveAsDialog.FileSaver(self.window)
             else:
                 doc.save(Gedit.DocumentSaveFlags(15))
+        elif currstate == "save_as_document":
+            SaveAsDialog.FileSaver(self.window)
         elif currstate == "close_document":
             if self.window.get_active_document.is_untouched():
                 self.window.close_tab(self.window.get_active_tab())
             else:
                 self.bottom_bar_text_set("You might wanna save the document before quitting.")
+        elif currstate == "force_close_document":
+            self.window.close_tab(self.window.get_active_tab())
         elif currstate == "error_state":
             # logger.debug("Some Error ######")
             self.bottom_bar_text_set("Some Error")
