@@ -1,6 +1,5 @@
 import os
 from gi.repository import Gtk, Gio, Gedit
-from dictonator.setlog import logger
 
 
 class FileSaver:

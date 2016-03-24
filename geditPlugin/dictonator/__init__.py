@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from gi.repository import GObject, Gtk, Gedit, PeasGtk, GdkPixbuf
+from gi.repository import GObject, Gtk, Gedit, PeasGtk
 from .setlog import logger
 from .configurablesettings import ConfigurableDialogBox, PluginSettings
 import threading
@@ -96,21 +96,14 @@ class DictonatorPluginActions:
 
     @staticmethod
     def _get_cursor_position(doc):
-        # gets the current cursor position, Gtk+ 2.1 has this inbuilt
+        # gets the current cursor position, Gtk+ 2.1 has this inbuilt as property
         c_mark = doc.get_insert()
         i = doc.get_iter_at_mark(c_mark)
         return i
 
     def on_logit_activate(self, action):
         # a fuction to test other functions
-        logger.debug("logit")
-        doc = self.window.get_active_document()
-        ei = self._get_cursor_position(doc)
-        si = self._get_cursor_position(doc)
-        si.backward_word_start()
-        si.backward_char()
-        ei.forward_word_end()
-        doc.delete(si, ei)
+        pass
 
     def bgcallhandler(self):
         # Based on output by the callRecog we proceed further
@@ -323,24 +316,14 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
         self._ui_id = manager.add_ui_from_string(self.ui_str)
 
     @staticmethod
-    def get_icon(size_x, size_y):
-        # Get icon from disk and scale it based on parameters given
-        icon = Gtk.Image()
-        try:
-            buf = GdkPixbuf.Pixbuf.new_from_file(gedit_plugin_path + '/dictonator/logo.png')
-            # logger.debug("Icon file found")
-            scaled_ico = buf.scale_simple(size_x, size_y, GdkPixbuf.InterpType.BILINEAR)
-            icon.set_from_pixbuf(scaled_ico)
-            return icon
-        except Exception as e:
-            # We don't care what error came up, just use some other icon from stock
-            logger.debug(str(e))
-            icon = Gtk.Image.new_from_icon_name("Nothing", 4)
-            return icon
+    def get_icon(gtk_icon_size):
+        # Get icon from disk and scale it
+        icon = Gtk.Image.new_from_icon_name("dictonator", gtk_icon_size)
+        return icon
 
     def _insert_bottom_panel(self):
         # Implement the Plugin into bottom bar
-        icon = self.get_icon(20, 20)
+        icon = self.get_icon(Gtk.IconSize.SMALL_TOOLBAR)
         self._bottom_widget = Gtk.Label("Welcome to Dict'O'nator!  Start by speaking \"Start Dictation\"")
         panel = self.window.get_bottom_panel()
         panel.add_item(self._bottom_widget, "Dictonator", "Dict'O'nator", icon)
@@ -370,19 +353,7 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
 
     def do_create_configure_widget(self):
         # Implement the configuration box in plugin preferences
-        widget_vbox = Gtk.VBox()
-        widget_vbox.set_border_width(6)
-        widget_vbox.set_spacing(10)
-        label = Gtk.Label("Select Speech Recogniser")
-        # logger.debug("Inserted label")
-        settings_box = ConfigurableDialogBox().get_configure_box()
-        # Get icon
-        icon = self.get_icon(50, 50)
-        # Pack everything
-        widget_vbox.pack_start(label, False, True, 0)
-        widget_vbox.pack_start(settings_box, False, True, 0)
-        widget_vbox.pack_start(icon, False, True, 0)
-        return widget_vbox
+        return ConfigurableDialogBox().get_configure_box()
 
     def bottom_bar_text_changer(self, txt):
         # A text updater for bottom bar. Kind of a global function
