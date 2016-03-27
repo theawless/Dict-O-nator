@@ -25,9 +25,9 @@ states = {"start_dictation": {"start dictation", "start dictator", "start speaki
           "delete_word": {"delete word", "delete last word"},
           "delete_sentence": {"delete sentence", "delete this sentence", "delete current sentence", },
 
-          "delete_line2": {""},
-          "delete_word2": {""},
-          "delete_sentence2": {""},
+          # "delete_line2": {""},
+          # "delete_word2": {""},
+          # "delete_sentence2": {""},
 
           "clear_document": {"clear document", "empty document", "clear file", "empty file"},
           "new_document": {"new document", "new file"},
@@ -42,7 +42,7 @@ states = {"start_dictation": {"start dictation", "start dictator", "start speaki
 
 def decide_state(txt):
     # Deciding states from the dictionary
-    cstate = "start_dictation"
+    cstate = "continue_dictation"
     for state in states:
         if txt in states[state]:
             cstate = state

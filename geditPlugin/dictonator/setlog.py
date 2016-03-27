@@ -8,7 +8,7 @@ path = '.local/share/gedit/plugins/dictonator/logs/'
 
 def setup_logger():
     # setting format of log
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    formatter = logging.Formatter('%(threadName)s - %(levelname)s - %(message)s')
     logger.setLevel(logging.DEBUG)
     # file location
     debug_log = path + 'log.txt'

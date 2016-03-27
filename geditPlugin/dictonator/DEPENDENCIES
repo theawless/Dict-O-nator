@@ -1,0 +1,17 @@
+Dependencies
+
+Gedit (Version 3.8)
+License: GPL v2
+https://wiki.gnome.org/Apps/Gedit
+
+Zhang, A.(2016) Speech Recognition (Version 3.2)
+License: BSD
+https://github.com/Uberi/speech_recognition#readme
+
+CMU Sphinx (Version 4 and higher)
+License: BSD
+http://cmusphinx.sourceforge.net/
+
+PocketSphinx Python Wrappers
+License: BSD
+https://github.com/cmusphinx/pocketsphinx

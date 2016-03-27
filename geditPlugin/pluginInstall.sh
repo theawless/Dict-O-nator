@@ -1,33 +1,43 @@
 #!/bin/sh
 
-echo "Updating"
+echo "Updating System"
 sudo apt-get update
 sudo apt-get upgrade
 
 echo "Install Dependencies"
+sudo apt-get isntall python-all-dev python3-all-dev
 sudo apt-get install python3-pip
 sudo apt-get install swig
-sudo apt-get install portaudio-dev puthon-all-dev python3-all-dev
+sudo apt-get install portaudio19-dev
 sudo pip3 install pyaudio
 sudo pip3 install SpeechRecognition
 sudo pip3 install pocketsphinx
 
-echo "Making Directory"
+echo "Making Directories"
 sudo mkdir ~/.local/share/gedit/plugins/
-sudo mkdir ~/.local/share/gedit/plugins/DicNator/
-sudo mkdir ~/.local/share/gedit/plugins/DicNator/Logs/
+sudo mkdir ~/.local/share/gedit/plugins/dictonator/
+sudo mkdir ~/.local/share/gedit/plugins/dictonator/logs/
 
 echo "Moving Files"
-cp pyDictator.plugin ~/.local/share/gedit/plugins/
-cp pyDictator.py ~/.local/share/gedit/plugins/
-cp DicNator/recogSpeech.py ~/.local/share/gedit/plugins/DicNator/
-cp DicNator/setlog.py ~/.local/share/gedit/plugins/DicNator/
-cp DicNator/statesMod.py ~/.local/share/gedit/plugins/DicNator/
-cp DicNator/recogSpeechBG.py ~/.local/share/gedit/plugins/DicNator/
-cp DicNator/SaveAsDialog.py ~/.local/share/gedit/plugins/DicNator/
-cp DicNator/wordsToNumbers.py ~/.local/share/gedit/plugins/DicNator/
-cp DicNator/ConfigurableSettings.py ~/.local/share/gedit/plugins/DicNator/
+cp dictonator.plugin ~/.local/share/gedit/plugins/
+cp dictonator/ATTRIBUTES ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/DEPENDENCIES ~/.local/share/gedit/plugins/dictonator/
 
-cp DicNator/DicNator_Icon.png ~/.local/share/gedit/plugins/DicNator/
+echo "Moving Python Files"
+cp dictonator/__init__.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/recogspeechbg.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/recogspeech.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/setlog.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/statesmod.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/saveasdialog.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/wordstonumbers.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/configurablesettings.py ~/.local/share/gedit/plugins/dictonator/
+
+echo "Moving UI Files"
+cp dictonator/bottomwidgetui.glade ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/configurationboxui.glade ~/.local/share/gedit/plugins/dictonator/
+
+echo "Moving Icon"
+cp dictonator/dictonator.svg /usr/share/icons/hicolor/scalable/apps/
 
 echo "Finished"

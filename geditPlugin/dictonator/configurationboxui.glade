@@ -5,6 +5,7 @@
   <object class="GtkBox" id="full_box">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
+    <property name="no_show_all">True</property>
     <property name="margin_left">10</property>
     <property name="margin_right">10</property>
     <property name="margin_top">10</property>
@@ -146,6 +147,9 @@
               <object class="GtkEntry" id="witai_key_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="visibility">False</property>
+                <property name="invisible_char">*</property>
+                <property name="input_purpose">password</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -181,6 +185,10 @@
               <object class="GtkEntry" id="google_key_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="visibility">False</property>
+                <property name="invisible_char">*</property>
+                <property name="placeholder_text" translatable="yes">Leave empty for default</property>
+                <property name="input_purpose">password</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -221,6 +229,7 @@
                   <object class="GtkEntry" id="ibm_username_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="input_purpose">password</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -256,6 +265,8 @@
                   <object class="GtkEntry" id="ibm_password_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="visibility">False</property>
+                    <property name="invisible_char">*</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -303,6 +314,9 @@
                   <object class="GtkEntry" id="att_api_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="visibility">False</property>
+                    <property name="invisible_char">*</property>
+                    <property name="input_purpose">password</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -338,6 +352,9 @@
                   <object class="GtkEntry" id="att_secret_entry">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
+                    <property name="visibility">False</property>
+                    <property name="invisible_char">*</property>
+                    <property name="input_purpose">password</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
