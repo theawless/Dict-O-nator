@@ -3,13 +3,25 @@ from gi.repository import Gtk, Gio, Gedit
 
 
 class FileSaver:
-    def __init__(self, window):
+    """Implements the File save as dialog."""
+
+    def __init__(self, window: Gtk.Window):
+
+        """Constructor.
+
+        :param window: current window to set as parent.
+        """
         self.dialog = Gtk.FileChooserDialog("Save file", None, Gtk.FileChooserAction.SAVE, (
             Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
         self.can_save = False
-        self.handle_file_dialog(self.dialog, window)
+        self._handle_file_dialog(self.dialog, window)
 
-    def handle_file_dialog(self, dialog, window):
+    def _handle_file_dialog(self, dialog: Gtk.Dialog, window: Gtk.Window):
+        """Handles the flow of dialog. Shows warnings for overwrite.
+
+        :param dialog: filechooser dialog.
+        :param window: current window wo set as parent.
+        """
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             # OK button was pressed or existing file was double clicked
@@ -25,7 +37,7 @@ class FileSaver:
                 else:
                     dialog2.destroy()
                     # We need to re-run the file dialog to detect the buttons
-                    self.handle_file_dialog(dialog, window)
+                    self._handle_file_dialog(dialog, window)
                     return
             else:
                 self.can_save = True
@@ -44,7 +56,14 @@ class FileSaver:
 
 
 class DialogSaveFile(Gtk.Dialog):
-    def __init__(self, parent, db):
+    """Implement warning dialog to overwrite."""
+
+    def __init__(self, parent: Gtk.Widget, db: str):
+        """Constructor.
+
+        :param parent: widget to be set as parent.
+        :param db: filename that is getting overwritten.
+        """
         Gtk.Dialog.__init__(self, "Confirm overwrite", parent, 0,
                             (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
                              Gtk.STOCK_OK, Gtk.ResponseType.OK))

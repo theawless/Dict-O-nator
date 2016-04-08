@@ -10,34 +10,42 @@ from .setlog import logger
 from .statesmod import states
 import time
 
-gedit_plugin_path = '.local/share/gedit/plugins'
+GEDIT_PLUGIN_PATH = '.local/share/gedit/plugins'
 
 
 class DictonatorPluginActions:
-    def __init__(self, f_bottom_bar_changer, f_bottom_bar_adder):
-        # Constructor
-        # Will update window from UIClass
+    """Contains recogniser, threader and actions.
+
+         Active window updated from the UI class.
+         Handles all actions.
+    """
+
+    def __init__(self, f_bottom_bar_changer: callable, f_bottom_bar_adder: callable):
+        """ Constructor.
+
+        :param f_bottom_bar_changer: change the bottom bar main text.
+        :param f_bottom_bar_adder: add to the actions list in bottom bar.
+        """
         self.window = None
         # A manager to handle settings
-        self.setting_manager = PluginSettings()
+        self.settings = PluginSettings().settings
         # Using like a global function
         self.bottom_bar_text_set = f_bottom_bar_changer
         self.bottom_bar_add = f_bottom_bar_adder
-        # each class has its own recogniser thread
         GLib.threads_init()
-        self.recogniser = SpeechRecogniser(f_bottom_bar_changer, self.bgcallhandler)
+        self.recogniser = SpeechRecogniser(f_bottom_bar_changer, self.action_handler)
         self.threader = threading.Thread(target=self.recogniser.start_recognising)
         self.threader.daemon = True
         logger.debug("Actions INIT")
 
     def on_setup_activate(self, action):
-        # Demanding noise fix
+        """Demands noise fix from recogniser."""
         logger.debug("Demand noise variable set to True")
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "None", "setup_dictation")
         self.recogniser.demand_fix_ambient_noise = True
 
     def on_listen_activate(self, action):
-        # Start recogniser thread
+        """Start recogniser thread."""
         if not self.threader.isAlive():
             self.threader.start()
             logger.debug('Thread Started')
@@ -46,16 +54,16 @@ class DictonatorPluginActions:
         logger.debug("wants to run is true")
 
     def on_stop_activate(self, action):
-        # Stop recogniser thread
+        """Stop recogniser thread."""
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "None", "stop_dicatation")
         self.recogniser.wants_to_run = False
         logger.debug("wants to run is false")
 
-    def inserttext(self, text):
-        # Inserts the text in the document
+    def inserttext(self, text: str):
+        """Inserts the text in the document at cursor position."""
         doc = self.window.get_active_document()
         doc.begin_user_action()
-        ei = self._get_cursor_position(doc)
+        ei = self.get_cursor_position(doc)
         if not ei.ends_sentence():
             logger.debug("********************************")
             text = text.capitalize()
@@ -64,21 +72,22 @@ class DictonatorPluginActions:
         # logger.debug("Inserted Text")
 
     @staticmethod
-    def _get_cursor_position(doc):
-        # gets the current cursor position, Gtk+ 2.1 has this inbuilt as property
+    def get_cursor_position(doc: Gedit.Document):
+        """Gets the current cursor position from the doc given, Gtk+ 2.1 has this inbuilt as property."""
         c_mark = doc.get_insert()
         i = doc.get_iter_at_mark(c_mark)
         return i
 
     def on_logit_activate(self, action):
-        ei = self._get_cursor_position(self.window.get_active_document())
+        """A test function."""
+        ei = self.get_cursor_position(self.window.get_active_document())
         # ;ogger.debug(str(ei.starts_sentence()) + str(ei.inside_sentence()) + str(ei.ends_sentence()))
         # self.inserttext("i am abhinav")
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
         # a fuction to test other functions
 
-    def bgcallhandler(self, text):
-        # Based on output by the decide_state we proceed further
+    def action_handler(self, text: str):
+        """Based on output by the decide_state we choose action."""
         currstate = statesmod.decide_state(text)
         self.bottom_bar_add(time.strftime("%H:%M:%S"), text, currstate)
         if currstate == "continue_dictation":
@@ -128,8 +137,8 @@ class DictonatorPluginActions:
         elif currstate == "delete_line":
             doc = self.window.get_active_document()
             doc.begin_user_action()
-            ei = self._get_cursor_position(doc)
-            si = self._get_cursor_position(doc)
+            ei = self.get_cursor_position(doc)
+            si = self.get_cursor_position(doc)
             si.set_line(ei.get_line())
             ei.forward_to_line_end()
             doc.delete(si, ei)
@@ -137,8 +146,8 @@ class DictonatorPluginActions:
         elif currstate == "delete_sentence":
             doc = self.window.get_active_document()
             doc.begin_user_action()
-            ei = self._get_cursor_position(doc)
-            si = self._get_cursor_position(doc)
+            ei = self.get_cursor_position(doc)
+            si = self.get_cursor_position(doc)
             if not si.starts_sentence():
                 si.backward_sentence_start()
             si.backward_char()
@@ -148,8 +157,8 @@ class DictonatorPluginActions:
         elif currstate == "delete_word":
             doc = self.window.get_active_document()
             doc.begin_user_action()
-            ei = self._get_cursor_position(doc)
-            si = self._get_cursor_position(doc)
+            ei = self.get_cursor_position(doc)
+            si = self.get_cursor_position(doc)
             si.backward_word_start()
             si.backward_char()
             ei.forward_word_end()
@@ -189,8 +198,9 @@ class DictonatorPluginActions:
         return
 
     def stop(self):
+        """Stop Actions class."""
         del self.window
-        del self.setting_manager
+        del self.settings
         del self.bottom_bar_text_set
 
     def __del__(self):
@@ -198,11 +208,12 @@ class DictonatorPluginActions:
 
 
 class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
+    """Handle UI, define when plugin runs."""
     __gtype_name__ = "Dictonator"
     window = GObject.property(type=Gedit.Window)
 
     # Defining the UI string that is to be added
-    ui_str = """
+    ui_str = '''
                 <ui>
                   <menubar name="MenuBar">
                     <menu name="ToolsMenu" action="Tools">
@@ -217,14 +228,14 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
                     </menu>
                   </menubar>
                 </ui>
-            """
+            '''
 
     def __init__(self):
-        # Main plugin Constructor
+        """Constructor for UI handler."""
         GObject.Object.__init__(self)
         self._action_group = Gtk.ActionGroup("DictonatorPluginActions")
         self.bottom_widget = Gtk.Builder()
-        self.bottom_widget.add_from_file(gedit_plugin_path + "/dictonator/bottomwidgetui.glade")
+        self.bottom_widget.add_from_file(GEDIT_PLUGIN_PATH + "/dictonator/bottomwidgetui.glade")
         # Get the plugin manager
         self.plugin_manager = DictonatorPluginActions(self.bottom_bar_text_changer, self.bottom_bar_handler)
         logger.debug('UI INIT')
@@ -234,6 +245,7 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
         self._action_group.set_sensitive(self.window.get_active_document() is not None)
 
     def do_activate(self):
+        """Activate plugin, insert UI."""
         # Insert menu and bottom panel into gui
         self._insert_menu()
         self._insert_bottom_panel()
@@ -262,21 +274,26 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
         self._ui_id = manager.add_ui_from_string(self.ui_str)
 
     @staticmethod
-    def get_icon(gtk_icon_size):
-        # Get icon from disk and scale it
-        icon = Gtk.Image.new_from_icon_name("dictonator", gtk_icon_size)
+    def get_icon(size: Gtk.IconSize):
+        """Return scaled dictonator icon from disk."""
+        icon = Gtk.Image.new_from_icon_name("dictonator", size)
         return icon
 
     def _insert_bottom_panel(self):
-        # Implement the Plugin into bottom bar
+        # Implement the plugin into bottom bar
         icon = self.get_icon(Gtk.IconSize.SMALL_TOOLBAR)
         panel = self.window.get_bottom_panel()
         panel.add_item(self.bottom_widget.get_object("full_box"), "Dictonator", "Dict'O'nator", icon)
         panel.activate_item(self.bottom_widget.get_object("full_box"))
         panel.show()
 
-    def bottom_bar_handler(self, tim, text, action):
-        # to add actions to the eventlist for bottom bar. Kind of a global function
+    def bottom_bar_handler(self, tim: time, text: str, action: str):
+        """Add actions to the eventlist int bottom bar.
+
+        :param tim: Time of action.
+        :param text: Recognized text.
+        :param action: Action performed.
+        """
         row = Gtk.ListBoxRow()
         box = Gtk.HBox()
         box.set_homogeneous(True)
@@ -289,11 +306,15 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
         row.show_all()
         self.bottom_widget.get_object("event_list").prepend(row)
 
-    def bottom_bar_text_changer(self, txt):
-        self.bottom_widget.get_object("head_label").set_text(txt)
+    def bottom_bar_text_changer(self, text: str):
+        """Change main bottom bar text.
+
+        :param text: New bottom bar main text.
+        """
+        self.bottom_widget.get_object("head_label").set_text(text)
 
     def do_deactivate(self):
-        # Remove menu items and bottom bar
+        """Plugin close. Remove menu items and bottom bar."""
         logger.debug("DEACTIVATING")
         self._remove_menu()
         self._remove_bottom_panel()
@@ -313,11 +334,11 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
         # logger.debug("Removed bottom bar")
 
     def do_create_configure_widget(self):
-        # Implement the configuration box in plugin preferences
-        return ConfigurableDialogBox().get_configure_box()
+        """Implement the configuration box in plugin preferences"""
+        return ConfigurableDialogBox().get_configure_box
 
     def stop(self):
-        self.plugin_manager.setting_manager.stop()
+        """Stop the plugin. """
         self.plugin_manager.stop()
         del self.plugin_manager
         del self.bottom_widget

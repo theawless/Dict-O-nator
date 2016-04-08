@@ -1,5 +1,4 @@
-# !/usr/bin/python3
-
+"""Defines the dictionary of command words and implement decide function"""
 # setting up logger
 from dictonator.setlog import logger
 
@@ -40,7 +39,7 @@ states = {"start_dictation": {"start dictation", "start dictator", "start speaki
           }
 
 
-def decide_state(txt):
+def decide_state(txt: str):
     # Deciding states from the dictionary
     cstate = "continue_dictation"
     for state in states:

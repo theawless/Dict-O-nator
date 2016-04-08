@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+"""Sets up the logger."""
 
 import logging
 
@@ -6,7 +6,7 @@ logger = logging.getLogger('dictonator')
 path = '.local/share/gedit/plugins/dictonator/logs/'
 
 
-def setup_logger():
+def _setup_logger():
     # setting format of log
     formatter = logging.Formatter('%(threadName)s - %(levelname)s - %(message)s')
     logger.setLevel(logging.DEBUG)
@@ -25,4 +25,4 @@ def setup_logger():
     logger.debug('Setlog logger setup done')
 
 
-setup_logger()
+_setup_logger()

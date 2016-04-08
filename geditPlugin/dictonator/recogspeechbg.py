@@ -6,11 +6,17 @@ from gi.repository import GLib
 
 
 class SpeechRecogniser:
+    """Voice recogniser class."""
+
     # this is called from the background thread
-    def __init__(self, f_bottom_bar_changer, f_plugin_bg_handler):
-        # initialising this functions from the plugin
+    def __init__(self, f_bottom_bar_changer: callable, f_action_handler: callable):
+        """Constructor.
+
+        :param f_bottom_bar_changer: change the bottom bar main text.
+        :param f_action_handler: do action based on received text.
+        """
         self.bottom_bar_text_set = f_bottom_bar_changer
-        self.plugin_bg_handler = f_plugin_bg_handler
+        self.plugin_action_handler = f_action_handler
 
         self.demand_fix_ambient_noise = True
         self.wants_to_run = False
@@ -22,6 +28,7 @@ class SpeechRecogniser:
         logger.debug("Speech Recogniser initialised")
 
     def start_recognising(self):
+        """Start listening to voice."""
         while True:
             if self.wants_to_run:
                 if self.is_listening:
@@ -49,6 +56,10 @@ class SpeechRecogniser:
                     time.sleep(0.1)
 
     def recog_callback(self, r, audio):
+        """
+        Callback for start_recogniser, converts speech to text.
+        Calls action_handler in main thread.
+        """
         settings = PluginSettings.settings
         sel = settings['Main']['recogniser']
         recognized_text = "######"
@@ -65,17 +76,17 @@ class SpeechRecogniser:
             except sr.RequestError as e:
                 GLib.idle_add(self.bottom_bar_text_set, "Sphinx error; {0}".format(e))
             finally:
-                GLib.idle_add(self.plugin_bg_handler, recognized_text)
+                GLib.idle_add(self.plugin_action_handler, recognized_text)
 
         elif sel == "Google":
 
             if settings['Google']['api_key'] != "":
                 # Use Google with API KEY as recogniser
-                GOOGLE_API_KEY = settings['Google']['api_key']
+                google_api_key = settings['Google']['api_key']
                 GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with Google Speech Recognition")
                 logger.debug("recognize speech using Google Key Speech Recognition")
                 try:
-                    recognized_text = r.recognize_google(audio, GOOGLE_API_KEY)
+                    recognized_text = r.recognize_google(audio, google_api_key)
                     logger.debug("From recogSpeech module G : " + recognized_text)
                 except sr.UnknownValueError:
                     GLib.idle_add(self.bottom_bar_text_set, "Google Speech Recognition could not understand audio")
@@ -83,7 +94,7 @@ class SpeechRecogniser:
                     GLib.idle_add(self.bottom_bar_text_set,
                                   "Could not request results from Google Speech Recognition service; {0}".format(e))
                 finally:
-                    GLib.idle_add(self.plugin_bg_handler, recognized_text)
+                    GLib.idle_add(self.plugin_action_handler, recognized_text)
             else:
                 GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with Google Speech Recognition")
                 logger.debug("recognize speech using Google Speech Recognition")
@@ -96,36 +107,36 @@ class SpeechRecogniser:
                     GLib.idle_add(self.bottom_bar_text_set,
                                   "Could not request results from Google Speech Recognition service; {0}".format(e))
                 finally:
-                    GLib.idle_add(self.plugin_bg_handler, recognized_text)
+                    GLib.idle_add(self.plugin_action_handler, recognized_text)
 
         elif sel == "WITAI":
             # recognize speech using Wit.ai
             GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with WIT.AI")
             logger.debug("recognize speech using WitAI Speech Recognition")
 
-            WIT_AI_KEY = settings['WITAI']['api_key']
+            wit_ai_key = settings['WITAI']['api_key']
             # Wit.ai keys are 32-character uppercase alphanumeric strings
             try:
-                recognized_text = r.recognize_wit(audio, key=WIT_AI_KEY)
+                recognized_text = r.recognize_wit(audio, key=wit_ai_key)
                 logger.debug("Wit.ai thinks you said " + recognized_text)
             except sr.UnknownValueError:
                 GLib.idle_add(self.bottom_bar_text_set, "Wit.ai could not understand audio")
             except sr.RequestError as e:
                 GLib.idle_add(self.bottom_bar_text_set, "Could not request results from Wit.ai service; {0}".format(e))
             finally:
-                GLib.idle_add(self.plugin_bg_handler, recognized_text)
+                GLib.idle_add(self.plugin_action_handler, recognized_text)
 
         elif sel == "IBM":
             # recognize speech using IBM Speech to Text
             GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with IBM")
             logger.debug("recognize speech using IBM Speech Recognition")
 
-            IBM_USERNAME = settings['IBM']['username']
+            ibm_username = settings['IBM']['username']
             # IBM Speech to Text usernames are strings of the form XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
-            IBM_PASSWORD = settings['IBM']['password']
+            ibm_password = settings['IBM']['password']
             # IBM Speech to Text passwords are mixed-case alphanumeric strings
             try:
-                recognized_text = r.recognize_ibm(audio, username=IBM_USERNAME, password=IBM_PASSWORD)
+                recognized_text = r.recognize_ibm(audio, username=ibm_username, password=ibm_password)
                 logger.debug("IBM Speech to Text thinks you said " + recognized_text)
             except sr.UnknownValueError:
                 GLib.idle_add(self.bottom_bar_text_set, "IBM Speech to Text could not understand audio")
@@ -133,19 +144,19 @@ class SpeechRecogniser:
                 GLib.idle_add(self.bottom_bar_text_set,
                               "Could not request results from IBM Speech to Text service; {0}".format(e))
             finally:
-                GLib.idle_add(self.plugin_bg_handler, recognized_text)
+                GLib.idle_add(self.plugin_action_handler, recognized_text)
 
         elif sel == "ATT":
             # recognize speech using AT&T Speech to Text
             GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with AT&T")
             logger.debug("recognize speech using AT&T Speech Recognition")
 
-            ATT_APP_KEY = settings['ATT']['app_key']
+            att_app_key = settings['ATT']['app_key']
             # AT&T Speech to Text app keys are 32-character lowercase alphanumeric strings
-            ATT_APP_SECRET = settings['ATT']['app_secret']
+            att_app_secret = settings['ATT']['app_secret']
             # AT&T Speech to Text app secrets are 32-character lowercase alphanumeric strings
             try:
-                recognized_text = r.recognize_att(audio, app_key=ATT_APP_KEY, app_secret=ATT_APP_SECRET)
+                recognized_text = r.recognize_att(audio, app_key=att_app_key, app_secret=att_app_secret)
                 logger.debug("AT&T Speech to Text thinks you said " + recognized_text)
             except sr.UnknownValueError:
 
@@ -155,4 +166,4 @@ class SpeechRecogniser:
                               "Could not request results from AT&T Speech to Text service; {0}".format(e))
 
             finally:
-                GLib.idle_add(self.plugin_bg_handler, recognized_text)
+                GLib.idle_add(self.plugin_action_handler, recognized_text)

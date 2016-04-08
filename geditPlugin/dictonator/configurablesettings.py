@@ -3,18 +3,23 @@ import configparser
 from .setlog import logger
 
 gedit_plugin_path = '.local/share/gedit/plugins'
+import copy
 
 
 class PluginSettings:
+    """Implements save/load functions of settings."""
     # A static variable in all instances
     settings = dict()
 
     def __init__(self):
-        PluginSettings.settings = self.load_settings()
+        """Loads the global settings."""
+        self.load_settings()
 
     @classmethod
     def default_settings(cls):
-        # Default settings, to define the format of config file
+        """Default settings, to define the format of config file.
+        :rtype: configparser.ConfigParser
+        """
         config = configparser.ConfigParser()
         config['Main'] = {'recogniser': 'WITAI'}
         config['Sphinx'] = {'version': 'pocketsphinx'}
@@ -26,19 +31,30 @@ class PluginSettings:
 
     @classmethod
     def load_settings(cls):
-        # Get the configuration from file and return a dictionary
+        """Get the configuration from saved file into global settings."""
         config = PluginSettings.default_settings()
         config.read(gedit_plugin_path + '/dictonator/config.ini')
-        dictionary = {}
-        for section in config.sections():
-            dictionary[section] = {}
-            for option in config.options(section):
-                dictionary[section][option] = config.get(section, option)
-        return dictionary
+        cls.settings = cls.config_to_dict(config)
 
     @classmethod
-    def save_settings(cls, settings):
-        # Saving settings given from the parameter
+    def config_to_dict(cls, config: configparser.ConfigParser):
+        """ Convert config parser type to dictionary.
+
+        :param config: the configurations.
+        :return: a dictionary of settings.
+        """
+        settings_dictionary = {}
+        for sect in config.sections():
+            settings_dictionary[sect] = {}
+            for opt in config.options(sect):
+                settings_dictionary[sect][opt] = config.get(sect, opt)
+        return settings_dictionary
+
+    @classmethod
+    def save_settings(cls, settings: dict):
+        """Saving settings given from the parameter and updating global settings.
+        :param settings: the settings in a dictionary format.
+        """
         cls.settings = settings
         config = cls.default_settings()
         config['Main'] = {'recogniser': settings['Main']['recogniser']}
@@ -57,10 +73,26 @@ class PluginSettings:
 
 
 class ConfigurableDialogBox:
+    """Implements the Configurable dialog box."""
+
     def __init__(self):
-        self.settings = PluginSettings.settings
+        """Get local settings from global settings. Get UI."""
+        self.settings = copy.deepcopy(PluginSettings.settings)
         self.ui = Gtk.Builder()
         self.ui.add_from_file(gedit_plugin_path + "/dictonator/configurationboxui.glade")
+
+    @property
+    def get_configure_box(self):
+        """Return only the box. Peas configurable handles the dialog making.
+        :rtype: Gtk.Box
+        """
+        logger.debug("get configure box")
+        self._get_saved_into_text_boxes()
+        self._choose_labelled_input_boxes()
+        self._connect_everything()
+        self._configure_radios()
+
+        return self.ui.get_object("full_box")
 
     def _get_saved_into_text_boxes(self):
         _settings = self.settings
@@ -124,7 +156,7 @@ class ConfigurableDialogBox:
 
     def _set_default_config(self, button):
         # load default settigns and save them by calling PluginSetting
-        self.settings = PluginSettings.default_settings()
+        self.settings = PluginSettings.config_to_dict(PluginSettings.default_settings())
         PluginSettings.save_settings(self.settings)
         self._get_saved_into_text_boxes()
         self._configure_radios()
@@ -139,13 +171,3 @@ class ConfigurableDialogBox:
         self.settings['ATT']['app_secret'] = self.ui.get_object("att_secret_entry").get_text()
         # save to PluginClass
         PluginSettings.save_settings(self.settings)
-
-    def get_configure_box(self):
-        # The actual caller for this class
-        logger.debug("get configure box")
-        self._get_saved_into_text_boxes()
-        self._choose_labelled_input_boxes()
-        self._connect_everything()
-        self._configure_radios()
-
-        return self.ui.get_object("full_box")
