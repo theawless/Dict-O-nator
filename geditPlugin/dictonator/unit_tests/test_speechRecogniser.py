@@ -1,8 +1,28 @@
-from unittest import TestCase
-from ..recogspeechbg import SpeechRecogniser
-from ..configurablesettings import PluginSettings
+# Dict'O'nator - A dictation plugin for gedit.
+# Copyright (C) <2016>  <Abhinav Singh>
+#
+# This file is part of Dict'O'nator.
+#
+# Dict'O'nator is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Dict'O'nator is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
+
 import os
+from unittest import TestCase
+
 import speech_recognition as sr
+
+from ..configurablesettings import PluginSettings
+from ..recogspeechbg import SpeechRecogniser
 
 AUDIO_PATH = os.path.dirname(os.path.abspath(__file__)) + "/test_audio/"
 

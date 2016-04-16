@@ -1,4 +1,4 @@
-Voice Based Assistant for Ubuntu and Dictation Plugin for Gedit
+Voice Assistant/Tasker for Ubuntu and a Dictation Plugin for Gedit
 ================================================================================
 
 Similar to [Cortana](https://en.wikipedia.org/wiki/Cortana_%28software%29)

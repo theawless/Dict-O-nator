@@ -1,13 +1,31 @@
+# Dict'O'nator - A dictation plugin for gedit.
+# Copyright (C) <2016>  <Abhinav Singh>
+#
+# This file is part of Dict'O'nator.
+#
+# Dict'O'nator is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Dict'O'nator is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
+
 import threading
 import time
 
 from gi.repository import GLib, Gedit
 
+from . import statesmod
 from .configurablesettings import PluginSettings
 from .recogspeechbg import SpeechRecogniser
-from .saveasdialog import FileSaver
+from .saveasdialog import FileSaveAsDialog
 from .setlog import logger
-from . import statesmod
 
 
 class DictonatorPluginActions:
@@ -77,7 +95,7 @@ class DictonatorPluginActions:
 
     def on_logit_activate(self, action):
         """A test function."""
-        ei = self.get_cursor_position(self.window.get_active_document())
+        # ei = self.get_cursor_position(self.window.get_active_document())
         # ;ogger.debug(str(ei.starts_sentence()) + str(ei.inside_sentence()) + str(ei.ends_sentence()))
         # self.inserttext("i am abhinav")
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
@@ -175,11 +193,11 @@ class DictonatorPluginActions:
             # checking if the document is a new document
             if doc.is_untitled():
                 self.bottom_bar_text_set("First save should be Save As...")
-                FileSaver(self.window)
+                FileSaveAsDialog(self.window)
             else:
                 doc.save(Gedit.DocumentSaveFlags(15))
         elif currstate == "save_as_document":
-            FileSaver(self.window)
+            FileSaveAsDialog(self.window)
         elif currstate == "close_document":
             if self.window.get_active_document.is_untouched():
                 self.window.close_tab(self.window.get_active_tab())

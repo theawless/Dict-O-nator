@@ -5,7 +5,7 @@ sudo apt-get update
 sudo apt-get upgrade
 
 echo "Install Dependencies"
-sudo apt-get isntall python-all-dev python3-all-dev
+sudo apt-get install python-all-dev python3-all-dev
 sudo apt-get install python3-pip
 sudo apt-get install swig
 sudo apt-get install portaudio19-dev
@@ -17,7 +17,6 @@ sudo pip3 install word2number
 echo "Making Directories"
 sudo mkdir ~/.local/share/gedit/plugins/
 sudo mkdir ~/.local/share/gedit/plugins/dictonator/
-sudo mkdir ~/.local/share/gedit/plugins/dictonator/logs/
 
 echo "Moving Files"
 cp dictonator.plugin ~/.local/share/gedit/plugins/
@@ -32,6 +31,8 @@ cp dictonator/setlog.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/statesmod.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/saveasdialog.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/configurablesettings.py ~/.local/share/gedit/plugins/dictonator/
+cp LICENSE ~/.local/share/gedit/plugins/dictonator/
+
 
 echo "Moving UI Files"
 cp dictonator/bottomwidgetui.glade ~/.local/share/gedit/plugins/dictonator/

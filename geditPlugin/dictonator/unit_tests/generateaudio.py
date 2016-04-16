@@ -16,23 +16,24 @@
 # You should have received a copy of the GNU General Public License
 # along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
 
-from .test_pluginSettings import TestPluginSettings
-from .test_speechRecogniser import TestSpeechRecogniser
+import os
 
+import speech_recognition as sr
+TEST_PATH = os.path.dirname(os.path.abspath(__file__))
 
-class AllTestSuite:
-    def __init__(self):
-        self.test_settings = TestPluginSettings()
-        self.test_stt = TestSpeechRecogniser()
+if not os.path.exists(TEST_PATH + '/test_audio'):
+    os.makedirs(TEST_PATH + '/test_audio')
+AUDIO_PATH = TEST_PATH + "/test_audio/"
 
-    def run_all_tests(self):
-        self.test_settings.setUp()
-        self.test_settings.run()
-        print("Settings test finished")
-        self.test_stt.setUp()
-        self.test_stt.run()
-        print("All tests finished")
+file_name = input("Input Filename(without extension): ")
+# obtain audio from the microphone
+r = sr.Recognizer()
 
-
-a = AllTestSuite()
-a.run_all_tests()
+with sr.Microphone() as source:
+    print("Wait for two seconds")
+    r.adjust_for_ambient_noise(source, 2)
+    print("Say something!")
+    audio = r.listen(source)
+# write audio to a WAV file
+with open(AUDIO_PATH + file_name + ".wav", "wb+") as f:
+    f.write(audio.get_wav_data())
