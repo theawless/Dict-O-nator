@@ -1,6 +1,6 @@
 """Defines the dictionary of command words and implement decide function"""
 # setting up logger
-from dictonator.setlog import logger
+from .setlog import logger
 
 # defining the states
 states = {"start_dictation": {"start dictation", "start dictator", "start speaking"},

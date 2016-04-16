@@ -12,6 +12,7 @@ sudo apt-get install portaudio19-dev
 sudo pip3 install pyaudio
 sudo pip3 install SpeechRecognition
 sudo pip3 install pocketsphinx
+sudo pip3 install word2number
 
 echo "Making Directories"
 sudo mkdir ~/.local/share/gedit/plugins/
@@ -26,11 +27,10 @@ cp dictonator/DEPENDENCIES ~/.local/share/gedit/plugins/dictonator/
 echo "Moving Python Files"
 cp dictonator/__init__.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/recogspeechbg.py ~/.local/share/gedit/plugins/dictonator/
-cp dictonator/recogspeech.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/pluginactions.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/setlog.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/statesmod.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/saveasdialog.py ~/.local/share/gedit/plugins/dictonator/
-cp dictonator/wordstonumbers.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/configurablesettings.py ~/.local/share/gedit/plugins/dictonator/
 
 echo "Moving UI Files"
@@ -38,6 +38,6 @@ cp dictonator/bottomwidgetui.glade ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/configurationboxui.glade ~/.local/share/gedit/plugins/dictonator/
 
 echo "Moving Icon"
-cp dictonator/dictonator.svg /usr/share/icons/hicolor/scalable/apps/
+sudo cp dictonator/dictonator.svg /usr/share/icons/hicolor/scalable/apps/
 
 echo "Finished"

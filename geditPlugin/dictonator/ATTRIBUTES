@@ -7,12 +7,3 @@ https://wiki.gnome.org/Apps/Gedit/PythonPluginHowTo
 RecogSpeech module : Uberi Speech Recognition Examples
 License: BSD
 https://github.com/Uberi/speech_recognition/tree/master/examples
-
-FileSaverDialog : Stackoverflow
-License: CC By SA
-http://stackoverflow.com/questions/28075809/python-gtk-confirm-overwrite-dialog-blocks-filechooser-dialog
-
-Text to integers : Stackoverflow
-License: CC By SA
-http://stackoverflow.com/questions/493174/is-there-a-way-to-convert-number-words-to-integers
-
