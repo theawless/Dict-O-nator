@@ -1,8 +1,10 @@
-import speech_recognition as sr
-from .setlog import logger
 import time
-from .configurablesettings import PluginSettings
+
+import speech_recognition as sr
 from gi.repository import GLib
+
+from .configurablesettings import PluginSettings
+from .setlog import logger
 
 
 class SpeechRecogniser:
@@ -55,7 +57,7 @@ class SpeechRecogniser:
                 else:
                     time.sleep(0.1)
 
-    def recog_callback(self, r, audio):
+    def recog_callback(self, r, audio, testing=False):
         """
         Callback for start_recogniser, converts speech to text.
         Calls action_handler in main thread.
@@ -66,7 +68,7 @@ class SpeechRecogniser:
         # Recogniser begins
         if sel == "Sphinx":
             # Use Sphinx as recogniser
-            self.bottom_bar_text_set("Got your words! Processing with Sphinx")
+            GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with Sphinx")
             logger.debug("recognize speech using Sphinx")
             try:
                 recognized_text = r.recognize_sphinx(audio)
@@ -77,7 +79,8 @@ class SpeechRecogniser:
                 GLib.idle_add(self.bottom_bar_text_set, "Sphinx error; {0}".format(e))
             finally:
                 GLib.idle_add(self.plugin_action_handler, recognized_text)
-
+                if testing:
+                    self.plugin_action_handler(recognized_text)
         elif sel == "Google":
 
             if settings['Google']['api_key'] != "":
@@ -126,6 +129,39 @@ class SpeechRecogniser:
             finally:
                 GLib.idle_add(self.plugin_action_handler, recognized_text)
 
+        elif sel == "Bing":
+            # recognize speech using Microsoft Bing Voice Recognition
+            GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with Bing")
+            logger.debug("recognize speech using Bing Speech Recognition")
+
+            bing_key = settings['Bing']['api_key']
+            try:
+                recognized_text = r.recognize_bing(audio, key=bing_key)
+                logger.debug("Microsoft Bing Voice Recognition thinks you said " + recognized_text)
+            except sr.UnknownValueError:
+                GLib.idle_add(self.bottom_bar_text_set, "Microsoft Bing Voice Recognition could not understand audio")
+            except sr.RequestError as e:
+                GLib.idle_add(self.bottom_bar_text_set,
+                              "Could not request results from Microsoft Bing Voice Recognition service; {0}".format(e))
+            finally:
+                GLib.idle_add(self.plugin_action_handler, recognized_text)
+
+        elif sel == "APIAI":
+            # recognize speech using api.ai
+            GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with API.AI")
+            logger.debug("recognize speech using APIAI Speech Recognition")
+
+            api_ai_client_access_token = settings['APIAI']['api_key']
+            try:
+                recognized_text = r.recognize_api(audio, client_access_token=api_ai_client_access_token)
+                logger.debug("api.ai thinks you said " + recognized_text)
+            except sr.UnknownValueError:
+                GLib.idle_add(self.bottom_bar_text_set, "api.ai could not understand audio")
+            except sr.RequestError as e:
+                GLib.idle_add(self.bottom_bar_text_set, "Could not request results from api.ai service; {0}".format(e))
+            finally:
+                GLib.idle_add(self.plugin_action_handler, recognized_text)
+
         elif sel == "IBM":
             # recognize speech using IBM Speech to Text
             GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with IBM")
@@ -143,27 +179,5 @@ class SpeechRecogniser:
             except sr.RequestError as e:
                 GLib.idle_add(self.bottom_bar_text_set,
                               "Could not request results from IBM Speech to Text service; {0}".format(e))
-            finally:
-                GLib.idle_add(self.plugin_action_handler, recognized_text)
-
-        elif sel == "ATT":
-            # recognize speech using AT&T Speech to Text
-            GLib.idle_add(self.bottom_bar_text_set, "Got your words! Processing with AT&T")
-            logger.debug("recognize speech using AT&T Speech Recognition")
-
-            att_app_key = settings['ATT']['app_key']
-            # AT&T Speech to Text app keys are 32-character lowercase alphanumeric strings
-            att_app_secret = settings['ATT']['app_secret']
-            # AT&T Speech to Text app secrets are 32-character lowercase alphanumeric strings
-            try:
-                recognized_text = r.recognize_att(audio, app_key=att_app_key, app_secret=att_app_secret)
-                logger.debug("AT&T Speech to Text thinks you said " + recognized_text)
-            except sr.UnknownValueError:
-
-                GLib.idle_add(self.bottom_bar_text_set, "AT&T Speech to Text could not understand audio")
-            except sr.RequestError as e:
-                GLib.idle_add(self.bottom_bar_text_set,
-                              "Could not request results from AT&T Speech to Text service; {0}".format(e))
-
             finally:
                 GLib.idle_add(self.plugin_action_handler, recognized_text)
