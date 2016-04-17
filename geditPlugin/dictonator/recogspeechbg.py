@@ -16,10 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
 
-import time
 
 import speech_recognition as sr
-from gi.repository import GLib
+from gi.repository import GLib, Gtk
 
 from .configurablesettings import PluginSettings
 from .setlog import logger
@@ -37,46 +36,59 @@ class SpeechRecogniser:
         """
         self.bottom_bar_text_set = f_bottom_bar_changer
         self.plugin_action_handler = f_action_handler
-
-        self.demand_fix_ambient_noise = True
-        self.wants_to_run = False
-        self.is_listening = False
+        self.source = None
         self.re = sr.Recognizer()
         self.mic = sr.Microphone()
-        self.stop_listening = None
-        self.source = None
+        self.re_stopper = None
+        self.is_listening = False
+        self.is_prepared = False
         logger.debug("Speech Recogniser initialised")
+
+    @staticmethod
+    def update_gui():
+        """Updates GUI by completing all tasks in the main event loop"""
+        while Gtk.events_pending():
+            Gtk.main_iteration_do(True)
 
     def start_recognising(self):
         """Start listening to voice."""
-        while True:
-            if self.wants_to_run:
-                if self.is_listening:
-                    if self.demand_fix_ambient_noise:
-                        self.demand_fix_ambient_noise = False
-                        GLib.idle_add(self.bottom_bar_text_set, "Preparing Dict'O'nator")
-                        self.re.adjust_for_ambient_noise(self.source, 3)
-                    GLib.idle_add(self.bottom_bar_text_set, "Speak now!")
-                    time.sleep(0.1)
-                else:
-                    with self.mic as self.source:
-                        self.demand_fix_ambient_noise = False
-                        GLib.idle_add(self.bottom_bar_text_set, "Preparing Dict'O'nator")
-                        self.re.adjust_for_ambient_noise(self.source, 3)
-                    self.stop_listening = self.re.listen_in_background(self.mic, self.recog_callback)
-                    self.is_listening = True
-                    # stop_listening is now a function that, when called, stops background listening
-            else:
-                if self.is_listening:
-                    GLib.idle_add(self.bottom_bar_text_set, "Stopping Dictation")
-                    self.stop_listening()
-                    GLib.idle_add(self.bottom_bar_text_set, "Stopped listening, to start listening press CTRL+ALT+2")
-                    self.is_listening = False
-                else:
-                    time.sleep(0.1)
+        if not self.is_prepared:
+            self.setup_recogniser()
+        if not self.is_listening:
+            self.re_stopper = self.re.listen_in_background(self.mic, self.recog_callback)
+            self.is_listening = True
+            self.bottom_bar_text_set("Speak!")
+        else:
+            self.stop_recognising()
+            self.start_recognising()
+
+    def setup_recogniser(self):
+        """Adjusts for noise."""
+        self.bottom_bar_text_set("Preparing Dict'O'nator...")
+        self.update_gui()
+        if self.is_listening:
+            self.re.adjust_for_ambient_noise(self.source, duration=2)
+        else:
+            with self.mic as source:
+                self.source = source
+                self.re.adjust_for_ambient_noise(source, duration=2)
+        self.is_prepared = True
+        self.bottom_bar_text_set("Done preparing.")
+
+    def stop_recognising(self):
+        """Stops listening."""
+        if self.is_listening:
+            self.bottom_bar_text_set("Stopping Dictation!")
+            self.update_gui()
+            self.re_stopper()
+            self.is_listening = False
+            self.bottom_bar_text_set("Stopped listening, to start listening press CTRL+ALT+2")
+        else:
+            self.bottom_bar_text_set("Dictation is already OFF")
 
     def recog_callback(self, r, audio, testing=False):
         """
+        Called from different thread. Uses GLib.idle_all to add function to main loop.
         Callback for start_recogniser, converts speech to text.
         Calls action_handler in main thread.
         """

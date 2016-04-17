@@ -164,6 +164,3 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
         self.plugin_manager.stop()
         del self.plugin_manager
         del self.bottom_widget
-
-    def __del__(self):
-        logger.debug("UI DEL")

@@ -49,42 +49,41 @@ class DictonatorPluginActions:
         self.bottom_bar_add = f_bottom_bar_adder
         GLib.threads_init()
         self.recogniser = SpeechRecogniser(f_bottom_bar_changer, self.action_handler)
-        self.threader = threading.Thread(target=self.recogniser.start_recognising)
-        self.threader.daemon = True
         logger.debug("Actions INIT")
 
     def on_setup_activate(self, action):
         """Demands noise fix from recogniser."""
         logger.debug("Demand noise variable set to True")
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "None", "setup_dictation")
-        self.recogniser.demand_fix_ambient_noise = True
+        self.recogniser.setup_recogniser()
 
     def on_listen_activate(self, action):
-        """Start recogniser thread."""
-        if not self.threader.isAlive():
-            self.threader.start()
-            logger.debug('Thread Started')
+        """Calls to start listening."""
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "None", "start_dictation")
-        self.recogniser.wants_to_run = True
-        logger.debug("wants to run is true")
+        self.recogniser.start_recognising()
 
     def on_stop_activate(self, action):
-        """Stop recogniser thread."""
+        """Calls to stop listening."""
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "None", "stop_dictation")
-        self.recogniser.wants_to_run = False
-        logger.debug("wants to run is false")
+        self.recogniser.stop_recognising()
 
-    def inserttext(self, text: str):
+    def inserttext(self, text: str, words=False):
         """Inserts the text in the document at cursor position."""
         doc = self.window.get_active_document()
         doc.begin_user_action()
         ei = self.get_cursor_position(doc)
+        text = text.lower()
         if not ei.ends_sentence():
-            logger.debug("********************************")
+            logger.debug("********")
             text = text.capitalize()
-        doc.insert_at_cursor(text)
+            doc.insert_at_cursor(text)
+            doc.end_user_action()
+            return
+        if words:
+            doc.insert_at_cursor(" " + text)
+        else:
+            doc.insert_at_cursor(text)
         doc.end_user_action()
-        # logger.debug("Inserted Text")
 
     @staticmethod
     def get_cursor_position(doc: Gedit.Document):
@@ -103,10 +102,13 @@ class DictonatorPluginActions:
 
     def action_handler(self, text: str):
         """Based on output by the decide_state we choose action."""
+        if not self.recogniser.is_listening:
+            return
         currstate = statesmod.decide_state(text)
+        self.bottom_bar_text_set("Speak!")
         self.bottom_bar_add(time.strftime("%H:%M:%S"), text, currstate)
         if currstate == "continue_dictation":
-            self.inserttext(text)
+            self.inserttext(text, True)
         elif currstate == "start_dictation":
             self.on_listen_activate(None)
         elif currstate == "stop_dictation":
@@ -207,7 +209,7 @@ class DictonatorPluginActions:
         elif currstate == "force_close_document":
             self.window.close_tab(self.window.get_active_tab())
         elif currstate == "error_state":
-            logger.debug("Some Error ######")
+            self.bottom_bar_text_set("Some Error ######")
         else:
             self.bottom_bar_text_set("Turned OFF")
         return
@@ -217,6 +219,3 @@ class DictonatorPluginActions:
         del self.window
         del self.settings
         del self.bottom_bar_text_set
-
-    def __del__(self):
-        logger.debug("Actions DEL")
