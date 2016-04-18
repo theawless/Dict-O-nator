@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <!--
 Dict'O'nator - A dictation plugin for gedit.
 Copyright (C) <2016>  <Abhinav Singh>
@@ -18,7 +19,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<!-- Generated with glade 3.18.3 -->
 <interface>
   <requires lib="gtk+" version="3.12"/>
   <object class="GtkBox" id="full_box">
@@ -42,17 +42,16 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
       </packing>
     </child>
     <child>
-      <object class="GtkScrolledWindow" id="event_scroller">
+      <object class="GtkScrolledWindow" id="event_full_scroller">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
         <property name="shadow_type">in</property>
-        <signal name="check-resize" handler="on_event_scroller_check_resize" swapped="no"/>
         <child>
-          <object class="GtkViewport" id="event_viewport">
+          <object class="GtkViewport" id="event_full_viewport">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkBox" id="event_box">
+              <object class="GtkBox" id="event_full_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="orientation">vertical</property>
@@ -105,12 +104,43 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkListBox" id="event_list">
+                  <object class="GtkScrolledWindow" id="event_scroller">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="shadow_type">in</property>
+                    <signal name="check-resize" handler="on_event_scroller_check_resize" swapped="no"/>
+                    <child>
+                      <object class="GtkViewport" id="event_viewport">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkBox" id="event_box">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <object class="GtkListBox" id="event_list">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="selection_mode">none</property>
+                                <property name="activate_on_single_click">False</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">True</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>

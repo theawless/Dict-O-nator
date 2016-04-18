@@ -20,8 +20,7 @@ import threading
 import time
 
 from gi.repository import GLib, Gedit
-
-from . import statesmod
+from .statesmod import decide_action, DictonatorStates
 from .configurablesettings import PluginSettings
 from .recogspeechbg import SpeechRecogniser
 from .saveasdialog import FileSaveAsDialog
@@ -48,7 +47,7 @@ class DictonatorPluginActions:
         self.bottom_bar_text_set = f_bottom_bar_changer
         self.bottom_bar_add = f_bottom_bar_adder
         GLib.threads_init()
-        self.recogniser = SpeechRecogniser(f_bottom_bar_changer, self.action_handler)
+        self.recogniser = SpeechRecogniser(self.action_handler)
         logger.debug("Actions INIT")
 
     def on_setup_activate(self, action):
@@ -70,17 +69,17 @@ class DictonatorPluginActions:
     def inserttext(self, text: str, words=False):
         """Inserts the text in the document at cursor position."""
         doc = self.window.get_active_document()
+        if not doc:
+            return
         doc.begin_user_action()
         ei = self.get_cursor_position(doc)
-        text = text.lower()
-        if not ei.ends_sentence():
-            logger.debug("********")
-            text = text.capitalize()
-            doc.insert_at_cursor(text)
-            doc.end_user_action()
-            return
         if words:
-            doc.insert_at_cursor(" " + text)
+            if not ei.ends_sentence():
+                logger.debug("********")
+                text = text.capitalize()
+                doc.insert_at_cursor(text)
+            else:
+                doc.insert_at_cursor(" " + text)
         else:
             doc.insert_at_cursor(text)
         doc.end_user_action()
@@ -100,118 +99,159 @@ class DictonatorPluginActions:
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
         # a fuction to test other functions
 
-    def action_handler(self, text: str):
-        """Based on output by the decide_state we choose action."""
-        if not self.recogniser.is_listening:
-            return
-        currstate = statesmod.decide_state(text)
-        self.bottom_bar_text_set("Speak!")
-        self.bottom_bar_add(time.strftime("%H:%M:%S"), text, currstate)
-        if currstate == "continue_dictation":
-            self.inserttext(text, True)
-        elif currstate == "start_dictation":
-            self.on_listen_activate(None)
-        elif currstate == "stop_dictation":
+    def action_handler(self, text: str, state: DictonatorStates, msg: str):
+        """ Handle what to do with the state/msg that we get.
+        Based on output by the decide_action we choose action."""
+
+        if state is not DictonatorStates.fatal_error and state is not DictonatorStates.recognised:
+            self.bottom_bar_text_set(msg)
+        if state is DictonatorStates.fatal_error:
             self.on_stop_activate(None)
-        elif currstate == "hold_dictation":
-            pass
-        elif currstate == "scroll_to_cursor":
-            vi = self.window.get_active_view()
-            vi.scroll_to_cursor()
-        elif currstate == "goto_line":
-            pass
-        elif currstate == "undo":
-            doc = self.window.get_active_document()
-            if doc.can_undo():
-                doc.begin_user_action()
-                doc.undo()
-                doc.end_user_action()
-        elif currstate == "redo":
-            doc = self.window.get_active_document()
-            if doc.can_redo():
-                doc.begin_user_action()
-                doc.redo()
-                doc.end_user_action()
-        elif currstate == "cut_clipboard":
-            vi = self.window.get_active_view()
-            vi.cut_clipboard()
-        elif currstate == "copy_clipboard":
-            vi = self.window.get_active_view()
-            vi.copy_clipboard()
-        elif currstate == "paste_clipboard":
-            vi = self.window.get_active_view()
-            vi.paste_clipboard()
-        elif currstate == "delete_selection":
-            vi = self.window.get_active_view()
-            vi.delete_selection()
-        elif currstate == "select_all":
-            vi = self.window.get_active_view()
-            vi.select_all()
-        elif currstate == "spacebar_input":
-            self.inserttext(' ')
-        elif currstate == "sentence_end":
-            self.inserttext('. ')
-        elif currstate == "delete_line":
-            doc = self.window.get_active_document()
-            doc.begin_user_action()
-            ei = self.get_cursor_position(doc)
-            si = self.get_cursor_position(doc)
-            si.set_line(ei.get_line())
-            ei.forward_to_line_end()
-            doc.delete(si, ei)
-            doc.end_user_action()
-        elif currstate == "delete_sentence":
-            doc = self.window.get_active_document()
-            doc.begin_user_action()
-            ei = self.get_cursor_position(doc)
-            si = self.get_cursor_position(doc)
-            if not si.starts_sentence():
-                si.backward_sentence_start()
-            si.backward_char()
-            ei.forward_sentence_end()
-            doc.delete(si, ei)
-            doc.end_user_action()
-        elif currstate == "delete_word":
-            doc = self.window.get_active_document()
-            doc.begin_user_action()
-            ei = self.get_cursor_position(doc)
-            si = self.get_cursor_position(doc)
-            si.backward_word_start()
-            si.backward_char()
-            ei.forward_word_end()
-            doc.delete(si, ei)
-            doc.end_user_action()
-        elif currstate == "clear_document":
-            doc = self.window.get_active_document()
-            if not doc:
+            self.bottom_bar_text_set(msg)
+        if state == DictonatorStates.recognised:
+            if not self.recogniser.is_listening:
                 return
-            doc.begin_user_action()
-            doc.set_text('')
-            doc.end_user_action()
-        elif currstate == "new_document":
-            self.window.create_tab(True)
-        elif currstate == "save_document":
-            doc = self.window.get_active_document()
-            # checking if the document is a new document
-            if doc.is_untitled():
-                self.bottom_bar_text_set("First save should be Save As...")
+            self.bottom_bar_text_set("Speak!")
+            if text == "":
+                return
+            curr_action = decide_action(text)
+            self.bottom_bar_add(time.strftime("%H:%M:%S"), text, curr_action)
+            if curr_action == "continue_dictation":
+                self.inserttext(text, True)
+            elif curr_action == "start_dictation":
+                self.on_listen_activate(None)
+            elif curr_action == "stop_dictation":
+                self.on_stop_activate(None)
+            elif curr_action == "hold_dictation":
+                pass
+            elif curr_action == "scroll_to_cursor":
+                vi = self.window.get_active_view()
+                if not vi:
+                    return
+                vi.scroll_to_cursor()
+            elif curr_action == "goto_line":
+                pass
+            elif curr_action == "undo":
+                doc = self.window.get_active_document()
+                if not doc:
+                    return
+                if doc.can_undo():
+                    doc.begin_user_action()
+                    doc.undo()
+                    doc.end_user_action()
+            elif curr_action == "redo":
+                doc = self.window.get_active_document()
+                if not doc:
+                    return
+                if doc.can_redo():
+                    doc.begin_user_action()
+                    doc.redo()
+                    doc.end_user_action()
+            elif curr_action == "cut_clipboard":
+                vi = self.window.get_active_view()
+                if not vi:
+                    return
+                vi.cut_clipboard()
+            elif curr_action == "copy_clipboard":
+                vi = self.window.get_active_view()
+                if not vi:
+                    return
+                vi.copy_clipboard()
+            elif curr_action == "paste_clipboard":
+                vi = self.window.get_active_view()
+                if not vi:
+                    return
+                vi.paste_clipboard()
+            elif curr_action == "delete_selection":
+                vi = self.window.get_active_view()
+                if not vi:
+                    return
+                vi.delete_selection()
+            elif curr_action == "select_all":
+                vi = self.window.get_active_view()
+                if not vi:
+                    return
+                vi.select_all()
+            elif curr_action == "spacebar_input":
+                self.inserttext(' ')
+            elif curr_action == "sentence_end":
+                self.inserttext('. ')
+            elif curr_action == "delete_line":
+                doc = self.window.get_active_document()
+                if not doc:
+                    return
+                doc.begin_user_action()
+                ei = self.get_cursor_position(doc)
+                si = self.get_cursor_position(doc)
+                si.set_line(ei.get_line())
+                ei.forward_to_line_end()
+                doc.delete(si, ei)
+                doc.end_user_action()
+            elif curr_action == "delete_sentence":
+                doc = self.window.get_active_document()
+                if not doc:
+                    return
+                doc.begin_user_action()
+                ei = self.get_cursor_position(doc)
+                si = self.get_cursor_position(doc)
+                if not si.starts_sentence():
+                    si.backward_sentence_start()
+                si.backward_char()
+                ei.forward_sentence_end()
+                doc.delete(si, ei)
+                doc.end_user_action()
+            elif curr_action == "delete_word":
+                doc = self.window.get_active_document()
+                if not doc:
+                    return
+                doc.begin_user_action()
+                ei = self.get_cursor_position(doc)
+                si = self.get_cursor_position(doc)
+                si.backward_word_start()
+                si.backward_char()
+                ei.forward_word_end()
+                doc.delete(si, ei)
+                doc.end_user_action()
+            elif curr_action == "clear_document":
+                doc = self.window.get_active_document()
+                if not doc:
+                    return
+                doc.begin_user_action()
+                doc.set_text('')
+                doc.end_user_action()
+            elif curr_action == "new_document":
+                self.window.create_tab(True)
+            elif curr_action == "save_document":
+                doc = self.window.get_active_document()
+                if not doc:
+                    return
+                # checking if the document is a new document
+                if doc.is_untitled():
+                    self.bottom_bar_text_set("First save should be Save As...")
+                    FileSaveAsDialog(self.window)
+                else:
+                    doc.save(Gedit.DocumentSaveFlags(15))
+            elif curr_action == "save_as_document":
                 FileSaveAsDialog(self.window)
+            elif curr_action == "close_document":
+                doc = self.window.get_active_document()
+                if not doc:
+                    return
+                tab = self.window.get_active_tab()
+                if not tab:
+                    return
+                if doc.is_untouched():
+                    self.window.close_tab(tab)
+                else:
+                    # to prevent data loss
+                    self.bottom_bar_text_set("You might wanna save the document before quitting.")
+            elif curr_action == "force_close_document":
+                tab = self.window.get_active_tab()
+                if not tab:
+                    return
+                self.window.close_tab(tab)
             else:
-                doc.save(Gedit.DocumentSaveFlags(15))
-        elif currstate == "save_as_document":
-            FileSaveAsDialog(self.window)
-        elif currstate == "close_document":
-            if self.window.get_active_document.is_untouched():
-                self.window.close_tab(self.window.get_active_tab())
-            else:
-                # to prevent data loss
-                self.bottom_bar_text_set("You might wanna save the document before quitting.")
-        elif currstate == "force_close_document":
-            self.window.close_tab(self.window.get_active_tab())
-        elif currstate == "error_state":
-            self.bottom_bar_text_set("Some Error ######")
-        else:
-            self.bottom_bar_text_set("Turned OFF")
+                self.bottom_bar_text_set("WEIRD STATE! How did you reach this state? O_O")
         return
 
     def stop(self):

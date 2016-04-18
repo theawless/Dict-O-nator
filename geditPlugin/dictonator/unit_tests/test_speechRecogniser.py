@@ -32,9 +32,7 @@ class TestSpeechRecogniser(TestCase):
         PluginSettings()
         # Only test sphinx
         PluginSettings.settings['Main']['recogniser'] = 'Sphinx'
-        self.recogniser = SpeechRecogniser(f_action_handler=self.action_handler_fake,
-                                           f_bottom_bar_changer=self.bottom_bar_changer_fake)
-
+        self.recogniser = SpeechRecogniser(f_action_handler=self.action_handler_fake)
         self.audio_count = 0
         with sr.AudioFile(AUDIO_PATH + 'hello' + '.wav') as source:
             self.audio0 = sr.Recognizer().record(source)  # read the entire audio file
@@ -71,7 +69,3 @@ class TestSpeechRecogniser(TestCase):
             self.assertEqual(recognized_text, "book on table")
 
         self.audio_count += 1
-
-    def bottom_bar_changer_fake(self, txt):
-        # Nothing to be tested
-        pass

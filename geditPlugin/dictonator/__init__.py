@@ -125,6 +125,9 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
         box.pack_start(text_label, True, True, 0)
         box.pack_start(Gtk.Label(action), False, False, 0)
         row.add(box)
+        # Remove old entries
+        if self.bottom_widget.get_object("event_list").get_row_at_index(40):
+            self.bottom_widget.get_object("event_list").get_row_at_index(40).destroy()
         row.show_all()
         self.bottom_widget.get_object("event_list").prepend(row)
 
