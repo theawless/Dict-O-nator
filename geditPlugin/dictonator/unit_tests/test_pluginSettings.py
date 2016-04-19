@@ -19,7 +19,7 @@
 import configparser
 from unittest import TestCase
 
-from ..configurablesettings import PluginSettings
+from dictonator.configurablesettings import PluginSettings
 
 
 class TestPluginSettings(TestCase):
@@ -33,6 +33,7 @@ class TestPluginSettings(TestCase):
         self.config['IBM'] = {'username': '', 'password': ''}
         self.config['Bing'] = {'api_key': 'eea410c705e74b349a26eebe4ca510f7'}
         self.config['APIAI'] = {'api_key': '26014dcd873d4c879d9d410aa6a34521'}
+        return True
 
     def run(self, result=None):
         conf = self.test_default_settings()
@@ -43,6 +44,7 @@ class TestPluginSettings(TestCase):
     def test_default_settings(self):
         _config = PluginSettings.default_settings()
         self.assertEqual(_config, self.config, "Default settings not equal")
+        print("Default settings tested")
         return _config
 
     def test_config_to_dict(self, conf):
@@ -57,6 +59,7 @@ class TestPluginSettings(TestCase):
                 }
 
         self.assertEqual(_dic, dic, "Conversion from configparser to dictionary failed")
+        print("settings convert to dictionary tested")
         return dic
 
     def test_save_settings(self, dic):
@@ -66,3 +69,4 @@ class TestPluginSettings(TestCase):
         PluginSettings.load_settings()
         self.assertEqual(PluginSettings.settings, PluginSettings.config_to_dict(self.config),
                          "Incorrect load or save")
+        print("Load and save settings tested")

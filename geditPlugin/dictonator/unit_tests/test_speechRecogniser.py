@@ -21,10 +21,15 @@ from unittest import TestCase
 
 import speech_recognition as sr
 
-from ..configurablesettings import PluginSettings
-from ..recogspeechbg import SpeechRecogniser
+from dictonator.configurablesettings import PluginSettings
+from dictonator.recogspeechbg import SpeechRecogniser
+from dictonator.statesmod import DictonatorStates
 
-AUDIO_PATH = os.path.dirname(os.path.abspath(__file__)) + "/test_audio/"
+TEST_PATH = os.path.dirname(os.path.abspath(__file__))
+if not os.path.exists(TEST_PATH + '/.logs'):
+    os.makedirs(TEST_PATH + '/.logs')
+
+AUDIO_PATH = TEST_PATH + "/test_audio/"
 
 
 class TestSpeechRecogniser(TestCase):
@@ -34,14 +39,19 @@ class TestSpeechRecogniser(TestCase):
         PluginSettings.settings['Main']['recogniser'] = 'Sphinx'
         self.recogniser = SpeechRecogniser(f_action_handler=self.action_handler_fake)
         self.audio_count = 0
-        with sr.AudioFile(AUDIO_PATH + 'hello' + '.wav') as source:
-            self.audio0 = sr.Recognizer().record(source)  # read the entire audio file
-        with sr.AudioFile(AUDIO_PATH + 'whats_up' + '.wav') as source:
-            self.audio1 = sr.Recognizer().record(source)  # read the entire audio file
-        with sr.AudioFile(AUDIO_PATH + 'this_is_amazing' + '.wav') as source:
-            self.audio2 = sr.Recognizer().record(source)  # read the entire audio file
-        with sr.AudioFile(AUDIO_PATH + 'book_on_table' + '.wav') as source:
-            self.audio3 = sr.Recognizer().record(source)  # read the entire audio file
+        try:
+            with sr.AudioFile(AUDIO_PATH + 'hello' + '.wav') as source:
+                self.audio0 = sr.Recognizer().record(source)  # read the entire audio file
+            with sr.AudioFile(AUDIO_PATH + 'whats_up' + '.wav') as source:
+                self.audio1 = sr.Recognizer().record(source)  # read the entire audio file
+            with sr.AudioFile(AUDIO_PATH + 'this_is_amazing' + '.wav') as source:
+                self.audio2 = sr.Recognizer().record(source)  # read the entire audio file
+            with sr.AudioFile(AUDIO_PATH + 'book_on_table' + '.wav') as source:
+                self.audio3 = sr.Recognizer().record(source)  # read the entire audio file
+            return True
+        except FileNotFoundError:
+            print("Audio files not found, skipping this test")
+            return False
 
     def run(self, result=None):
         self.test_start_recognising()
@@ -57,15 +67,25 @@ class TestSpeechRecogniser(TestCase):
         self.recogniser.recog_callback(self.recogniser.re, audio=self.audio2, testing=True)
         self.recogniser.recog_callback(self.recogniser.re, audio=self.audio3, testing=True)
 
-    def action_handler_fake(self, recognized_text):
-        print(recognized_text + " audio_count= " + self.audio_count)
-        if self.audio_count == 0:
-            self.assertEqual(recognized_text, "hello")
-        if self.audio_count == 1:
-            self.assertEqual(recognized_text, "whats up")
-        if self.audio_count == 2:
-            self.assertEqual(recognized_text, "this is amazing")
-        if self.audio_count == 3:
-            self.assertEqual(recognized_text, "book on table")
+    def action_handler_fake(self, recognized_text, state, msg):
+        # print(recognized_text + " audio_count= " + self.audio_count)
+        if state == DictonatorStates.recognised:
+            if self.audio_count == 0:
+                self.assertEqual(recognized_text, "hello")
+                print("Audio" + str(self.audio_count) + "was recognized properly")
+            if self.audio_count == 1:
+                self.assertEqual(recognized_text, "what's up")
+                print("Audio" + str(self.audio_count) + "was recognized properly")
+            if self.audio_count == 2:
+                self.assertEqual(recognized_text, "this is amazing")
+                print("Audio" + str(self.audio_count) + "was recognized properly")
+            if self.audio_count == 3:
+                self.assertEqual(recognized_text, "book on table")
+                print("Audio" + str(self.audio_count) + "was recognized properly")
+
+        elif state == DictonatorStates.error:
+            self.fail("Could not understand above audio")
+        elif state == DictonatorStates.fatal_error:
+            self.fail("Fatal error.")
 
         self.audio_count += 1

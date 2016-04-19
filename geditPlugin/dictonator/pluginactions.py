@@ -16,15 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
 
-import threading
 import time
 
 from gi.repository import GLib, Gedit
-from .statesmod import decide_action, DictonatorStates
-from .configurablesettings import PluginSettings
-from .recogspeechbg import SpeechRecogniser
-from .saveasdialog import FileSaveAsDialog
-from .setlog import logger
+
+from dictonator.configurablesettings import PluginSettings
+from dictonator.recogspeechbg import SpeechRecogniser
+from dictonator.saveasdialog import FileSaveAsDialog
+from dictonator.setlog import logger
+from dictonator.statesmod import decide_action, DictonatorStates
 
 
 class DictonatorPluginActions:
@@ -40,7 +40,12 @@ class DictonatorPluginActions:
         :param f_bottom_bar_changer: change the bottom bar main text.
         :param f_bottom_bar_adder: add to the actions list in bottom bar.
         """
+        # will be set from UI class
         self.window = None
+        self.document = None
+        self.view = None
+        self.tab = None
+
         # A manager to handle settings
         self.settings = PluginSettings().settings
         # Using like a global function
@@ -68,7 +73,7 @@ class DictonatorPluginActions:
 
     def inserttext(self, text: str, words=False):
         """Inserts the text in the document at cursor position."""
-        doc = self.window.get_active_document()
+        doc = self.document
         if not doc:
             return
         doc.begin_user_action()
@@ -93,7 +98,7 @@ class DictonatorPluginActions:
 
     def on_logit_activate(self, action):
         """A test function."""
-        # ei = self.get_cursor_position(self.window.get_active_document())
+        # ei = self.get_cursor_position(self.document)
         # ;ogger.debug(str(ei.starts_sentence()) + str(ei.inside_sentence()) + str(ei.ends_sentence()))
         # self.inserttext("i am abhinav")
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
@@ -104,12 +109,15 @@ class DictonatorPluginActions:
         Based on output by the decide_action we choose action."""
 
         if state is not DictonatorStates.fatal_error and state is not DictonatorStates.recognised:
+            # simple msg
             self.bottom_bar_text_set(msg)
         if state is DictonatorStates.fatal_error:
+            # fatal error, we will stop listening
             self.on_stop_activate(None)
             self.bottom_bar_text_set(msg)
         if state == DictonatorStates.recognised:
             if not self.recogniser.is_listening:
+                # if by chance user stops before the results come
                 return
             self.bottom_bar_text_set("Speak!")
             if text == "":
@@ -125,14 +133,14 @@ class DictonatorPluginActions:
             elif curr_action == "hold_dictation":
                 pass
             elif curr_action == "scroll_to_cursor":
-                vi = self.window.get_active_view()
+                vi = self.view
                 if not vi:
                     return
                 vi.scroll_to_cursor()
             elif curr_action == "goto_line":
                 pass
             elif curr_action == "undo":
-                doc = self.window.get_active_document()
+                doc = self.document
                 if not doc:
                     return
                 if doc.can_undo():
@@ -140,7 +148,7 @@ class DictonatorPluginActions:
                     doc.undo()
                     doc.end_user_action()
             elif curr_action == "redo":
-                doc = self.window.get_active_document()
+                doc = self.document
                 if not doc:
                     return
                 if doc.can_redo():
@@ -148,27 +156,27 @@ class DictonatorPluginActions:
                     doc.redo()
                     doc.end_user_action()
             elif curr_action == "cut_clipboard":
-                vi = self.window.get_active_view()
+                vi = self.view
                 if not vi:
                     return
                 vi.cut_clipboard()
             elif curr_action == "copy_clipboard":
-                vi = self.window.get_active_view()
+                vi = self.view
                 if not vi:
                     return
                 vi.copy_clipboard()
             elif curr_action == "paste_clipboard":
-                vi = self.window.get_active_view()
+                vi = self.view
                 if not vi:
                     return
                 vi.paste_clipboard()
             elif curr_action == "delete_selection":
-                vi = self.window.get_active_view()
+                vi = self.view
                 if not vi:
                     return
                 vi.delete_selection()
             elif curr_action == "select_all":
-                vi = self.window.get_active_view()
+                vi = self.view
                 if not vi:
                     return
                 vi.select_all()
@@ -177,7 +185,7 @@ class DictonatorPluginActions:
             elif curr_action == "sentence_end":
                 self.inserttext('. ')
             elif curr_action == "delete_line":
-                doc = self.window.get_active_document()
+                doc = self.document
                 if not doc:
                     return
                 doc.begin_user_action()
@@ -188,7 +196,7 @@ class DictonatorPluginActions:
                 doc.delete(si, ei)
                 doc.end_user_action()
             elif curr_action == "delete_sentence":
-                doc = self.window.get_active_document()
+                doc = self.document
                 if not doc:
                     return
                 doc.begin_user_action()
@@ -201,7 +209,7 @@ class DictonatorPluginActions:
                 doc.delete(si, ei)
                 doc.end_user_action()
             elif curr_action == "delete_word":
-                doc = self.window.get_active_document()
+                doc = self.document
                 if not doc:
                     return
                 doc.begin_user_action()
@@ -213,7 +221,7 @@ class DictonatorPluginActions:
                 doc.delete(si, ei)
                 doc.end_user_action()
             elif curr_action == "clear_document":
-                doc = self.window.get_active_document()
+                doc = self.document
                 if not doc:
                     return
                 doc.begin_user_action()
@@ -222,7 +230,7 @@ class DictonatorPluginActions:
             elif curr_action == "new_document":
                 self.window.create_tab(True)
             elif curr_action == "save_document":
-                doc = self.window.get_active_document()
+                doc = self.document
                 if not doc:
                     return
                 # checking if the document is a new document
@@ -234,10 +242,10 @@ class DictonatorPluginActions:
             elif curr_action == "save_as_document":
                 FileSaveAsDialog(self.window)
             elif curr_action == "close_document":
-                doc = self.window.get_active_document()
+                doc = self.document
                 if not doc:
                     return
-                tab = self.window.get_active_tab()
+                tab = self.tab
                 if not tab:
                     return
                 if doc.is_untouched():
@@ -246,7 +254,7 @@ class DictonatorPluginActions:
                     # to prevent data loss
                     self.bottom_bar_text_set("You might wanna save the document before quitting.")
             elif curr_action == "force_close_document":
-                tab = self.window.get_active_tab()
+                tab = self.tab
                 if not tab:
                     return
                 self.window.close_tab(tab)

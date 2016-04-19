@@ -21,9 +21,9 @@ import time
 
 from gi.repository import GObject, Gtk, Gedit, PeasGtk
 
-from .configurablesettings import ConfigurableDialogBox
-from .pluginactions import DictonatorPluginActions
-from .setlog import logger
+from dictonator.configurablesettings import ConfigurableDialogBox
+from dictonator.pluginactions import DictonatorPluginActions
+from dictonator.setlog import logger
 
 GEDIT_PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
 BOTTOM_WIDGET_UI_PATH = GEDIT_PLUGIN_PATH + "/bottomwidgetui.glade"
@@ -63,7 +63,12 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
         logger.debug('UI INIT')
 
     def do_update_state(self):
+        # every time the state is updated, we need to update it in plugin manager class too
         self.plugin_manager.window = self.window
+        self.plugin_manager.document = self.window.get_active_document()
+        self.plugin_manager.view = self.window.get_active_view()
+        self.plugin_manager.tab = self.window.get_active_tab()
+
         self._action_group.set_sensitive(self.window.get_active_document() is not None)
 
     def do_activate(self):
@@ -71,8 +76,6 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
         # Insert menu and bottom panel into gui
         self._insert_menu()
         self._insert_bottom_panel()
-        # Very important window updated for manager class
-        self.plugin_manager.window = self.window
 
     def _insert_menu(self):
         # Define actions and merge into UImanager

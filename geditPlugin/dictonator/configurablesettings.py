@@ -22,7 +22,7 @@ import os
 
 from gi.repository import Gtk
 
-from .setlog import logger
+from dictonator.setlog import logger
 
 GEDIT_PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE_PATH = GEDIT_PLUGIN_PATH + "/config.ini"

@@ -20,9 +20,9 @@
 import speech_recognition as sr
 from gi.repository import GLib, Gtk
 
-from .configurablesettings import PluginSettings
-from .setlog import logger
-from .statesmod import DictonatorStates
+from dictonator.configurablesettings import PluginSettings
+from dictonator.setlog import logger
+from dictonator.statesmod import DictonatorStates
 
 
 class SpeechRecogniser:
