@@ -26,9 +26,6 @@ from dictonator.recogspeechbg import SpeechRecogniser
 from dictonator.statesmod import DictonatorStates
 
 TEST_PATH = os.path.dirname(os.path.abspath(__file__))
-if not os.path.exists(TEST_PATH + '/.logs'):
-    os.makedirs(TEST_PATH + '/.logs')
-
 AUDIO_PATH = TEST_PATH + "/test_audio/"
 
 

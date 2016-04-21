@@ -42,5 +42,6 @@ class AllTestSuite:
         print("\nAll tests finished Successfully\n")
 
 
-ats = AllTestSuite()
-ats.run_all_tests()
+def start_tests():
+    ats = AllTestSuite()
+    ats.run_all_tests()

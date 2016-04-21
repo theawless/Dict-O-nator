@@ -30,7 +30,7 @@ if not os.path.exists(GEDIT_PLUGIN_PATH + '/.logs'):
 LOG_DIR_PATH = GEDIT_PLUGIN_PATH + "/.logs/"
 
 
-def _setup_logger():
+def setup_logger():
     # setting format of log
     formatter = logging.Formatter('%(threadName)s - %(levelname)s - %(message)s')
     logger.setLevel(logging.DEBUG)
@@ -49,4 +49,4 @@ def _setup_logger():
     logger.debug('Setlog logger setup done')
 
 
-_setup_logger()
+setup_logger()

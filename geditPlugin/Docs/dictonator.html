@@ -1,0 +1,739 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head><title>Python: package dictonator</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+    <tr bgcolor="#7799ee">
+        <td valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial">
+                &nbsp;<br><big><big><strong>dictonator</strong></big></big></font></td
+        >
+        <td align=right valign=bottom
+        ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a
+                href="file:/home/theawless/.local/share/gedit/plugins/dictonator/__init__.py">/home/theawless/.local/share/gedit/plugins/dictonator/__init__.py</a></font>
+        </td>
+    </tr>
+</table>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#aa55cc">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Package Contents</strong></big></font></td>
+    </tr>
+
+    <tr>
+        <td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
+        <td>&nbsp;</td>
+        <td width="100%">
+            <table width="100%" summary="list">
+                <tr>
+                    <td width="25%" valign=top><a
+                            href="dictonator.configurablesettings.html">configurablesettings</a><br>
+                        <a href="dictonator.pluginactions.html">pluginactions</a><br>
+                    </td>
+                    <td width="25%" valign=top><a href="dictonator.recogspeechbg.html">recogspeechbg</a><br>
+                        <a href="dictonator.saveasdialog.html">saveasdialog</a><br>
+                    </td>
+                    <td width="25%" valign=top><a href="dictonator.setlog.html">setlog</a><br>
+                        <a href="dictonator.statesmod.html">statesmod</a><br>
+                    </td>
+                    <td width="25%" valign=top><a href="dictonator.unit_tests.html"><strong>unit_tests</strong>&nbsp;(package)</a><br>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table>
+<p>
+    <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+        <tr bgcolor="#ee77aa">
+            <td colspan=3 valign=bottom>&nbsp;<br>
+                <font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td>
+        </tr>
+
+        <tr>
+            <td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
+            <td>&nbsp;</td>
+            <td width="100%">
+                <dl>
+                    <dt><font face="helvetica, arial"><a href="gi.overrides.GObject.html#Object">gi.overrides.GObject.Object</a>(gi.repository.GObject.Object)
+                    </font></dt>
+                    <dd>
+                        <dl>
+                            <dt><font face="helvetica, arial"><a href="dictonator.html#DictonatorUI">DictonatorUI</a>(<a
+                                    href="gi.overrides.GObject.html#Object">gi.overrides.GObject.Object</a>, <a
+                                    href="gi.repository.Gedit.html#WindowActivatable">gi.repository.Gedit.WindowActivatable</a>,
+                                <a href="gi.repository.PeasGtk.html#Configurable">gi.repository.PeasGtk.Configurable</a>)
+                            </font></dt>
+                        </dl>
+                    </dd>
+                    <dt><font face="helvetica, arial"><a href="gi.repository.Gedit.html#WindowActivatable">gi.repository.Gedit.WindowActivatable</a>(gobject.GInterface)
+                    </font></dt>
+                    <dd>
+                        <dl>
+                            <dt><font face="helvetica, arial"><a href="dictonator.html#DictonatorUI">DictonatorUI</a>(<a
+                                    href="gi.overrides.GObject.html#Object">gi.overrides.GObject.Object</a>, <a
+                                    href="gi.repository.Gedit.html#WindowActivatable">gi.repository.Gedit.WindowActivatable</a>,
+                                <a href="gi.repository.PeasGtk.html#Configurable">gi.repository.PeasGtk.Configurable</a>)
+                            </font></dt>
+                        </dl>
+                    </dd>
+                    <dt><font face="helvetica, arial"><a href="gi.repository.PeasGtk.html#Configurable">gi.repository.PeasGtk.Configurable</a>(gobject.GInterface)
+                    </font></dt>
+                    <dd>
+                        <dl>
+                            <dt><font face="helvetica, arial"><a href="dictonator.html#DictonatorUI">DictonatorUI</a>(<a
+                                    href="gi.overrides.GObject.html#Object">gi.overrides.GObject.Object</a>, <a
+                                    href="gi.repository.Gedit.html#WindowActivatable">gi.repository.Gedit.WindowActivatable</a>,
+                                <a href="gi.repository.PeasGtk.html#Configurable">gi.repository.PeasGtk.Configurable</a>)
+                            </font></dt>
+                        </dl>
+                    </dd>
+                </dl>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#ffc8d8">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#000000" face="helvetica, arial"><a name="DictonatorUI">class <strong>DictonatorUI</strong></a>(<a
+                    href="gi.overrides.GObject.html#Object">gi.overrides.GObject.Object</a>, <a
+                    href="gi.repository.Gedit.html#WindowActivatable">gi.repository.Gedit.WindowActivatable</a>, <a
+                    href="gi.repository.PeasGtk.html#Configurable">gi.repository.PeasGtk.Configurable</a>)</font></td>
+    </tr>
+
+    <tr bgcolor="#ffc8d8">
+        <td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+        <td colspan=2><tt>Handle&nbsp;UI,&nbsp;define&nbsp;when&nbsp;plugin&nbsp;runs.<br>&nbsp;</tt></td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+        <td width="100%">
+            <dl>
+                <dt>Method resolution order:</dt>
+                <dd><a href="dictonator.html#DictonatorUI">DictonatorUI</a></dd>
+                <dd><a href="gi.overrides.GObject.html#Object">gi.overrides.GObject.Object</a></dd>
+                <dd>gi.repository.GObject.Object</dd>
+                <dd>gi._gobject._gobject.GObject</dd>
+                <dd><a href="gi.repository.Gedit.html#WindowActivatable">gi.repository.Gedit.WindowActivatable</a></dd>
+                <dd><a href="gi.repository.PeasGtk.html#Configurable">gi.repository.PeasGtk.Configurable</a></dd>
+                <dd>gobject.GInterface</dd>
+                <dd><a href="builtins.html#object">builtins.object</a></dd>
+            </dl>
+            <hr>
+            Methods defined here:<br>
+            <dl>
+                <dt><a name="DictonatorUI-__init__"><strong>__init__</strong></a>(self)</dt>
+                <dd><tt>Constructor&nbsp;for&nbsp;UI&nbsp;handler.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-bottom_bar_handler"><strong>bottom_bar_handler</strong></a>(self, tim:&lt;module
+                    'time' (built-in)&gt;, text:str, action:str)
+                </dt>
+                <dd><tt>Add&nbsp;actions&nbsp;to&nbsp;the&nbsp;eventlist&nbsp;in&nbsp;the&nbsp;bottom&nbsp;bar.<br>
+                    &nbsp;<br>
+                    :param&nbsp;tim:&nbsp;Time&nbsp;of&nbsp;action.<br>
+                    :param&nbsp;text:&nbsp;Recognized&nbsp;text.<br>
+                    :param&nbsp;action:&nbsp;Action&nbsp;performed.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-bottom_bar_text_changer"><strong>bottom_bar_text_changer</strong></a>(self,
+                    text:str)
+                </dt>
+                <dd><tt>Change&nbsp;main&nbsp;bottom&nbsp;bar&nbsp;text.<br>
+                    &nbsp;<br>
+                    :param&nbsp;text:&nbsp;New&nbsp;bottom&nbsp;bar&nbsp;main&nbsp;text.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-do_activate"><strong>do_activate</strong></a>(self)</dt>
+                <dd><tt>Activate&nbsp;plugin,&nbsp;insert&nbsp;UI.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-do_create_configure_widget"><strong>do_create_configure_widget</strong></a>(self)
+                </dt>
+                <dd><tt>Implement&nbsp;the&nbsp;configuration&nbsp;box&nbsp;in&nbsp;plugin&nbsp;preferences</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-do_deactivate"><strong>do_deactivate</strong></a>(self)</dt>
+                <dd><tt>Plugin&nbsp;close.&nbsp;Remove&nbsp;menu&nbsp;items&nbsp;and&nbsp;bottom&nbsp;bar.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-do_get_property"><strong>do_get_property</strong></a> = obj_get_property(self,
+                    pspec)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-do_set_property"><strong>do_set_property</strong></a> = obj_set_property(self,
+                    pspec, value)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-do_update_state"><strong>do_update_state</strong></a>(self)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-stop"><strong>stop</strong></a>(self)</dt>
+                <dd><tt>Stop&nbsp;the&nbsp;plugin.</tt></dd>
+            </dl>
+
+            <hr>
+            Static methods defined here:<br>
+            <dl>
+                <dt><a name="DictonatorUI-get_icon"><strong>get_icon</strong></a>(size:gi.repository.Gtk.GtkIconSize)
+                </dt>
+                <dd><tt>Return&nbsp;scaled&nbsp;dictonator&nbsp;icon&nbsp;from&nbsp;disk.</tt></dd>
+            </dl>
+
+            <hr>
+            Data descriptors defined here:<br>
+            <dl>
+                <dt><strong>window</strong></dt>
+                <dd><tt></tt></dd>
+            </dl>
+            <hr>
+            Data and other attributes defined here:<br>
+            <dl>
+                <dt><strong>__gtype__</strong> = &lt;GType Dictonator (46692784)&gt;
+            </dl>
+
+            <dl>
+                <dt><strong>__gtype_name__</strong> = 'Dictonator'
+            </dl>
+
+            <dl>
+                <dt><strong>ui_str</strong> = '<font color="#c040c0">\n</font> &lt;ui&gt;<font color="#c040c0">\n</font>
+                    &lt;menubar... &lt;/menubar&gt;<font color="#c040c0">\n</font> &lt;/ui&gt;<font
+                            color="#c040c0">\n</font> '
+            </dl>
+
+            <hr>
+            Methods inherited from <a href="gi.overrides.GObject.html#Object">gi.overrides.GObject.Object</a>:<br>
+            <dl>
+                <dt><a name="DictonatorUI-__copy__"><strong>__copy__</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__deepcopy__"><strong>__deepcopy__</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-bind_property"><strong>bind_property</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-bind_property_full"><strong>bind_property_full</strong></a> =
+                    _unsupported_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-chain"><strong>chain</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-compat_control"><strong>compat_control</strong></a> =
+                    _unsupported_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-connect"><strong>connect</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-connect_after"><strong>connect_after</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-connect_data"><strong>connect_data</strong></a>(self, detailed_signal,
+                    handler, *data, **kwargs)
+                </dt>
+                <dd><tt>Connect&nbsp;a&nbsp;callback&nbsp;to&nbsp;the&nbsp;given&nbsp;signal&nbsp;with&nbsp;optional&nbsp;user&nbsp;data.<br>
+                    &nbsp;<br>
+                    :param&nbsp;str&nbsp;detailed_signal:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;detailed&nbsp;signal&nbsp;to&nbsp;connect&nbsp;to.<br>
+                    :param&nbsp;callable&nbsp;handler:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Callback&nbsp;handler&nbsp;to&nbsp;connect&nbsp;to&nbsp;the&nbsp;signal.<br>
+                    :param&nbsp;*data:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Variable&nbsp;data&nbsp;which&nbsp;is&nbsp;passed&nbsp;through&nbsp;to&nbsp;the&nbsp;signal&nbsp;handler.<br>
+                    :param&nbsp;GObject.ConnectFlags&nbsp;connect_flags:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Flags&nbsp;used&nbsp;for&nbsp;connection&nbsp;options.<br>
+                    :returns:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;signal&nbsp;id&nbsp;which&nbsp;can&nbsp;be&nbsp;used&nbsp;with&nbsp;disconnect.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-connect_object"><strong>connect_object</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-connect_object_after"><strong>connect_object_after</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-disconnect"><strong>disconnect</strong></a> = signal_handler_disconnect(*args,
+                    **kwargs)
+                </dt>
+                <dd><tt>#&nbsp;Function&nbsp;wrapper&nbsp;for&nbsp;signal&nbsp;functions&nbsp;used&nbsp;as&nbsp;instance&nbsp;methods.<br>
+                    #&nbsp;This&nbsp;is&nbsp;needed&nbsp;when&nbsp;the&nbsp;signal&nbsp;functions&nbsp;come&nbsp;directly&nbsp;from&nbsp;GI.<br>
+                    #&nbsp;(they&nbsp;are&nbsp;not&nbsp;already&nbsp;wrapped)</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-disconnect_by_func"><strong>disconnect_by_func</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-emit"><strong>emit</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-emit_stop_by_name"><strong>emit_stop_by_name</strong></a> =
+                    stop_emission(self, detailed_signal)
+                </dt>
+                <dd><tt>Deprecated,&nbsp;please&nbsp;use&nbsp;stop_emission_by_name.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-force_floating"><strong>force_floating</strong></a> =
+                    _unsupported_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-freeze_notify"><strong>freeze_notify</strong></a>(self)</dt>
+                <dd><tt>Freezes&nbsp;the&nbsp;object's&nbsp;property-changed&nbsp;notification&nbsp;queue.<br>
+                    &nbsp;<br>
+                    :returns:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;context&nbsp;manager&nbsp;which&nbsp;optionally&nbsp;can&nbsp;be&nbsp;used&nbsp;to<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;automatically&nbsp;thaw&nbsp;notifications.<br>
+                    &nbsp;<br>
+                    This&nbsp;will&nbsp;freeze&nbsp;the&nbsp;object&nbsp;so&nbsp;that&nbsp;"notify"&nbsp;signals&nbsp;are&nbsp;blocked&nbsp;until<br>
+                    the&nbsp;<a href="#DictonatorUI-thaw_notify">thaw_notify</a>()&nbsp;method&nbsp;is&nbsp;called.<br>
+                    &nbsp;<br>
+                    ..&nbsp;code-block::&nbsp;python<br>
+                    &nbsp;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;obj.<a href="#DictonatorUI-freeze_notify">freeze_notify</a>():<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-get_data"><strong>get_data</strong></a> = _unsupported_data_method(self,
+                    *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-get_properties"><strong>get_properties</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-get_property"><strong>get_property</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-get_qdata"><strong>get_qdata</strong></a> = _unsupported_data_method(self,
+                    *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-handler_block"><strong>handler_block</strong></a> = signal_handler_block(obj,
+                    handler_id)
+                </dt>
+                <dd><tt>Blocks&nbsp;the&nbsp;signal&nbsp;handler&nbsp;from&nbsp;being&nbsp;invoked&nbsp;until<br>
+                    <a href="#DictonatorUI-handler_unblock">handler_unblock</a>()&nbsp;is&nbsp;called.<br>
+                    &nbsp;<br>
+                    :param&nbsp;GObject.<a href="gi.overrides.GObject.html#Object">Object</a>&nbsp;obj:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;<a href="gi.overrides.GObject.html#Object">Object</a>&nbsp;instance&nbsp;to&nbsp;block&nbsp;handlers&nbsp;for.<br>
+                    :param&nbsp;int&nbsp;handler_id:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;Id&nbsp;of&nbsp;signal&nbsp;to&nbsp;block.<br>
+                    :returns:<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;A&nbsp;context&nbsp;manager&nbsp;which&nbsp;optionally&nbsp;can&nbsp;be&nbsp;used&nbsp;to<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;automatically&nbsp;unblock&nbsp;the&nbsp;handler:<br>
+                    &nbsp;<br>
+                    ..&nbsp;code-block::&nbsp;python<br>
+                    &nbsp;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;with&nbsp;GObject.signal_handler_block(obj,&nbsp;id):<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-handler_block_by_func"><strong>handler_block_by_func</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-handler_disconnect"><strong>handler_disconnect</strong></a> =
+                    signal_handler_disconnect(*args, **kwargs)
+                </dt>
+                <dd><tt>#&nbsp;Function&nbsp;wrapper&nbsp;for&nbsp;signal&nbsp;functions&nbsp;used&nbsp;as&nbsp;instance&nbsp;methods.<br>
+                    #&nbsp;This&nbsp;is&nbsp;needed&nbsp;when&nbsp;the&nbsp;signal&nbsp;functions&nbsp;come&nbsp;directly&nbsp;from&nbsp;GI.<br>
+                    #&nbsp;(they&nbsp;are&nbsp;not&nbsp;already&nbsp;wrapped)</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-handler_is_connected"><strong>handler_is_connected</strong></a> =
+                    signal_handler_is_connected(*args, **kwargs)
+                </dt>
+                <dd><tt>#&nbsp;Function&nbsp;wrapper&nbsp;for&nbsp;signal&nbsp;functions&nbsp;used&nbsp;as&nbsp;instance&nbsp;methods.<br>
+                    #&nbsp;This&nbsp;is&nbsp;needed&nbsp;when&nbsp;the&nbsp;signal&nbsp;functions&nbsp;come&nbsp;directly&nbsp;from&nbsp;GI.<br>
+                    #&nbsp;(they&nbsp;are&nbsp;not&nbsp;already&nbsp;wrapped)</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-handler_unblock"><strong>handler_unblock</strong></a> =
+                    signal_handler_unblock(*args, **kwargs)
+                </dt>
+                <dd><tt>#&nbsp;Function&nbsp;wrapper&nbsp;for&nbsp;signal&nbsp;functions&nbsp;used&nbsp;as&nbsp;instance&nbsp;methods.<br>
+                    #&nbsp;This&nbsp;is&nbsp;needed&nbsp;when&nbsp;the&nbsp;signal&nbsp;functions&nbsp;come&nbsp;directly&nbsp;from&nbsp;GI.<br>
+                    #&nbsp;(they&nbsp;are&nbsp;not&nbsp;already&nbsp;wrapped)</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-handler_unblock_by_func"><strong>handler_unblock_by_func</strong></a>(...)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-interface_find_property"><strong>interface_find_property</strong></a> =
+                    _unsupported_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-interface_install_property"><strong>interface_install_property</strong></a> =
+                    _unsupported_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-interface_list_properties"><strong>interface_list_properties</strong></a> =
+                    _unsupported_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-notify_by_pspec"><strong>notify_by_pspec</strong></a> =
+                    _unsupported_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-ref"><strong>ref</strong></a> = _unsupported_method(self, *args, **kargs)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-ref_sink"><strong>ref_sink</strong></a> = _unsupported_method(self, *args,
+                    **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-replace_data"><strong>replace_data</strong></a> =
+                    _unsupported_data_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-replace_qdata"><strong>replace_qdata</strong></a> =
+                    _unsupported_data_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-run_dispose"><strong>run_dispose</strong></a> = _unsupported_method(self,
+                    *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-set_data"><strong>set_data</strong></a> = _unsupported_data_method(self,
+                    *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-set_properties"><strong>set_properties</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-set_property"><strong>set_property</strong></a>(...)</dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-steal_data"><strong>steal_data</strong></a> = _unsupported_data_method(self,
+                    *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-steal_qdata"><strong>steal_qdata</strong></a> = _unsupported_data_method(self,
+                    *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-stop_emission"><strong>stop_emission</strong></a>(self, detailed_signal)</dt>
+                <dd><tt>Deprecated,&nbsp;please&nbsp;use&nbsp;stop_emission_by_name.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-stop_emission_by_name"><strong>stop_emission_by_name</strong></a> =
+                    signal_stop_emission_by_name(*args, **kwargs)
+                </dt>
+                <dd><tt>#&nbsp;Function&nbsp;wrapper&nbsp;for&nbsp;signal&nbsp;functions&nbsp;used&nbsp;as&nbsp;instance&nbsp;methods.<br>
+                    #&nbsp;This&nbsp;is&nbsp;needed&nbsp;when&nbsp;the&nbsp;signal&nbsp;functions&nbsp;come&nbsp;directly&nbsp;from&nbsp;GI.<br>
+                    #&nbsp;(they&nbsp;are&nbsp;not&nbsp;already&nbsp;wrapped)</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-unref"><strong>unref</strong></a> = _unsupported_method(self, *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-watch_closure"><strong>watch_closure</strong></a> = _unsupported_method(self,
+                    *args, **kargs)
+                </dt>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-weak_ref"><strong>weak_ref</strong></a>(...)</dt>
+            </dl>
+
+            <hr>
+            Data and other attributes inherited from <a href="gi.overrides.GObject.html#Object">gi.overrides.GObject.Object</a>:<br>
+            <dl>
+                <dt><strong>__gsignals__</strong> = {}
+            </dl>
+
+            <hr>
+            Class methods inherited from gi.repository.GObject.Object:<br>
+            <dl>
+                <dt><a name="DictonatorUI-find_property"><strong>find_property</strong></a>(...)<font
+                        color="#909090"><font face="helvetica, arial"> from <a href="gi.types.html#GObjectMeta">gi.types.GObjectMeta</a></font></font>
+                </dt>
+                <dd><tt><a href="#DictonatorUI-find_property">find_property</a>(self,&nbsp;property_name:str)&nbsp;-&gt;&nbsp;GObject.ParamSpec</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-install_properties"><strong>install_properties</strong></a>(...)<font
+                        color="#909090"><font face="helvetica, arial"> from <a href="gi.types.html#GObjectMeta">gi.types.GObjectMeta</a></font></font>
+                </dt>
+                <dd><tt><a href="#DictonatorUI-install_properties">install_properties</a>(self,&nbsp;pspecs:list)</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-install_property"><strong>install_property</strong></a>(...)<font
+                        color="#909090"><font face="helvetica, arial"> from <a href="gi.types.html#GObjectMeta">gi.types.GObjectMeta</a></font></font>
+                </dt>
+                <dd><tt><a href="#DictonatorUI-install_property">install_property</a>(self,&nbsp;property_id:int,&nbsp;pspec:GObject.ParamSpec)</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-list_properties"><strong>list_properties</strong></a>(...)<font
+                        color="#909090"><font face="helvetica, arial"> from <a href="gi.types.html#GObjectMeta">gi.types.GObjectMeta</a></font></font>
+                </dt>
+                <dd><tt><a href="#DictonatorUI-list_properties">list_properties</a>(self)&nbsp;-&gt;&nbsp;list,&nbsp;n_properties:int</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-override_property"><strong>override_property</strong></a>(...)<font
+                        color="#909090"><font face="helvetica, arial"> from <a href="gi.types.html#GObjectMeta">gi.types.GObjectMeta</a></font></font>
+                </dt>
+                <dd><tt><a href="#DictonatorUI-override_property">override_property</a>(self,&nbsp;property_id:int,&nbsp;name:str)</tt>
+                </dd>
+            </dl>
+
+            <hr>
+            Data descriptors inherited from gi.repository.GObject.Object:<br>
+            <dl>
+                <dt><strong>g_type_instance</strong></dt>
+            </dl>
+            <dl>
+                <dt><strong>qdata</strong></dt>
+            </dl>
+            <dl>
+                <dt><strong>ref_count</strong></dt>
+            </dl>
+            <hr>
+            Data and other attributes inherited from gi.repository.GObject.Object:<br>
+            <dl>
+                <dt><strong>__info__</strong> = ObjectInfo(Object)
+            </dl>
+
+            <dl>
+                <dt><strong>is_floating</strong> = gi.FunctionInfo(is_floating)
+                <dd><tt><a href="#DictonatorUI-is_floating">is_floating</a>(self)&nbsp;-&gt;&nbsp;bool</tt>
+            </dl>
+
+            <dl>
+                <dt><strong>new</strong> = gi.FunctionInfo(new)
+                <dd><tt><a href="#DictonatorUI-new">new</a>(object_type:GType,&nbsp;parameters:list)&nbsp;-&gt;&nbsp;GObject.<a
+                        href="gi.overrides.GObject.html#Object">Object</a></tt>
+            </dl>
+
+            <dl>
+                <dt><strong>notify</strong> = gi.FunctionInfo(notify)
+                <dd><tt><a href="#DictonatorUI-notify">notify</a>(self,&nbsp;property_name:str)</tt>
+            </dl>
+
+            <dl>
+                <dt><strong>thaw_notify</strong> = gi.FunctionInfo(thaw_notify)
+                <dd><tt><a href="#DictonatorUI-thaw_notify">thaw_notify</a>(self)</tt>
+            </dl>
+
+            <hr>
+            Methods inherited from gi._gobject._gobject.GObject:<br>
+            <dl>
+                <dt><a name="DictonatorUI-__delattr__"><strong>__delattr__</strong></a>(self, name, /)</dt>
+                <dd><tt>Implement&nbsp;delattr(self,&nbsp;name).</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__eq__"><strong>__eq__</strong></a>(self, value, /)</dt>
+                <dd><tt>Return&nbsp;self==value.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__ge__"><strong>__ge__</strong></a>(self, value, /)</dt>
+                <dd><tt>Return&nbsp;self&gt;=value.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__gt__"><strong>__gt__</strong></a>(self, value, /)</dt>
+                <dd><tt>Return&nbsp;self&gt;value.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__hash__"><strong>__hash__</strong></a>(self, /)</dt>
+                <dd><tt>Return&nbsp;hash(self).</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__le__"><strong>__le__</strong></a>(self, value, /)</dt>
+                <dd><tt>Return&nbsp;self&lt;=value.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__lt__"><strong>__lt__</strong></a>(self, value, /)</dt>
+                <dd><tt>Return&nbsp;self&lt;value.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__ne__"><strong>__ne__</strong></a>(self, value, /)</dt>
+                <dd><tt>Return&nbsp;self!=value.</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__new__"><strong>__new__</strong></a>(*args, **kwargs)<font
+                        color="#909090"><font face="helvetica, arial"> from <a href="gi.types.html#_GObjectMetaBase">gi.types._GObjectMetaBase</a></font></font>
+                </dt>
+                <dd><tt>Create&nbsp;and&nbsp;return&nbsp;a&nbsp;new&nbsp;object.&nbsp;&nbsp;See&nbsp;help(type)&nbsp;for&nbsp;accurate&nbsp;signature.</tt>
+                </dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__repr__"><strong>__repr__</strong></a>(self, /)</dt>
+                <dd><tt>Return&nbsp;repr(self).</tt></dd>
+            </dl>
+
+            <dl>
+                <dt><a name="DictonatorUI-__setattr__"><strong>__setattr__</strong></a>(self, name, value, /)</dt>
+                <dd><tt>Implement&nbsp;setattr(self,&nbsp;name,&nbsp;value).</tt></dd>
+            </dl>
+
+            <hr>
+            Data descriptors inherited from gi._gobject._gobject.GObject:<br>
+            <dl>
+                <dt><strong>__dict__</strong></dt>
+            </dl>
+            <dl>
+                <dt><strong>__gpointer__</strong></dt>
+            </dl>
+            <dl>
+                <dt><strong>__grefcount__</strong></dt>
+            </dl>
+            <hr>
+            Data and other attributes inherited from gi._gobject._gobject.GObject:<br>
+            <dl>
+                <dt><strong>__gdoc__</strong> = 'Object Dictonator<font color="#c040c0">\n\n</font>Handle UI, define
+                    when plugin... <font color="#c040c0">\n</font> <font color="#c040c0">\n\n</font>Signals from
+                    GObject:<font color="#c040c0">\n</font> notify (GParam)<font color="#c040c0">\n\n</font>'
+            </dl>
+
+            <dl>
+                <dt><strong>props</strong> = &lt;gi._gobject.GProps object&gt;
+            </dl>
+
+            <hr>
+            Data and other attributes inherited from <a href="gi.repository.Gedit.html#WindowActivatable">gi.repository.Gedit.WindowActivatable</a>:<br>
+            <dl>
+                <dt><strong>__weakref__</strong> = &lt;weakref at 0x7fb6f0180b88; to 'GObjectMeta' at 0x2cd6a08
+                    (DictonatorUI)&gt;
+            </dl>
+
+            <dl>
+                <dt><strong>activate</strong> = gi.FunctionInfo(activate)
+                <dd><tt><a href="#DictonatorUI-activate">activate</a>(self)</tt>
+            </dl>
+
+            <dl>
+                <dt><strong>deactivate</strong> = gi.FunctionInfo(deactivate)
+                <dd><tt><a href="#DictonatorUI-deactivate">deactivate</a>(self)</tt>
+            </dl>
+
+            <dl>
+                <dt><strong>update_state</strong> = gi.FunctionInfo(update_state)
+                <dd><tt><a href="#DictonatorUI-update_state">update_state</a>(self)</tt>
+            </dl>
+
+            <hr>
+            Data and other attributes inherited from <a href="gi.repository.PeasGtk.html#Configurable">gi.repository.PeasGtk.Configurable</a>:<br>
+            <dl>
+                <dt><strong>create_configure_widget</strong> = gi.FunctionInfo(create_configure_widget)
+                <dd><tt><a href="#DictonatorUI-create_configure_widget">create_configure_widget</a>(self)&nbsp;-&gt;&nbsp;Gtk.Widget</tt>
+            </dl>
+
+        </td>
+    </tr>
+</table>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+    <tr bgcolor="#55aa55">
+        <td colspan=3 valign=bottom>&nbsp;<br>
+            <font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td>
+    </tr>
+
+    <tr>
+        <td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td>
+        <td>&nbsp;</td>
+        <td width="100%"><strong>BOTTOM_WIDGET_UI_PATH</strong> =
+            '/home/theawless/.local/share/gedit/plugins/dictonator/bottomwidgetui.glade'<br>
+            <strong>GEDIT_PLUGIN_PATH</strong> = '/home/theawless/.local/share/gedit/plugins/dictonator'<br>
+            <strong>PeasGtk</strong> = &lt;IntrospectionModule 'PeasGtk' from
+            '/usr/lib/girepository-1.0/PeasGtk-1.0.typelib'&gt;<br>
+            <strong>__warningregistry__</strong> = {('GObject.property is deprecated; use GObject.Property instead',
+            &lt;class 'gi.PyGIDeprecationWarning'&gt;, 35): True, 'version': 126, ('Gtk.ActionGroup.set_sensitive is
+            deprecated', &lt;class 'DeprecationWarning'&gt;, 72): True, ('Using positional arguments with the GObject
+            cons.../wiki.gnome.org/PyGObject/InitializerDeprecations', &lt;class
+            'gi.overrides.Gtk.PyGTKDeprecationWarning'&gt;, 58): True}<br>
+            <strong>logger</strong> = &lt;logging.Logger object&gt;</td>
+    </tr>
+</table>
+</body>
+</html>

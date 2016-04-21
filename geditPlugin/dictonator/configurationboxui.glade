@@ -408,13 +408,14 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
       </packing>
     </child>
     <child>
-      <object class="GtkBox" id="button_box">
+      <object class="GtkButtonBox" id="button_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="homogeneous">True</property>
+        <property name="spacing">10</property>
+        <property name="layout_style">end</property>
         <child>
           <object class="GtkButton" id="save_button">
-            <property name="label" translatable="yes">Save these settings</property>
+            <property name="label" translatable="yes">Save settings</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -428,7 +429,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
         </child>
         <child>
           <object class="GtkButton" id="default_button">
-            <property name="label" translatable="yes">Load default settings</property>
+            <property name="label" translatable="yes">Load defaults</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
@@ -444,6 +445,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
       <packing>
         <property name="expand">False</property>
         <property name="fill">True</property>
+        <property name="padding">5</property>
         <property name="position">3</property>
       </packing>
     </child>

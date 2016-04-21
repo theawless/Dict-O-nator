@@ -19,21 +19,24 @@
 import os
 
 import speech_recognition as sr
+
 TEST_PATH = os.path.dirname(os.path.abspath(__file__))
 
 if not os.path.exists(TEST_PATH + '/test_audio'):
     os.makedirs(TEST_PATH + '/test_audio')
 AUDIO_PATH = TEST_PATH + "/test_audio/"
 
-file_name = input("Input Filename(without extension): ")
-# obtain audio from the microphone
-r = sr.Recognizer()
 
-with sr.Microphone() as source:
-    print("Wait for two seconds")
-    r.adjust_for_ambient_noise(source, 2)
-    print("Say something!")
-    audio = r.listen(source)
-# write audio to a WAV file
-with open(AUDIO_PATH + file_name + ".wav", "wb+") as f:
-    f.write(audio.get_wav_data())
+def make_new():
+    file_name = input("Input Filename(without extension): ")
+    # obtain audio from the microphone
+    r = sr.Recognizer()
+
+    with sr.Microphone() as source:
+        print("Wait for two seconds")
+        r.adjust_for_ambient_noise(source, 2)
+        print("Say something!")
+        audio = r.listen(source)
+    # write audio to a WAV file
+    with open(AUDIO_PATH + file_name + ".wav", "wb+") as f:
+        f.write(audio.get_wav_data())

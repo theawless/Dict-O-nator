@@ -19,8 +19,9 @@
 
 """Defines the dictionary of command words and implement decide function"""
 # setting up logger
-from dictonator.setlog import logger
 from enum import Enum
+
+from dictonator.setlog import logger
 
 
 # defining valid states for dictonator

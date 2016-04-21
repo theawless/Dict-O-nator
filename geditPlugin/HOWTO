@@ -1,0 +1,54 @@
+Installation:
+    Install with script
+        Open terminal and execute 'sudo ./plugininstall.sh'
+
+    Manual Install
+        Copy all contents of geditplugin to path '~/.local/share/gedit/plugins/'
+        Copy dictonator.svg to path '/usr/share/icons/hicolor/scalable/apps/'
+        Install python3 and pip3 by 'sudo apt-get install python3-all-dev python3-pip'
+        Install portaudio and swig by 'sudo apt-get install swig portaudio19-dev'
+        Install SpeechRecognition and pocketsphinx by 'pip3 install SpeechRecognition pocketsphinx'
+
+How to run:
+    Open Gedit, goto edit > preferences > plugins, and tick Dict'O'nator
+
+List of Commands:
+    Command: How to call    
+    start dictation: {start dictation, start dictator, start speaking}
+    stop dictation: {stop dictation, stop dictator, stop dictation}
+    hold dictation: {hold dictation, hold dictator, wait dictation}
+
+    scroll to cursor: {scroll to cursor}
+    goto line: {go to line}
+    undo: {undo, do undo}
+    redo: {redo, do redo}
+    cut clipboard: {cut clipboard, cut clip board, cut selection, cut to clipboard}
+    copy clipboard: {copy clipboard, copy to clipboard, copy selection, copy clip board}
+    paste clipboard: {paste clipboard, paste clipboard, paste from clipboard}
+    delete selection: {delete selection, delete selected text}
+    select all: {select all, select all text}
+
+    spacebar input: {spacebar, input spacebar, word end, end word}
+    sentence end: {sentence end, close sentence, end sentence, full stop}
+
+    delete line: {delete line, delete last line}
+    delete word: {delete word, delete last word}
+    delete sentence: {delete sentence, delete this sentence, delete current sentence, }
+
+    clear document: {clear document, empty document, clear file, empty file}
+    new document: {new document, new file}
+    save document: {save document, save file}
+    save as document: {save as document, save document as, save as file, save file as}
+    close document: {close document, close file}
+    force close document: {force close document, force close file}
+
+Difficulties:
+    Default Sphinx requires American English accent and will give bad results otherwise.
+    The keys provided are temporary and aren't guaranteed to work.
+    Depending on the user load the results might be slower.
+
+How to use more services:
+    Open Gedit, goto edit > preferences > plugins > Dict'O'nator > preferences and tick whichever service you wan't and fill in the API key.
+    Save settings by clicking on "save button".    
+    Microsoft Bing, Wit.ai, Api.ai, provide free trials/services and you can get an api key from their respective sites.
+    
