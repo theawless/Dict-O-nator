@@ -56,7 +56,7 @@ actions = {
 
     "spacebar_input": {"spacebar", "input spacebar", "word end", "end word"},
     "sentence_end": {"sentence end", "close sentence", "end sentence", "full stop"},
-
+    "line_end": {"end line", "close line", "input enter"},
     "delete_line": {"delete line", "delete last line"},
     "delete_word": {"delete word", "delete last word"},
     "delete_sentence": {"delete sentence", "delete this sentence", "delete current sentence", },
@@ -71,6 +71,7 @@ actions = {
     "save_as_document": {"save as document", "save document as", "save as file", "save file as"},
     "close_document": {"close document", "close file"},
     "force_close_document": {"force close document", "force close file"},
+    "exit": {"exit editor", "exit gedit", "editor exit", "gedit exit", "close editor", "close gedit", "quit editor"}
 
 }
 

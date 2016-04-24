@@ -43,7 +43,7 @@ class TestSpeechRecogniser(TestCase):
                 self.audio1 = sr.Recognizer().record(source)  # read the entire audio file
             with sr.AudioFile(AUDIO_PATH + 'this_is_amazing' + '.wav') as source:
                 self.audio2 = sr.Recognizer().record(source)  # read the entire audio file
-            with sr.AudioFile(AUDIO_PATH + 'book_on_table' + '.wav') as source:
+            with sr.AudioFile(AUDIO_PATH + 'please_do_this_for_me' + '.wav') as source:
                 self.audio3 = sr.Recognizer().record(source)  # read the entire audio file
             return True
         except FileNotFoundError:
@@ -69,16 +69,16 @@ class TestSpeechRecogniser(TestCase):
         if state == DictonatorStates.recognised:
             if self.audio_count == 0:
                 self.assertEqual(recognized_text, "hello")
-                print("Audio" + str(self.audio_count) + "was recognized properly")
+                print("Audio" + str(self.audio_count) + " was recognized properly")
             if self.audio_count == 1:
                 self.assertEqual(recognized_text, "what's up")
-                print("Audio" + str(self.audio_count) + "was recognized properly")
+                print("Audio" + str(self.audio_count) + " was recognized properly")
             if self.audio_count == 2:
                 self.assertEqual(recognized_text, "this is amazing")
-                print("Audio" + str(self.audio_count) + "was recognized properly")
+                print("Audio" + str(self.audio_count) + " was recognized properly")
             if self.audio_count == 3:
-                self.assertEqual(recognized_text, "book on table")
-                print("Audio" + str(self.audio_count) + "was recognized properly")
+                self.assertEqual(recognized_text, "please do this for me")
+                print("Audio" + str(self.audio_count) + " was recognized properly")
 
         elif state == DictonatorStates.error:
             self.fail("Could not understand above audio")

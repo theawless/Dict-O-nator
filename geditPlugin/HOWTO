@@ -30,6 +30,7 @@ List of Commands:
 
     spacebar input: {spacebar, input spacebar, word end, end word}
     sentence end: {sentence end, close sentence, end sentence, full stop}
+    delete_line: {delete line, delete last line}
 
     delete line: {delete line, delete last line}
     delete word: {delete word, delete last word}
@@ -41,6 +42,7 @@ List of Commands:
     save as document: {save as document, save document as, save as file, save file as}
     close document: {close document, close file}
     force close document: {force close document, force close file}
+    exit: {exit editor, exit gedit, editor exit, gedit exit, close editor, close gedit, quit editor}
 
 Difficulties:
     Default Sphinx requires American English accent and will give bad results otherwise.

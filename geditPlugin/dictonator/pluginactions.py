@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
 
+import sys
 import time
 
 from gi.repository import GLib, Gedit
@@ -98,11 +99,10 @@ class DictonatorPluginActions:
 
     def on_logit_activate(self, action):
         """A test function."""
+        self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
         # ei = self.get_cursor_position(self.document)
         # ;ogger.debug(str(ei.starts_sentence()) + str(ei.inside_sentence()) + str(ei.ends_sentence()))
         # self.inserttext("i am abhinav")
-        self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
-        # a fuction to test other functions
 
     def action_handler(self, text: str, state: DictonatorStates, msg: str):
         """ Handle what to do with the state/msg that we get.
@@ -184,6 +184,8 @@ class DictonatorPluginActions:
                 self.inserttext(' ')
             elif curr_action == "sentence_end":
                 self.inserttext('. ')
+            elif curr_action == "line_end":
+                self.inserttext('\n')
             elif curr_action == "delete_line":
                 doc = self.document
                 if not doc:
@@ -258,6 +260,11 @@ class DictonatorPluginActions:
                 if not tab:
                     return
                 self.window.close_tab(tab)
+            elif curr_action == "exit":
+                if self.document.is_untouched():
+                    sys.exit()
+                else:
+                    self.bottom_bar_text_set("You might wanna save the document before quitting.")
             else:
                 self.bottom_bar_text_set("WEIRD STATE! How did you reach this state? O_O")
         return
