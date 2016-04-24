@@ -71,6 +71,7 @@ class SpeechRecogniser:
             logger.debug("*****************" + str(self.re.energy_threshold))
             self.re.adjust_for_ambient_noise(self.source, duration=2)
             logger.debug("*****************" + str(self.re.energy_threshold))
+
             self.plugin_action_handler("", DictonatorStates.prepared, "Prepared.   Speak!")
         elif not self.is_listening:
             with self.mic as source:

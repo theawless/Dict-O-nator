@@ -100,6 +100,7 @@ class DictonatorPluginActions:
     def on_logit_activate(self, action):
         """A test function."""
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
+        # print(self.window.get_unsaved_documents())
         # ei = self.get_cursor_position(self.document)
         # ;ogger.debug(str(ei.starts_sentence()) + str(ei.inside_sentence()) + str(ei.ends_sentence()))
         # self.inserttext("i am abhinav")
@@ -182,6 +183,12 @@ class DictonatorPluginActions:
                 vi.select_all()
             elif curr_action == "spacebar_input":
                 self.inserttext(' ')
+            elif curr_action == "comma_input":
+                self.inserttext(', ')
+            elif curr_action == "question_mark_input":
+                self.inserttext('? ')
+            elif curr_action == "exclamation_mark_input":
+                self.inserttext('! ')
             elif curr_action == "sentence_end":
                 self.inserttext('. ')
             elif curr_action == "line_end":
@@ -250,7 +257,8 @@ class DictonatorPluginActions:
                 tab = self.tab
                 if not tab:
                     return
-                if doc.is_untouched():
+                u_docs = self.window.get_unsaved_documents()
+                if self.document not in u_docs:
                     self.window.close_tab(tab)
                 else:
                     # to prevent data loss
@@ -261,7 +269,8 @@ class DictonatorPluginActions:
                     return
                 self.window.close_tab(tab)
             elif curr_action == "exit":
-                if self.document.is_untouched():
+                u_docs = self.window.get_unsaved_documents()
+                if self.document not in u_docs:
                     sys.exit()
                 else:
                     self.bottom_bar_text_set("You might wanna save the document before quitting.")

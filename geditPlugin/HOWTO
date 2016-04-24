@@ -28,9 +28,12 @@ List of Commands:
     delete selection: {delete selection, delete selected text}
     select all: {select all, select all text}
 
+    comma input: {put comma}
+    question mark input: {put question mark}
+    exclamation mark input: {put exclamation mark, exclamation mark}
     spacebar input: {spacebar, input spacebar, word end, end word}
-    sentence end: {sentence end, close sentence, end sentence, full stop}
-    delete_line: {delete line, delete last line}
+    sentence end: {sentence end, close sentence, end sentence, full stop, put period}
+    line end: {end line, close line, input enter, put enter, next line}
 
     delete line: {delete line, delete last line}
     delete word: {delete word, delete last word}
