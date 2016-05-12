@@ -26,10 +26,10 @@ from dictonator.setlog import logger
 
 GEDIT_PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE_PATH = GEDIT_PLUGIN_PATH + "/config.ini"
-CONFIG_DIALOG_UI_PATH = GEDIT_PLUGIN_PATH + "/configurationboxui.glade"
+CONFIG_DIALOG_UI_PATH = GEDIT_PLUGIN_PATH + "/configbox.glade"
 
 
-class PluginSettings:
+class DictonatorSettings:
     """Implements save/load functions of settings."""
     # A static variable in all instances
     settings = dict()
@@ -44,7 +44,7 @@ class PluginSettings:
         :rtype: configparser.ConfigParser
         """
         config = configparser.ConfigParser()
-        config['Main'] = {'recogniser': 'WITAI'}
+        config['Main'] = {'recogniser': 'WITAI', 'dynamic_noise_suppression': 'False'}
         config['Sphinx'] = {'version': 'pocketsphinx'}
         config['Google'] = {'api_key': ''}
         config['WITAI'] = {'api_key': 'A3OGNVOCVIMZVWBWLHSV2WLNO5ASS43J'}
@@ -56,7 +56,7 @@ class PluginSettings:
     @classmethod
     def load_settings(cls):
         """Get the configuration from saved file into global settings."""
-        config = PluginSettings.default_settings()
+        config = DictonatorSettings.default_settings()
         config.read(CONFIG_FILE_PATH)
         cls.settings = cls.config_to_dict(config)
 
@@ -81,7 +81,8 @@ class PluginSettings:
         """
         cls.settings = settings
         config = cls.default_settings()
-        config['Main'] = {'recogniser': settings['Main']['recogniser']}
+        config['Main'] = {'recogniser': settings['Main']['recogniser'],
+                          'dynamic_noise_suppression': settings['Main']['dynamic_noise_suppression']}
         config['Google'] = {'api_key': settings['Google']['api_key']}
         config['WITAI'] = {'api_key': settings['WITAI']['api_key']}
         config['APIAI'] = {'api_key': settings['APIAI']['api_key']}
@@ -98,12 +99,12 @@ class PluginSettings:
         del cls.settings
 
 
-class ConfigurableDialogBox:
+class ConfigurationDialogBox:
     """Implements the Configurable file_chooser box."""
 
     def __init__(self):
         """Get local settings from global settings. Get UI."""
-        self.settings = copy.deepcopy(PluginSettings.settings)
+        self.settings = copy.deepcopy(DictonatorSettings.settings)
         self.ui = Gtk.Builder()
         self.ui.add_from_file(CONFIG_DIALOG_UI_PATH)
 
@@ -116,8 +117,7 @@ class ConfigurableDialogBox:
         self._get_saved_into_text_boxes()
         self._choose_labelled_input_boxes()
         self._connect_everything()
-        self._configure_radios()
-
+        self._populate_buttons()
         return self.ui.get_object("full_box")
 
     def _get_saved_into_text_boxes(self):
@@ -139,8 +139,9 @@ class ConfigurableDialogBox:
         self.ui.get_object("ibm_radio").connect("toggled", self._radio_callback, "IBM")
         self.ui.get_object("save_button").connect("clicked", self._confirm_config)
         self.ui.get_object("default_button").connect("clicked", self._set_default_config)
+        self.ui.get_object("dynamic_check_button").connect("toggled", self._dynamic_check_callback)
 
-    def _configure_radios(self):
+    def _populate_buttons(self):
         # Load the radio buttons with settings
         _settings = self.settings
 
@@ -157,14 +158,15 @@ class ConfigurableDialogBox:
         elif _settings['Main']['recogniser'] == "Bing":
             self.ui.get_object("bing_radio").set_active(True)
 
+        if _settings['Main']['dynamic_noise_suppression'] == 'True':
+            self.ui.get_object("dynamic_check_button").set_active(True)
+        else:
+            self.ui.get_object("dynamic_check_button").set_active(False)
+
     def _choose_labelled_input_boxes(self):
-        # choosing input box
-        self.ui.get_object("google_box").set_sensitive(False)
-        self.ui.get_object("ibm_box").set_sensitive(False)
-        self.ui.get_object("apiai_box").set_sensitive(False)
-        self.ui.get_object("witai_box").set_sensitive(False)
-        self.ui.get_object("bing_box").set_sensitive(False)
-        # Disabled everything"
+        # Disable everything"
+        for child in self.ui.get_object("input_box"):
+            child.set_sensitive(False)
 
         data = self.settings['Main']['recogniser']
         if data == 'Google':
@@ -186,12 +188,15 @@ class ConfigurableDialogBox:
             self.settings['Main']['recogniser'] = data
             self._choose_labelled_input_boxes()
 
+    def _dynamic_check_callback(self, check):
+        self.settings['Main']['dynamic_noise_suppression'] = str(check.get_active())
+
     def _set_default_config(self, button):
-        # load default settigns and save them by calling PluginSetting
-        self.settings = PluginSettings.config_to_dict(PluginSettings.default_settings())
-        PluginSettings.save_settings(self.settings)
+        # load default settigns and save them by calling mainsettings class
+        self.settings = DictonatorSettings.config_to_dict(DictonatorSettings.default_settings())
+        DictonatorSettings.save_settings(self.settings)
         self._get_saved_into_text_boxes()
-        self._configure_radios()
+        self._populate_buttons()
 
     def _confirm_config(self, button):
         # save input values to temporary settings
@@ -201,5 +206,5 @@ class ConfigurableDialogBox:
         self.settings['IBM']['username'] = self.ui.get_object("ibm_username_entry").get_text()
         self.settings['IBM']['password'] = self.ui.get_object("ibm_password_entry").get_text()
         self.settings['APIAI']['api_key'] = self.ui.get_object("apiai_key_entry").get_text()
-        # save to PluginClass
-        PluginSettings.save_settings(self.settings)
+        # save to main settings
+        DictonatorSettings.save_settings(self.settings)

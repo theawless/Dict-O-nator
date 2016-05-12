@@ -16,25 +16,20 @@
 # You should have received a copy of the GNU General Public License
 # along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
 
-from dictonator.unit_tests.test_dictonatorPluginActions import TestDictonatorPluginActions
-from dictonator.unit_tests.test_pluginSettings import TestPluginSettings
-from dictonator.unit_tests.test_speechRecogniser import TestSpeechRecogniser
+from dictonator.unit_tests.test_actionhandler import TestDictonatorActionHandler
+from dictonator.unit_tests.test_settings import TestDictonatorSettings
 
 
 class AllTestSuite:
     def __init__(self):
         super().__init__()
-        self.test_settings = TestPluginSettings()
-        self.test_stt = TestSpeechRecogniser()
-        self.test_acts = TestDictonatorPluginActions()
+        self.test_settings = TestDictonatorSettings()
+        self.test_acts = TestDictonatorActionHandler()
 
     def run_all_tests(self):
         if self.test_settings.setUp():
             self.test_settings.run()
         print("Setting tests finished")
-        if self.test_stt.setUp():
-            self.test_stt.run()
-        print("Speech Recognition tests finished")
         if self.test_acts.setUp():
             self.test_acts.run()
         print("Document actions tests finished")

@@ -3,7 +3,8 @@ Installation:
         Open terminal and execute 'sudo ./plugininstall.sh'
 
     Manual Install
-        Copy all contents of geditplugin to path '~/.local/share/gedit/plugins/'
+        Find your gedit version by checking help > about
+        Copy all contents of matching version's folder to path '~/.local/share/gedit/plugins/'
         Copy dictonator.svg to path '/usr/share/icons/hicolor/scalable/apps/'
         Install python3 and pip3 by 'sudo apt-get install python3-all-dev python3-pip'
         Install portaudio and swig by 'sudo apt-get install swig portaudio19-dev'

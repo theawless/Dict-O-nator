@@ -1,0 +1,9 @@
+[Plugin]
+Loader=python3
+Module=dictonator
+IAge=3
+Name=Dict'O'nator
+Icon=dictonator
+Description=A plugin to dictate text into gedit. Use Sphinx/Google/Wit.ai/IBM/Bing/Api.ai to convert speech to text.
+Authors=Abhinav Singh <abhiabhiabhiabhinav@gmail.com>
+Copyright=Copyright © 2016 Abhinav Singh <abhiabhiabhiabhinav@gmail.com>

@@ -21,16 +21,16 @@ from unittest import TestCase
 
 from gi.repository import Gedit
 
-from dictonator.pluginactions import DictonatorPluginActions
-from dictonator.statesmod import DictonatorStates
+from dictonator.actionhandler import DictonatorActionHandler
+from dictonator.statesacts import DictonatorStates
 
 TEST_PATH = os.path.dirname(os.path.abspath(__file__))
 TEXT_PATH = TEST_PATH + "/test_text/"
 
 
-class TestDictonatorPluginActions(TestCase):
+class TestDictonatorActionHandler(TestCase):
     def setUp(self):
-        self.plugin_actions = DictonatorPluginActions(f_bottom_bar_changer=self.bottom_bar_changer_fake,
+        self.plugin_actions = DictonatorActionHandler(f_bottom_bar_changer=self.bottom_bar_changer_fake,
                                                       f_bottom_bar_adder=self.bottom_bar_adder_fake)
         try:
             with open(TEXT_PATH + 'original' + '.txt') as file:

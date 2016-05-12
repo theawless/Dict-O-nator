@@ -21,17 +21,17 @@ import time
 
 from gi.repository import GObject, Gtk, Gedit, PeasGtk
 
-from dictonator.configurablesettings import ConfigurableDialogBox
-from dictonator.pluginactions import DictonatorPluginActions
+from dictonator.settings import ConfigurationDialogBox
+from dictonator.actionhandler import DictonatorActionHandler
 from dictonator.setlog import logger
 
 GEDIT_PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
-BOTTOM_WIDGET_UI_PATH = GEDIT_PLUGIN_PATH + "/bottomwidgetui.glade"
+BOTTOM_WIDGET_UI_PATH = GEDIT_PLUGIN_PATH + "/widget.glade"
 
 
-class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
+class DictonatorMain(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable):
     """Handle UI, define when plugin runs."""
-    __gtype_name__ = "Dictonator"
+    __gtype_name__ = "dictonator"
     window = GObject.property(type=Gedit.Window)
 
     # Defining the UI string that is to be added
@@ -55,11 +55,11 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
     def __init__(self):
         """Constructor for UI handler."""
         GObject.Object.__init__(self)
-        self._action_group = Gtk.ActionGroup("DictonatorPluginActions")
+        self._action_group = Gtk.ActionGroup("DictonatorActionHandler")
         self.bottom_widget = Gtk.Builder()
         self.bottom_widget.add_from_file(BOTTOM_WIDGET_UI_PATH)
         # Get the plugin manager
-        self.plugin_manager = DictonatorPluginActions(self.bottom_bar_text_changer, self.bottom_bar_handler)
+        self.plugin_manager = DictonatorActionHandler(self.bottom_bar_text_changer, self.bottom_bar_handler)
         logger.debug('UI INIT')
 
     def do_update_state(self):
@@ -170,7 +170,7 @@ class DictonatorUI(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurable
 
     def do_create_configure_widget(self):
         """Implement the configuration box in plugin preferences"""
-        return ConfigurableDialogBox().get_configure_box
+        return ConfigurationDialogBox().get_configure_box
 
     def stop(self):
         """Stop the plugin. """

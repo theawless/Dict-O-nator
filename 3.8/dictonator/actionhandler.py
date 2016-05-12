@@ -21,14 +21,14 @@ import time
 
 from gi.repository import GLib, Gedit
 
-from dictonator.configurablesettings import PluginSettings
-from dictonator.recogspeechbg import SpeechRecogniser
+from dictonator.settings import DictonatorSettings
+from dictonator.recogspeech import SpeechRecogniser
 from dictonator.saveasdialog import FileSaveAsDialog
 from dictonator.setlog import logger
-from dictonator.statesmod import decide_action, DictonatorStates
+from dictonator.statesacts import DictonatorActions, DictonatorStates
 
 
-class DictonatorPluginActions:
+class DictonatorActionHandler:
     """Contains recogniser, threader and actions.
 
          Active window updated from the UI class.
@@ -48,7 +48,7 @@ class DictonatorPluginActions:
         self.tab = None
 
         # A manager to handle settings
-        self.settings = PluginSettings().settings
+        self.settings = DictonatorSettings().settings
         # Using like a global function
         self.bottom_bar_text_set = f_bottom_bar_changer
         self.bottom_bar_add = f_bottom_bar_adder
@@ -100,10 +100,7 @@ class DictonatorPluginActions:
     def on_logit_activate(self, action):
         """A test function."""
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
-        # print(self.window.get_unsaved_documents())
-        # ei = self.get_cursor_position(self.document)
-        # ;ogger.debug(str(ei.starts_sentence()) + str(ei.inside_sentence()) + str(ei.ends_sentence()))
-        # self.inserttext("i am abhinav")
+        logger.debug(DictonatorSettings.settings['Main']['dynamic_noise_suppression'])
 
     def action_handler(self, text: str, state: DictonatorStates, msg: str):
         """ Handle what to do with the state/msg that we get.
@@ -123,7 +120,7 @@ class DictonatorPluginActions:
             self.bottom_bar_text_set("Speak!")
             if text == "":
                 return
-            curr_action = decide_action(text)
+            curr_action = DictonatorActions.decide_action(text)
             self.bottom_bar_add(time.strftime("%H:%M:%S"), text, curr_action)
             if curr_action == "continue_dictation":
                 self.inserttext(text, True)

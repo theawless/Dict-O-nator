@@ -39,7 +39,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
         <property name="lines">1</property>
       </object>
       <packing>
-        <property name="expand">True</property>
+        <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="position">0</property>
       </packing>
@@ -48,7 +48,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
       <object class="GtkBox" id="radio_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="homogeneous">True</property>
+        <property name="spacing">5</property>
         <child>
           <object class="GtkRadioButton" id="sphinx_radio">
             <property name="label" translatable="yes">Sphinx</property>
@@ -60,7 +60,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
             <property name="draw_indicator">True</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
@@ -77,7 +77,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
             <property name="group">sphinx_radio</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
@@ -94,7 +94,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
             <property name="group">sphinx_radio</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
@@ -111,7 +111,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
             <property name="group">sphinx_radio</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">3</property>
           </packing>
@@ -128,7 +128,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
             <property name="group">sphinx_radio</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">4</property>
           </packing>
@@ -145,7 +145,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
             <property name="group">sphinx_radio</property>
           </object>
           <packing>
-            <property name="expand">False</property>
+            <property name="expand">True</property>
             <property name="fill">True</property>
             <property name="position">5</property>
           </packing>
@@ -166,7 +166,6 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkBox" id="witai_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
             <child>
               <object class="GtkLabel" id="witai_key_label">
                 <property name="visible">True</property>
@@ -176,6 +175,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">13</property>
                 <property name="position">-1</property>
               </packing>
             </child>
@@ -188,7 +188,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="input_purpose">password</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -204,7 +204,6 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkBox" id="google_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
             <child>
               <object class="GtkLabel" id="google_key_label">
                 <property name="visible">True</property>
@@ -214,6 +213,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">15</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -227,7 +227,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="input_purpose">password</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -248,7 +248,6 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
               <object class="GtkBox" id="ibm_username_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkLabel" id="ibm_username_label">
                     <property name="visible">True</property>
@@ -258,6 +257,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
+                    <property name="padding">17</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -268,7 +268,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
                     <property name="input_purpose">password</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
@@ -284,7 +284,6 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
               <object class="GtkBox" id="ibm_password_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkLabel" id="ibm_password_label">
                     <property name="visible">True</property>
@@ -294,7 +293,8 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="position">0</property>
+                    <property name="padding">19</property>
+                    <property name="position">-1</property>
                   </packing>
                 </child>
                 <child>
@@ -305,7 +305,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
                     <property name="invisible_char">*</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
+                    <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
@@ -328,7 +328,6 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkBox" id="apiai_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
             <child>
               <object class="GtkLabel" id="apiai_key_label">
                 <property name="visible">True</property>
@@ -338,6 +337,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">14</property>
                 <property name="position">-1</property>
               </packing>
             </child>
@@ -350,7 +350,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="input_purpose">password</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -366,7 +366,6 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
           <object class="GtkBox" id="bing_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="homogeneous">True</property>
             <child>
               <object class="GtkLabel" id="bing_key_label">
                 <property name="visible">True</property>
@@ -376,6 +375,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="padding">35</property>
                 <property name="position">-1</property>
               </packing>
             </child>
@@ -388,7 +388,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
                 <property name="input_purpose">password</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
@@ -405,6 +405,33 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
         <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="check_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkCheckButton" id="dynamic_check_button">
+            <property name="label" translatable="yes">Use dynamic noise suppression</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="xalign">0</property>
+            <property name="draw_indicator">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">True</property>
+        <property name="fill">True</property>
+        <property name="position">3</property>
       </packing>
     </child>
     <child>
@@ -446,7 +473,7 @@ along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
         <property name="expand">False</property>
         <property name="fill">True</property>
         <property name="padding">5</property>
-        <property name="position">3</property>
+        <property name="position">4</property>
       </packing>
     </child>
   </object>

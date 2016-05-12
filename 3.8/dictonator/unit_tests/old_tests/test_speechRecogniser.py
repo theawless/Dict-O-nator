@@ -21,9 +21,9 @@ from unittest import TestCase
 
 import speech_recognition as sr
 
-from dictonator.configurablesettings import PluginSettings
-from dictonator.recogspeechbg import SpeechRecogniser
-from dictonator.statesmod import DictonatorStates
+from dictonator.settings import DictonatorSettings
+from dictonator.recogspeech import SpeechRecogniser
+from dictonator.statesacts import DictonatorStates
 
 TEST_PATH = os.path.dirname(os.path.abspath(__file__))
 AUDIO_PATH = TEST_PATH + "/test_audio/"
@@ -31,9 +31,9 @@ AUDIO_PATH = TEST_PATH + "/test_audio/"
 
 class TestSpeechRecogniser(TestCase):
     def setUp(self):
-        PluginSettings()
+        DictonatorSettings()
         # Only test sphinx
-        PluginSettings.settings['Main']['recogniser'] = 'Sphinx'
+        DictonatorSettings.settings['Main']['recogniser'] = 'Sphinx'
         self.recogniser = SpeechRecogniser(f_action_handler=self.action_handler_fake)
         self.audio_count = 0
         try:

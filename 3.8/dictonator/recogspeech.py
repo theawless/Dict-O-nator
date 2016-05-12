@@ -20,9 +20,9 @@
 import speech_recognition as sr
 from gi.repository import GLib, Gtk
 
-from dictonator.configurablesettings import PluginSettings
+from dictonator.settings import DictonatorSettings
 from dictonator.setlog import logger
-from dictonator.statesmod import DictonatorStates
+from dictonator.statesacts import DictonatorStates
 
 
 class SpeechRecogniser:
@@ -37,7 +37,7 @@ class SpeechRecogniser:
         self.plugin_action_handler = f_action_handler
         self.source = None
         self.re = sr.Recognizer()
-        self.re.dynamic_energy_threshold = False
+        self.re.dynamic_energy_threshold = DictonatorSettings.settings['Main']['dynamic_noise_suppression']
         self.mic = sr.Microphone()
         self.re_stopper = None
         self.is_listening = False
@@ -98,7 +98,7 @@ class SpeechRecogniser:
         Callback for start_recogniser, converts speech to text.
         Calls action_handler in main thread.
         """
-        settings = PluginSettings.settings
+        settings = DictonatorSettings.settings
         sel = settings['Main']['recogniser']
         recognized_text = ""
         # Recogniser begins

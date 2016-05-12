@@ -1,10 +1,10 @@
 Dependencies
 
-Gedit (Version 3.8)
+Gedit (Version 3.8 or version 3.18+)
 License: GPL v2
 https://wiki.gnome.org/Apps/Gedit
 
-Zhang, A.(2016) Speech Recognition (Version 3.2)
+Zhang, A.(2016) Speech Recognition (Version 3.2+)
 License: BSD
 https://github.com/Uberi/speech_recognition#readme
 
