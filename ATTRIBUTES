@@ -4,6 +4,10 @@ Basic plugin codes : Gedit Wiki
 License: GPl v2
 https://wiki.gnome.org/Apps/Gedit/PythonPluginHowTo
 
-Speech Codes : Uberi Speech Recognition Examples
+Speech codes : Uberi Speech Recognition Examples
 License: BSD
 https://github.com/Uberi/speech_recognition/tree/master/examples
+
+text2num library : Greg Hewgill
+License: MIT
+https://github.com/ghewgill/text2num

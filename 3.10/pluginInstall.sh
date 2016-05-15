@@ -19,26 +19,23 @@ sudo mkdir ~/.local/share/gedit/plugins/dictonator/
 
 echo "Moving Files"
 cp dictonator.plugin ~/.local/share/gedit/plugins/
-cp ATTRIBUTES ~/.local/share/gedit/plugins/dictonator/
-cp DEPENDENCIES ~/.local/share/gedit/plugins/dictonator/
-cp LICENSE ~/.local/share/gedit/plugins/dictonator/
-cp HOWTO ~/.local/share/gedit/plugins/dictonator/
 
 echo "Moving Python Files"
 cp dictonator/__init__.py ~/.local/share/gedit/plugins/dictonator/
-cp dictonator/recogspeechbg.py ~/.local/share/gedit/plugins/dictonator/
-cp dictonator/pluginactions.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/recogspeech.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/actionhandler.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/setlog.py ~/.local/share/gedit/plugins/dictonator/
-cp dictonator/statesmod.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/statesacts.py ~/.local/share/gedit/plugins/dictonator/
 cp dictonator/saveasdialog.py ~/.local/share/gedit/plugins/dictonator/
-cp dictonator/configurablesettings.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/settings.py ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/text2num.py ~/.local/share/gedit/plugins/dictonator/
 
 
 echo "Moving UI Files"
-cp dictonator/bottomwidgetui.glade ~/.local/share/gedit/plugins/dictonator/
-cp dictonator/configurationboxui.glade ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/widget.glade ~/.local/share/gedit/plugins/dictonator/
+cp dictonator/configbox.glade ~/.local/share/gedit/plugins/dictonator/
 
 echo "Moving Icon"
-sudo cp dictonator/dictonator.svg /usr/share/icons/hicolor/scalable/apps/
+sudo cp dictonator.svg /usr/share/icons/hicolor/scalable/apps/
 sudo gtk-update-icon-cache-3.0
 echo "Finished"

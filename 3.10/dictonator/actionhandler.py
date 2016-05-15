@@ -46,9 +46,8 @@ class DictonatorActionHandler:
         self.document = None
         self.view = None
         self.tab = None
-
-        # A manager to handle settings
-        self.settings = DictonatorSettings().settings
+        # initialize the settings class
+        DictonatorSettings()
         # Using like a global function
         self.bottom_bar_text_set = f_bottom_bar_changer
         self.bottom_bar_add = f_bottom_bar_adder
@@ -81,6 +80,7 @@ class DictonatorActionHandler:
         ei = self.get_cursor_position(doc)
         if words:
             if not ei.ends_sentence():
+                # need to capitalize the new sentence, after sentence ends
                 logger.debug("********")
                 text = text.capitalize()
                 doc.insert_at_cursor(text)
@@ -120,7 +120,7 @@ class DictonatorActionHandler:
             self.bottom_bar_text_set("Speak!")
             if text == "":
                 return
-            curr_action = DictonatorActions.decide_action(text)
+            curr_action, num, special = DictonatorActions.decide_action(text)
             self.bottom_bar_add(time.strftime("%H:%M:%S"), text, curr_action)
             if curr_action == "continue_dictation":
                 self.inserttext(text, True)
@@ -130,29 +130,35 @@ class DictonatorActionHandler:
                 self.on_stop_activate(None)
             elif curr_action == "hold_dictation":
                 pass
+            elif curr_action == "put":
+                if special != "":
+                    for _ in range(num):
+                        self.inserttext(special)
             elif curr_action == "scroll_to_cursor":
                 vi = self.view
                 if not vi:
                     return
                 vi.scroll_to_cursor()
             elif curr_action == "goto_line":
-                pass
+                self.document.goto_line(num)
             elif curr_action == "undo":
                 doc = self.document
                 if not doc:
                     return
-                if doc.can_undo():
-                    doc.begin_user_action()
-                    doc.undo()
-                    doc.end_user_action()
+                for _ in range(num):
+                    if doc.can_undo():
+                        doc.begin_user_action()
+                        doc.undo()
+                        doc.end_user_action()
             elif curr_action == "redo":
                 doc = self.document
                 if not doc:
                     return
-                if doc.can_redo():
-                    doc.begin_user_action()
-                    doc.redo()
-                    doc.end_user_action()
+                for _ in range(num):
+                    if doc.can_redo():
+                        doc.begin_user_action()
+                        doc.redo()
+                        doc.end_user_action()
             elif curr_action == "cut_clipboard":
                 vi = self.view
                 if not vi:
@@ -178,14 +184,6 @@ class DictonatorActionHandler:
                 if not vi:
                     return
                 vi.select_all()
-            elif curr_action == "spacebar_input":
-                self.inserttext(' ')
-            elif curr_action == "comma_input":
-                self.inserttext(', ')
-            elif curr_action == "question_mark_input":
-                self.inserttext('? ')
-            elif curr_action == "exclamation_mark_input":
-                self.inserttext('! ')
             elif curr_action == "sentence_end":
                 self.inserttext('. ')
             elif curr_action == "line_end":
@@ -194,38 +192,41 @@ class DictonatorActionHandler:
                 doc = self.document
                 if not doc:
                     return
-                doc.begin_user_action()
-                ei = self.get_cursor_position(doc)
-                si = self.get_cursor_position(doc)
-                si.set_line(ei.get_line())
-                ei.forward_to_line_end()
-                doc.delete(si, ei)
-                doc.end_user_action()
+                for _ in range(num):
+                    doc.begin_user_action()
+                    ei = self.get_cursor_position(doc)
+                    si = self.get_cursor_position(doc)
+                    si.set_line(ei.get_line())
+                    ei.forward_to_line_end()
+                    doc.delete(si, ei)
+                    doc.end_user_action()
             elif curr_action == "delete_sentence":
                 doc = self.document
                 if not doc:
                     return
-                doc.begin_user_action()
-                ei = self.get_cursor_position(doc)
-                si = self.get_cursor_position(doc)
-                if not si.starts_sentence():
-                    si.backward_sentence_start()
-                si.backward_char()
-                ei.forward_sentence_end()
-                doc.delete(si, ei)
-                doc.end_user_action()
+                for _ in range(num):
+                    doc.begin_user_action()
+                    ei = self.get_cursor_position(doc)
+                    si = self.get_cursor_position(doc)
+                    if not si.starts_sentence():
+                        si.backward_sentence_start()
+                    si.backward_char()
+                    ei.forward_sentence_end()
+                    doc.delete(si, ei)
+                    doc.end_user_action()
             elif curr_action == "delete_word":
                 doc = self.document
                 if not doc:
                     return
-                doc.begin_user_action()
-                ei = self.get_cursor_position(doc)
-                si = self.get_cursor_position(doc)
-                si.backward_word_start()
-                si.backward_char()
-                ei.forward_word_end()
-                doc.delete(si, ei)
-                doc.end_user_action()
+                for _ in range(num):
+                    doc.begin_user_action()
+                    ei = self.get_cursor_position(doc)
+                    si = self.get_cursor_position(doc)
+                    si.backward_word_start()
+                    si.backward_char()
+                    ei.forward_word_end()
+                    doc.delete(si, ei)
+                    doc.end_user_action()
             elif curr_action == "clear_document":
                 doc = self.document
                 if not doc:
@@ -259,7 +260,7 @@ class DictonatorActionHandler:
                     self.window.close_tab(tab)
                 else:
                     # to prevent data loss
-                    self.bottom_bar_text_set("You might wanna save the document before quitting.")
+                    self.bottom_bar_text_set("You might want to save this document before closing it.")
             elif curr_action == "force_close_document":
                 tab = self.tab
                 if not tab:
@@ -267,10 +268,10 @@ class DictonatorActionHandler:
                 self.window.close_tab(tab)
             elif curr_action == "exit":
                 u_docs = self.window.get_unsaved_documents()
-                if self.document not in u_docs:
+                if len(u_docs) == 0:
                     sys.exit()
                 else:
-                    self.bottom_bar_text_set("You might wanna save the document before quitting.")
+                    self.bottom_bar_text_set("You might want to save all documents before quitting.")
             else:
                 self.bottom_bar_text_set("WEIRD STATE! How did you reach this state? O_O")
         return
@@ -278,5 +279,4 @@ class DictonatorActionHandler:
     def stop(self):
         """Stop Actions class."""
         del self.window
-        del self.settings
         del self.bottom_bar_text_set

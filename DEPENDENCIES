@@ -15,7 +15,3 @@ http://cmusphinx.sourceforge.net/
 PocketSphinx Python Wrappers
 License: BSD
 https://github.com/cmusphinx/pocketsphinx
-
-word2number 0.1
-License: MIT
-https://pypi.python.org/pypi/word2number

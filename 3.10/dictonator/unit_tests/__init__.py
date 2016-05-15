@@ -18,20 +18,25 @@
 
 from dictonator.unit_tests.test_actionhandler import TestDictonatorActionHandler
 from dictonator.unit_tests.test_settings import TestDictonatorSettings
+from dictonator.unit_tests.test_actions import TestDictonatorActions
 
 
 class AllTestSuite:
     def __init__(self):
         super().__init__()
         self.test_settings = TestDictonatorSettings()
-        self.test_acts = TestDictonatorActionHandler()
+        self.test_acts_handler = TestDictonatorActionHandler()
+        self.test_acts_mod = TestDictonatorActions()
 
     def run_all_tests(self):
         if self.test_settings.setUp():
             self.test_settings.run()
         print("Setting tests finished")
-        if self.test_acts.setUp():
-            self.test_acts.run()
+        if self.test_acts_handler.setUp():
+            self.test_acts_handler.run()
+        print("Document actions handler tests finished")
+        if self.test_acts_mod.setUp():
+            self.test_acts_mod.run()
         print("Document actions tests finished")
 
         print("\nAll tests finished Successfully\n")
