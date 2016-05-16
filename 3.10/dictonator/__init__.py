@@ -21,9 +21,9 @@ import time
 
 from gi.repository import GObject, Gtk, Gedit, PeasGtk
 
-from dictonator.settings import ConfigurationDialogBox
 from dictonator.actionhandler import DictonatorActionHandler
 from dictonator.setlog import logger
+from dictonator.settings import ConfigurationDialogBox
 
 GEDIT_PLUGIN_PATH = os.path.dirname(os.path.abspath(__file__))
 BOTTOM_WIDGET_UI_PATH = GEDIT_PLUGIN_PATH + "/widget.glade"

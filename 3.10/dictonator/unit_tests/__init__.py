@@ -17,8 +17,8 @@
 # along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
 
 from dictonator.unit_tests.test_actionhandler import TestDictonatorActionHandler
-from dictonator.unit_tests.test_settings import TestDictonatorSettings
 from dictonator.unit_tests.test_actions import TestDictonatorActions
+from dictonator.unit_tests.test_settings import TestDictonatorSettings
 
 
 class AllTestSuite:

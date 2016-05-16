@@ -21,10 +21,9 @@ import time
 
 from gi.repository import GLib, Gedit
 
-from dictonator.settings import DictonatorSettings
 from dictonator.recogspeech import SpeechRecogniser
 from dictonator.saveasdialog import FileSaveAsDialog
-from dictonator.setlog import logger
+from dictonator.settings import DictonatorSettings
 from dictonator.statesacts import DictonatorActions, DictonatorStates
 
 
@@ -53,11 +52,10 @@ class DictonatorActionHandler:
         self.bottom_bar_add = f_bottom_bar_adder
         GLib.threads_init()
         self.recogniser = SpeechRecogniser(self.action_handler)
-        logger.debug("Actions INIT")
 
     def on_setup_activate(self, action):
         """Demands noise fix from recogniser."""
-        logger.debug("Demand noise variable set to True")
+
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "None", "setup_dictation")
         self.recogniser.setup_recogniser()
 
@@ -81,7 +79,7 @@ class DictonatorActionHandler:
         if words:
             if not ei.ends_sentence():
                 # need to capitalize the new sentence, after sentence ends
-                logger.debug("********")
+
                 text = text.capitalize()
                 doc.insert_at_cursor(text)
             else:
@@ -100,7 +98,6 @@ class DictonatorActionHandler:
     def on_logit_activate(self, action):
         """A test function."""
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
-        logger.debug(DictonatorSettings.settings['Main']['dynamic_noise_suppression'])
 
     def action_handler(self, text: str, state: DictonatorStates, msg: str):
         """ Handle what to do with the state/msg that we get.
@@ -133,7 +130,12 @@ class DictonatorActionHandler:
             elif curr_action == "put":
                 if special != "":
                     for _ in range(num):
-                        self.inserttext(special)
+                        if 'digit' in special:
+                            # using the format how digits are saved
+                            self.inserttext(DictonatorActions.digits[special][0])
+                        else:
+                            # sure that the special is not a digit, again using the format how specials are saved
+                            self.inserttext(DictonatorActions.special_chars[special][0])
             elif curr_action == "scroll_to_cursor":
                 vi = self.view
                 if not vi:

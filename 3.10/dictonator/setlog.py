@@ -46,7 +46,6 @@ def setup_logger():
     fh = logging.FileHandler(debug_log)
     fh.setFormatter(formatter)
     logger.addHandler(fh)
-    logger.debug('Setlog logger setup done')
 
 
 setup_logger()

@@ -20,8 +20,8 @@
 import speech_recognition as sr
 from gi.repository import GLib, Gtk
 
-from dictonator.settings import DictonatorSettings
 from dictonator.setlog import logger
+from dictonator.settings import DictonatorSettings
 from dictonator.statesacts import DictonatorStates
 
 
@@ -180,7 +180,6 @@ class SpeechRecogniser:
             GLib.idle_add(self.plugin_action_handler, "", DictonatorStates.recognising,
                           "Got your words! Processing with Bing")
             logger.debug("recognize speech using Bing Speech Recognition")
-
             bing_key = settings['Bing']['api_key']
             try:
                 recognized_text = r.recognize_bing(audio, key=bing_key)

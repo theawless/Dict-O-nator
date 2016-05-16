@@ -16,10 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with Dict'O'nator.  If not, see <http://www.gnu.org/licenses/>.
 
-from enum import Enum
 import re
+from enum import Enum
 
-from dictonator.setlog import logger
 import dictonator.text2num as text2num
 
 
@@ -41,59 +40,59 @@ class DictonatorActions:
     """This class handles all actions and how to decide them."""
 
     # defining the actions, format is command_identifier: "magic words to call it"
-    actions = dict(start_dictation={"start dictation", "start dictator", "start speaking"},
-                   continue_dictation={},
-                   stop_dictation={"stop dictation", "stop dictator", "stop dictation"},
-                   hold_dictation={"hold dictation", "hold dictator", "wait dictation"},
-                   scroll_to_cursor={"scroll to cursor"},
-                   goto_line={"go to line", "goto line"},
-                   undo={"undo", "do undo"},
-                   redo={"redo", "do redo"},
-                   cut_clipboard={"cut clipboard", "cut clip board", "cut selection", "cut to clipboard"},
-                   copy_clipboard={"copy clipboard", "copy to clipboard", "copy selection", "copy clip board"},
-                   paste_clipboard={"paste clipboard", "paste clipboard", "paste from clipboard"},
-                   delete_selection={"delete selection", "delete selected text"},
-                   select_all={"select all", "select all text"},
-                   sentence_end={"sentence end", "close sentence", "end sentence", "full stop", "put period"},
-                   line_end={"end line", "close line", "input enter", "put enter", "next line"},
-                   delete_line={"delete line", "delete last line"},
-                   delete_word={"delete word", "delete last word"},
-                   delete_sentence={"delete sentence", "delete this sentence", "delete current sentence", },
-                   clear_document={"clear document", "empty document", "clear file", "empty file"},
-                   new_document={"new document", "new file"},
-                   save_document={"save document", "save file"},
-                   save_as_document={"save as document", "save document as", "save as file", "save file as"},
-                   close_document={"close document", "close file"},
-                   force_close_document={"force close document", "force close file"},
-                   exit={"exit editor", "exit gedit", "editor exit", "gedit exit", "close editor", "close gedit",
-                         "quit editor"},
-                   put={"put", "insert", "type", "input"},
+    actions = dict(start_dictation=("start dictation", "start dictator", "start speaking"),
+                   continue_dictation=(),
+                   stop_dictation=("stop dictation", "stop dictator", "stop dictation"),
+                   hold_dictation=("hold dictation", "hold dictator", "wait dictation"),
+                   scroll_to_cursor=("scroll to cursor", "back to cursor"),
+                   goto_line=("go to line", "goto line"),
+                   undo=("undo", "do undo"),
+                   redo=("redo", "do redo"),
+                   cut_clipboard=("cut clipboard", "cut clip board", "cut selection", "cut to clipboard"),
+                   copy_clipboard=("copy clipboard", "copy to clipboard", "copy selection", "copy clip board"),
+                   paste_clipboard=("paste clipboard", "paste clipboard", "paste from clipboard"),
+                   delete_selection=("delete selection", "delete selected text"),
+                   select_all=("select all", "select all text"),
+                   sentence_end=("sentence end", "close sentence", "end sentence", "full stop", "put period"),
+                   line_end=("end line", "close line", "input enter", "put enter", "next line"),
+                   delete_line=("delete line", "delete last line"),
+                   delete_word=("delete word", "delete last word"),
+                   delete_sentence=("delete sentence", "delete this sentence", "delete current sentence",),
+                   clear_document=("clear document", "empty document", "clear file", "empty file"),
+                   new_document=("new document", "new file"),
+                   save_document=("save document", "save file"),
+                   save_as_document=("save as document", "save document as", "save as file", "save file as"),
+                   close_document=("close document", "close file"),
+                   force_close_document=("force close document", "force close file"),
+                   exit=("exit editor", "exit gedit", "editor exit", "gedit exit", "close editor", "close gedit",
+                         "quit editor"),
+                   put=("put", "insert", "type", "input"),
                    )
     # a dictionary to know which all commands are repeatable
     repeatable_actions = (
         "delete_sentence", "delete_line", "delete_word", "undo", "redo", "line_end", "sentence_end",)
 
     # format to define is special_indentifier: "special value", "magic words to put special"
-    special_chars = dict(question_mark={"?", "question mark"}, exclamation_mark={"!", "exclamation mark"},
-                         full_stop={".", "full_stop"}, comma={",", "comma"},
-                         new_line={"\n", "new line", "enter"}, tab={"\t", "tab", "tab space"},
-                         quote={'"', "quotes"}, apostrophe={"'", "apostrophe"},
-                         forward_slash={"/", "slash", "forward slash"}, backward_slash={"\\", "forward slash"},
-                         colon={":", "colon"}, semi_colon={";", "semi colon", "semicolon"},
-                         ampersand={"&", "ampersand"}, at_rate={"@", "atrate", "at rate"}, hash={"#", "hash"},
-                         dollar={"$", "dollar"}, per_cent={"%", "percentage", "per cent", "percent"},
-                         star={"*", "star", "multiply"}, hyphen={"-", "minus", "hyphen", "subtract", "subtraction"},
-                         under_score={"_", "underscore", "under score"}, equal={"=", "equals", "equal to"},
-                         plus={"+", "plus", "add", "addition"},
-                         left_bracket={"(", "left bracket", "open bracket"},
-                         right_bracket={")", "right bracket", "close bracker"},
+    special_chars = dict(question_mark=("?", "question mark"), exclamation_mark=("!", "exclamation mark"),
+                         full_stop=(".", "full_stop"), comma=(",", "comma"),
+                         new_line=("\n", "new line", "enter", "newline"), tab=("\t", "tab", "tab space"),
+                         quote=('"', "quotes"), apostrophe=("'", "apostrophe"),
+                         forward_slash=("/", "slash", "forward slash"), backward_slash=("\\", "forward slash"),
+                         colon=(":", "colon"), semi_colon=(";", "semi colon", "semicolon"),
+                         ampersand=("&", "ampersand"), at_rate=("@", "atrate", "at rate"), hash=("#", "hash"),
+                         dollar=("$", "dollar"), per_cent=("%", "percentage", "per cent", "percent"),
+                         star=("*", "star", "multiply"), hyphen=("-", "minus", "hyphen", "subtract", "subtraction"),
+                         under_score=("_", "underscore", "under score"), equal=("=", "equals", "equal to"),
+                         plus=("+", "plus", "add", "addition"),
+                         left_bracket=("(", "left bracket", "open bracket"),
+                         right_bracket=(")", "right bracket", "close bracker"),
                          )
-    # format to define is digit_indentifier: "digit_value digit", "magic words to put digit"
-    digits = dict(zero={"0 digit", "zero digit"}, one={"1 digit", "one digit"},
-                  two={"2 digit", "two digit"}, three={"3 digit", "three digit"},
-                  four={"4 digit", "four digit"}, five={"5 digit", "five digit"},
-                  six={"6 digit", "six digit"}, seven={"7 digit", "seven digit"},
-                  eight={"8 digit", "eight digit"}, nine={"9 digit", "nine digit"}
+    # format to define is digit_indentifier: "digit_value", "magic words to put digit"
+    digits = dict(zero_digit=("0", "zero"), one_digit=("1", "one"),
+                  two_digit=("2", "two"), three_digit=("3", "three"),
+                  four_digit=("4", "four"), five_digit=("5", "five"),
+                  six_digit=("6", "six"), seven_digit=("7", "seven"),
+                  eight_digit=("8", "eight"), nine_digit=("9", "nine")
                   )
 
     @staticmethod
@@ -115,7 +114,7 @@ class DictonatorActions:
         special = ""
         num = 1
         clean_txt = DictonatorActions._clean_text(txt)
-        # logger.debug(clean_txt)
+
         for act in DictonatorActions.actions:
             for string in DictonatorActions.actions[act]:
                 if string in clean_txt:
@@ -152,7 +151,7 @@ class DictonatorActions:
             num = text2num.conv_text2num(txt)
             num_list.append(num)
         except text2num.NumberException:
-            logger.debug("NumberException")
+
             pass
         # return only the first number
         if len(num_list) > 0:
@@ -167,7 +166,6 @@ class DictonatorActions:
         for s in lis[:]:
             if s not in text2num.Small and s not in text2num.Magnitude:
                 lis.remove(s)
-                print(s)
         return " ".join(lis)
 
     @staticmethod
@@ -180,7 +178,11 @@ class DictonatorActions:
     @staticmethod
     def _find_digit(txt_with_digit: str):
         lis = txt_with_digit.split('digit')
-        digit = DictonatorActions.get_number(lis[0])
+        digit = ""
+        for iden in DictonatorActions.digits:
+            for s in DictonatorActions.digits[iden]:
+                if s in lis[0]:
+                    digit = iden
         if "times" not in lis[1] and "time" not in lis[1]:
             # means that the user did not not want to repeat puts
             times = 1
