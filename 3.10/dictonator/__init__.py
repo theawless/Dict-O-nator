@@ -63,6 +63,10 @@ class DictonatorMain(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurab
         logger.debug('UI INIT')
 
     def do_update_state(self):
+        self._update_state()
+        self._action_group.set_sensitive(self.window.get_active_document() is not None)
+
+    def _update_state(self):
         # every time the state is updated, we need to update it in plugin manager class too
         window = self.window
         self.plugin_manager.window = window
@@ -70,16 +74,9 @@ class DictonatorMain(GObject.Object, Gedit.WindowActivatable, PeasGtk.Configurab
         self.plugin_manager.view = window.get_active_view()
         self.plugin_manager.tab = window.get_active_tab()
 
-        self._action_group.set_sensitive(self.window.get_active_document() is not None)
-
     def do_activate(self):
         """Activate plugin, insert UI."""
-        window = self.window
-        self.plugin_manager.window = window
-        self.plugin_manager.document = window.get_active_document()
-        self.plugin_manager.view = window.get_active_view()
-        self.plugin_manager.tab = window.get_active_tab()
-
+        self._update_state()
         # Insert menu and bottom panel into gui
         self._insert_menu()
         self._insert_bottom_panel()

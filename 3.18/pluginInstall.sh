@@ -38,4 +38,7 @@ cp dictonator/configbox.glade ~/.local/share/gedit/plugins/dictonator/
 echo "Moving Icon"
 sudo cp dictonator.svg /usr/share/icons/hicolor/scalable/apps/
 sudo gtk-update-icon-cache-3.0
+
+echo "Fixing permissions"
+sudo chmod -R 777 ~/.local/share/gedit/plugins/
 echo "Finished"
