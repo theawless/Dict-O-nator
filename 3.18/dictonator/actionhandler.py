@@ -151,18 +151,14 @@ class DictonatorActionHandler:
                     return
                 for _ in range(num):
                     if doc.can_undo():
-                        doc.begin_user_action()
                         doc.undo()
-                        doc.end_user_action()
             elif curr_action == "redo":
                 doc = self.document
                 if not doc:
                     return
                 for _ in range(num):
                     if doc.can_redo():
-                        doc.begin_user_action()
                         doc.redo()
-                        doc.end_user_action()
             elif curr_action == "cut_clipboard":
                 vi = self.view
                 if not vi:
