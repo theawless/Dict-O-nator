@@ -97,7 +97,6 @@ class DictonatorActionHandler:
 
     def on_logit_activate(self, action):
         """A test function."""
-        self.action_handler('save as document', DictonatorStates.recognised, '')
         self.bottom_bar_add(time.strftime("%H:%M:%S"), "", "log_it")
 
     def action_handler(self, text: str, state: DictonatorStates, msg: str):

@@ -45,7 +45,7 @@ class DictonatorAppActivatable(GObject.Object, Gedit.AppActivatable):
         item1 = Gio.MenuItem.new("Start Dict'O'nator", 'win.dictonator_start')
         item2 = Gio.MenuItem.new("Stop Dict'O'nator", 'win.dictonator_stop')
         item3 = Gio.MenuItem.new("Setup Dict'O'nator", 'win.dictonator_setup')
-        item4 = Gio.MenuItem.new("Setup Dict'O'nator", 'win.dictonator_logit')
+        item4 = Gio.MenuItem.new("Logit Dict'O'nator", 'win.dictonator_logit')
 
         self.menu_ext.append_menu_item(item1)
         self.menu_ext.append_menu_item(item2)
