@@ -13,48 +13,89 @@ Installation:
 How to run:
     Open Gedit, goto edit > preferences > plugins, and tick Dict'O'nator
 
-List of Commands:
-    Command: How to call    
-    start dictation: {start dictation, start dictator, start speaking}
-    stop dictation: {stop dictation, stop dictator, stop dictation}
-    hold dictation: {hold dictation, hold dictator, wait dictation}
+How to use:
+    1> All commands work from the cursor, including put, deletes. 
+    2> Multiple commands can be used together
+    3> Only repeatable actions can be repeated
+    4> To input specific characters/digits use "put" command
+    
+    Format of instruction:
+        1> "some non command text" : input directly
+        2> "repeatable command (number) times" : execute command number times
+        3> "non repeatable command" : execute command
+        4> "put (special character)" : input special character
+        5> "put (special character) (number) times" : input special character number times
+        6> "put (number) digit : input number
+        7> "put (number1) digit (number2) times" : input number1 number2 times
 
-    scroll to cursor: {scroll to cursor}
-    goto line: {go to line}
-    undo: {undo, do undo}
-    redo: {redo, do redo}
-    cut clipboard: {cut clipboard, cut clip board, cut selection, cut to clipboard}
-    copy clipboard: {copy clipboard, copy to clipboard, copy selection, copy clip board}
-    paste clipboard: {paste clipboard, paste clipboard, paste from clipboard}
-    delete selection: {delete selection, delete selected text}
-    select all: {select all, select all text}
+    Examples:
+        1> "Hello what's up" : non commands will be input directly
+        2> "put underscore" : input _
+        3> "delete sentence" : delete last sentence from pointer 
+        4> "put question mark 4 times" : input question mark 4 times
+        5> "delete 5 lines" : delete 5 lines
+        6> "go to line 5" : moves the cursor to line 5
+        7> "save document" : saves document
+    
+    Command(How to call)    
+        start_dictation=("start dictation", "start dictator", "start speaking"),
+        continue_dictation=(),
+        stop_dictation=("stop dictation", "stop dictator", "stop dictation"),
+        hold_dictation=("hold dictation", "hold dictator", "wait dictation"),
+        scroll_to_cursor=("scroll to cursor", "back to cursor"),
+        goto_line=("go to line", "goto line"),
+        undo=("undo", "do undo"),
+        redo=("redo", "do redo"),
+        cut_clipboard=("cut clipboard", "cut clip board", "cut selection", "cut to clipboard"),
+        copy_clipboard=("copy clipboard", "copy to clipboard", "copy selection", "copy clip board"),
+        paste_clipboard=("paste clipboard", "paste clipboard", "paste from clipboard"),
+        delete_selection=("delete selection", "delete selected text"),
+        select_all=("select all", "select all text"),
+        sentence_end=("sentence end", "close sentence", "end sentence", "full stop", "put period"),
+        line_end=("end line", "close line", "input enter", "put enter", "next line"),
+        delete_line=("delete line", "delete last line"),
+        delete_word=("delete word", "delete last word"),
+        delete_sentence=("delete sentence", "delete this sentence", "delete current sentence",),
+        clear_document=("clear document", "empty document", "clear file", "empty file"),
+        new_document=("new document", "new file"),
+        save_as_document=("save as document", "save document as", "save as file", "save file as"),
+        save_document=("save document", "save file"),
+        close_document=("close document", "close file"),
+        force_close_document=("force close document", "force close file"),
+        exit=("exit editor", "exit gedit", "editor exit", "gedit exit", "close editor", "close gedit","quit editor"),
+        put=("put", "insert", "type", "input"),
+    
 
-    comma input: {put comma}
-    question mark input: {put question mark}
-    exclamation mark input: {put exclamation mark, exclamation mark}
-    spacebar input: {spacebar, input spacebar, word end, end word}
-    sentence end: {sentence end, close sentence, end sentence, full stop, put period}
-    line end: {end line, close line, input enter, put enter, next line}
+    repeatable_actions = ("delete_sentence", "delete_line", "delete_word", "undo", "redo", "line_end", "sentence_end",)
 
-    delete line: {delete line, delete last line}
-    delete word: {delete word, delete last word}
-    delete sentence: {delete sentence, delete this sentence, delete current sentence, }
-
-    clear document: {clear document, empty document, clear file, empty file}
-    new document: {new document, new file}
-    save document: {save document, save file}
-    save as document: {save as document, save document as, save as file, save file as}
-    close document: {close document, close file}
-    force close document: {force close document, force close file}
-    exit: {exit editor, exit gedit, editor exit, gedit exit, close editor, close gedit, quit editor}
+    Special Characters
+        question_mark=("?", "question mark"), exclamation_mark=("!", "exclamation mark"),
+        full_stop=(".", "full_stop"), comma=(",", "comma"),
+        new_line=("\n", "new line", "enter", "newline"), tab=("\t", "tab", "tab space"),
+        quote=('"', "quotes"), apostrophe=("'", "apostrophe"),
+        forward_slash=("/", "slash", "forward slash"), backward_slash=("\\", "forward slash"),
+        colon=(":", "colon"), semi_colon=(";", "semi colon", "semicolon"),
+        ampersand=("&", "ampersand"), at_rate=("@", "atrate", "at rate"), hash=("#", "hash"),
+        dollar=("$", "dollar"), per_cent=("%", "percentage", "per cent", "percent"),
+        star=("*", "star", "multiply"), hyphen=("-", "minus", "hyphen", "subtract", "subtraction"),
+        under_score=("_", "underscore", "under score"), equal=("=", "equals", "equal to"),
+        plus=("+", "plus", "add", "addition"),
+        left_bracket=("(", "left bracket", "open bracket"),
+        right_bracket=(")", "right bracket", "close bracker"),
+                         
+    Digits
+        zero_digit=("0", "zero"), one_digit=("1", "one"),
+        two_digit=("2", "two"), three_digit=("3", "three"),
+        four_digit=("4", "four"), five_digit=("5", "five"),
+        six_digit=("6", "six"), seven_digit=("7", "seven"),
+        eight_digit=("8", "eight"), nine_digit=("9", "nine")
 
 Difficulties:
     Default Sphinx requires American English accent and will give bad results otherwise.
     The keys provided are temporary and aren't guaranteed to work.
-    Depending on the user load the results might be slower.
+    Depending on the user load on given APIs the results might be slower.
 
 How to use more services:
     Open Gedit, goto edit > preferences > plugins > Dict'O'nator > preferences and tick whichever service you wan't and fill in the API key.
     Save settings by clicking on "save button".    
     Microsoft Bing, Wit.ai, Api.ai, provide free trials/services and you can get an api key from their respective sites.
-    
