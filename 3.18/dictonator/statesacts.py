@@ -48,9 +48,13 @@ class DictonatorActions:
                    goto_line=("go to line", "goto line"),
                    undo=("undo", "do undo"),
                    redo=("redo", "do redo"),
-                   cut_clipboard=("cut clipboard", "cut clip board", "cut selection", "cut to clipboard"),
-                   copy_clipboard=("copy clipboard", "copy to clipboard", "copy selection", "copy clip board"),
-                   paste_clipboard=("paste clipboard", "paste clipboard", "paste from clipboard"),
+                   cut_clipboard=(
+                       "cut clipboard", "cut clip board", "cut selection", "cut to clipboard", "cut to clip board"),
+                   copy_clipboard=(
+                       "copy clipboard", "copy to clip board", "copy to clipboard", "copy selection",
+                       "copy clip board"),
+                   paste_clipboard=(
+                       "paste clipboard", "paste clip board", "paste from clipboard", "paste from clip board"),
                    delete_selection=("delete selection", "delete selected text"),
                    select_all=("select all", "select all text"),
                    sentence_end=("sentence end", "close sentence", "end sentence", "full stop", "put period"),
@@ -73,11 +77,12 @@ class DictonatorActions:
         "delete_sentence", "delete_line", "delete_word", "undo", "redo", "line_end", "sentence_end",)
 
     # format to define is special_indentifier: "special value", "magic words to put special"
-    special_chars = dict(question_mark=("?", "question mark"), exclamation_mark=("!", "exclamation mark"),
-                         full_stop=(".", "full_stop"), comma=(",", "comma"),
+    special_chars = dict(question_mark=("?", "question mark"),
+                         exclamation_mark=("!", "exclamation mark"),
+                         full_stop=(".", "full_stop", "dot", "period"), comma=(",", "comma"),
                          new_line=("\n", "new line", "enter", "newline"), tab=("\t", "tab", "tab space"),
                          quote=('"', "quotes"), apostrophe=("'", "apostrophe"),
-                         forward_slash=("/", "slash", "forward slash"), backward_slash=("\\", "forward slash"),
+                         forward_slash=("/", "slash", "forward slash"), backward_slash=("\\", "backward slash"),
                          colon=(":", "colon"), semi_colon=(";", "semi colon", "semicolon"),
                          ampersand=("&", "ampersand"), at_rate=("@", "atrate", "at rate"), hash=("#", "hash"),
                          dollar=("$", "dollar"), per_cent=("%", "percentage", "per cent", "percent"),
@@ -85,7 +90,7 @@ class DictonatorActions:
                          under_score=("_", "underscore", "under score"), equal=("=", "equals", "equal to"),
                          plus=("+", "plus", "add", "addition"),
                          left_bracket=("(", "left bracket", "open bracket"),
-                         right_bracket=(")", "right bracket", "close bracker"),
+                         right_bracket=(")", "right bracket", "close bracket"),
                          )
     # format to define is digit_indentifier: "digit_value", "magic words to put digit"
     digits = dict(zero_digit=("0", "zero"), one_digit=("1", "one"),
@@ -205,3 +210,4 @@ class DictonatorActions:
                     special = char
                     return times, special
         return times, special
+
