@@ -1,4 +1,4 @@
-# Dict'O'nator : A Dictation Plugin for Gedit        <img src="/logo.png" width="60" height="60"/>
+# Dict'O'nator : A Dictation Plugin for Gedit 3.18        <img src="images/logo.png" width="60" height="60"/>
 
 ### Features
 * Dictate text into Gedit  
@@ -31,8 +31,8 @@
 * `go to line 5` : moves the cursor to line 5
 * `save document` : saves document
 
-### Screenshot: [Go here to see the rest of screenshots](/Screenshots)
-<img src="/Screenshots/settings.png" width="910" height="512"/>
+### Screenshot: [Go here to see the rest of the images](/images)
+<img src="/images/settings.png" width="910" height="512"/>
 
 ### Requirements
 * [Gedit](https://wiki.gnome.org/Apps/Gedit)
@@ -42,7 +42,7 @@
 
 ### Installation(For Ubuntu)
 * Install with script
-  * Open terminal and execute `sudo ./plugininstall.sh`
+  * Open terminal and execute `sudo ./plugin_install.sh`
 * Manual Install
   * Copy all contents of **folder that matches your gedit version** to path `~/.local/share/gedit/plugins/`
   * Copy **dictonator.svg** to path `/usr/share/icons/hicolor/scalable/apps/`

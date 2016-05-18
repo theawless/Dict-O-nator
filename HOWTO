@@ -1,6 +1,6 @@
 Installation:
     Install with script
-        Open terminal and execute 'sudo ./plugininstall.sh'
+        Open terminal and execute 'sudo ./plugin_install.sh'
 
     Manual Install
         Find your gedit version by checking help > about
