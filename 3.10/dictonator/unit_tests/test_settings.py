@@ -29,10 +29,10 @@ class TestDictonatorSettings(TestCase):
         self.config['Main'] = {'recogniser': 'WITAI', 'dynamic_noise_suppression': 'False'}
         self.config['Sphinx'] = {'version': 'pocketsphinx'}
         self.config['Google'] = {'api_key': ''}
-        self.config['WITAI'] = {'api_key': 'A3OGNVOCVIMZVWBWLHSV2WLNO5ASS43J'}
+        self.config['WITAI'] = {'api_key': ''}
         self.config['IBM'] = {'username': '', 'password': ''}
-        self.config['Bing'] = {'api_key': 'eea410c705e74b349a26eebe4ca510f7'}
-        self.config['APIAI'] = {'api_key': '26014dcd873d4c879d9d410aa6a34521'}
+        self.config['Bing'] = {'api_key': ''}
+        self.config['APIAI'] = {'api_key': ''}
         return True
 
     def run(self, result=None):
@@ -50,12 +50,12 @@ class TestDictonatorSettings(TestCase):
     def test_config_to_dict(self, conf):
         dic = DictonatorSettings.config_to_dict(conf)
         _dic = {'Sphinx': {'version': 'pocketsphinx'},
-                'WITAI': {'api_key': 'A3OGNVOCVIMZVWBWLHSV2WLNO5ASS43J'},
+                'WITAI': {'api_key': ''},
                 'Google': {'api_key': ''},
                 'Main': {'recogniser': 'WITAI', 'dynamic_noise_suppression': 'False'},
                 'IBM': {'password': '', 'username': ''},
-                'APIAI': {'api_key': '26014dcd873d4c879d9d410aa6a34521'},
-                'Bing': {'api_key': 'eea410c705e74b349a26eebe4ca510f7'}
+                'APIAI': {'api_key': ''},
+                'Bing': {'api_key': ''}
                 }
 
         self.assertEqual(_dic, dic, "Conversion from configparser to dictionary failed")

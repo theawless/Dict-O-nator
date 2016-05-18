@@ -47,9 +47,9 @@ class DictonatorSettings:
         config['Main'] = {'recogniser': 'WITAI', 'dynamic_noise_suppression': 'False'}
         config['Sphinx'] = {'version': 'pocketsphinx'}
         config['Google'] = {'api_key': ''}
-        config['WITAI'] = {'api_key': 'A3OGNVOCVIMZVWBWLHSV2WLNO5ASS43J'}
-        config['APIAI'] = {'api_key': '26014dcd873d4c879d9d410aa6a34521'}
-        config['Bing'] = {'api_key': 'eea410c705e74b349a26eebe4ca510f7'}
+        config['WITAI'] = {'api_key': ''}
+        config['APIAI'] = {'api_key': ''}
+        config['Bing'] = {'api_key': ''}
         config['IBM'] = {'username': '', 'password': ''}
         return config
 
