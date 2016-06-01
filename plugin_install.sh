@@ -14,6 +14,9 @@ sudo pip3 install SpeechRecognition
 sudo pip3 install pocketsphinx
 
 echo "Making Directories"
+
+sudo mkdir ~/.local/share/
+sudo mkdir ~/.local/share/gedit/
 sudo mkdir ~/.local/share/gedit/plugins/
 sudo mkdir ~/.local/share/gedit/plugins/dictonator/
 

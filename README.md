@@ -1,4 +1,4 @@
-# Dict'O'nator : A Dictation Plugin for Gedit 3.18        <img src="images/logo.png" width="60" height="60"/>
+# Dict'O'nator : A Dictation Plugin for Gedit 3.20        <img src="images/logo.png" width="60" height="60"/>
 
 ### Features
 * Dictate text into Gedit  

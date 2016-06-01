@@ -38,25 +38,27 @@ class DictonatorAppActivatable(GObject.Object, Gedit.AppActivatable):
 
     def do_activate(self):
         self.menu_ext = self.extend_menu("tools-section")
-        self.app.add_accelerator("<Primary><Alt>2", "win.dictonator_start", None)
-        self.app.add_accelerator("<Primary><Alt>3", "win.dictonator_stop", None)
-        self.app.add_accelerator("<Primary><Alt>4", "win.dictonator_setup", None)
-        self.app.add_accelerator("<Primary><Alt>5", "win.dictonator_logit", None)
+        menu = Gio.Menu()
         item1 = Gio.MenuItem.new("Start Dict'O'nator", 'win.dictonator_start')
         item2 = Gio.MenuItem.new("Stop Dict'O'nator", 'win.dictonator_stop')
         item3 = Gio.MenuItem.new("Setup Dict'O'nator", 'win.dictonator_setup')
         item4 = Gio.MenuItem.new("Logit Dict'O'nator", 'win.dictonator_logit')
-
-        self.menu_ext.append_menu_item(item1)
-        self.menu_ext.append_menu_item(item2)
-        self.menu_ext.append_menu_item(item3)
-        self.menu_ext.append_menu_item(item4)
+        menu.append_item(item1)
+        menu.append_item(item2)
+        menu.append_item(item3)
+        menu.append_item(item4)
+        menu_item = Gio.MenuItem.new_submenu("Dict'O'nator", menu)
+        self.menu_ext.append_menu_item(menu_item)
+        self.app.set_accels_for_action("win.dictonator_start", ("<Primary><Alt>2", None))
+        self.app.set_accels_for_action("win.dictonator_stop", ("<Primary><Alt>3", None))
+        self.app.set_accels_for_action("win.dictonator_setup", ("<Primary><Alt>4", None))
+        self.app.set_accels_for_action("win.dictonator_logit", ("<Primary><Alt>5", None))
 
     def do_deactivate(self):
-        self.app.remove_accelerator('win.dictonator_start', None)
-        self.app.remove_accelerator('win.dictonator_stop', None)
-        self.app.remove_accelerator('win.dictonator_setup', None)
-        self.app.remove_accelerator('win.dictonator_logit', None)
+        self.app.set_accels_for_action("win.dictonator_start", ())
+        self.app.set_accels_for_action("win.dictonator_stop", ())
+        self.app.set_accels_for_action("win.dictonator_setup", ())
+        self.app.set_accels_for_action("win.dictonator_logit", ())
         self.menu_ext = None
 
 
